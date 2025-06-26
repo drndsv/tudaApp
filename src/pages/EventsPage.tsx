@@ -37,6 +37,38 @@ export default function EventsPage() {
         volunteers_number: 5,
         status: "PUBLISHED",
       },
+      {
+        id: 3,
+        title: "Волонтёрская уборка парка",
+        city: "Москва",
+        date: "2025-07-01T18:00:00Z",
+        description: "",
+        organizer_id: 1,
+        participants_number: 20,
+        volunteers_number: 10,
+        status: "PUBLISHED",
+        photo: {
+          id: 1,
+          upload_id: "uuid",
+          filename: "cat.jpg",
+        },
+      },
+      {
+        id: 4,
+        title: "Волонтёрская уборка парка",
+        city: "Москва",
+        date: "2025-07-01T18:00:00Z",
+        description: "",
+        organizer_id: 1,
+        participants_number: 20,
+        volunteers_number: 10,
+        status: "PUBLISHED",
+        photo: {
+          id: 1,
+          upload_id: "uuid",
+          filename: "cat.jpg",
+        },
+      },
     ]);
   }, []);
 
