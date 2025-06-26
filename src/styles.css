@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-beige: #e0d4be;
+    --color-cream: #f2f3ed;
+    --color-olive: #bcc399;
+    --color-green: #778e69;
+    --color-dark: #151513;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background-color: var(--color-cream);
+  color: var(--color-dark);
+}
+
+.card {
+  background: var(--color-cream);
+  border-radius: 1rem;
+  box-shadow: 8px 8px 16px #bcc4aa, -8px -8px 16px #ffffff;
+  padding: 1rem;
+  transition: transform 0.2s ease;
+}
+.card:hover {
+  transform: scale(1.02);
+}
