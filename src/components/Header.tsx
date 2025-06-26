@@ -5,7 +5,7 @@ import "../styles.css";
 export default function Header() {
   return (
     <header
-      className="flex justify-between items-center px-6 py-4 shadow-md relative rounded-xl mb-12"
+      className="flex justify-between items-center px-6 py-4 shadow-md relative rounded-xl mb-10"
       style={{ backgroundColor: "var(--color-green)" }}
     >
       <h1
