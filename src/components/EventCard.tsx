@@ -1,12 +1,22 @@
 import { Event } from "../types/models";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   event: Event;
 }
 
 export default function EventCard({ event }: Props) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/event/${event.id}`);
+  };
+
   return (
-    <div className="card">
+    <div
+      className="card cursor-pointer hover:shadow-lg transition"
+      onClick={handleClick}
+    >
       <div className="h-40 mb-2 rounded-xl overflow-hidden bg-gray-200">
         {event.photo?.filename ? (
           <img

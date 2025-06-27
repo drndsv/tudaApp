@@ -16,3 +16,8 @@ export interface Event {
   status: "DRAFT" | "PUBLISHED" | "CANCELED";
   photo?: Photo;
 }
+
+export interface InfoCardProps {
+  title: string;
+  children: React.ReactNode;
+}
