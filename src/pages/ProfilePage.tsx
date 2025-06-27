@@ -10,37 +10,36 @@ export default function ProfilePage() {
 
         <div className="bg-white shadow-md rounded-xl p-6">
           {/* Идентификационные данные */}
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Идентификационные данные</h2>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold">Идентификационные данные</h2>
             <PrimaryButton>Редактировать</PrimaryButton>
           </div>
-
-          <div className="space-y-4 mb-8">
-            <div>
-              <span className="block font-medium">Логин</span>
+          <div className="space-y-2">
+            <div className="bg-amber-50 p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6">
+              <span className="font-medium w-32">Логин</span>
               <span className="text-sm text-gray-700">ivanov</span>
             </div>
-            <div>
-              <span className="block font-medium">Пароль</span>
+            <div className="bg-amber-50 p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6 mb-6">
+              <span className="font-medium w-32">Пароль</span>
               <span className="text-sm text-gray-700">●●●●●●●</span>
             </div>
           </div>
 
           {/* Личные данные */}
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold mb-4">Личные данные</h2>
+          <div className="flex items-center mb-4">
+            <h2 className="text-xl font-semibold">Личные данные</h2>
           </div>
-          <div className="space-y-4">
-            <div>
-              <span className="block font-medium">Фамилия</span>
+          <div className="space-y-2">
+            <div className="bg-amber-50 p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6">
+              <span className="font-medium w-32">Фамилия</span>
               <span className="text-sm text-gray-700">Иванов</span>
             </div>
-            <div>
-              <span className="block font-medium">Имя</span>
+            <div className="bg-amber-50 p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6">
+              <span className="font-medium w-32">Имя</span>
               <span className="text-sm text-gray-700">Иван</span>
             </div>
-            <div>
-              <span className="block font-medium">Отчество</span>
+            <div className="bg-amber-50 p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6">
+              <span className="font-medium w-32">Отчество</span>
               <span className="text-sm text-gray-700">Иванович</span>
             </div>
           </div>
