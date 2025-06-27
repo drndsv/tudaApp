@@ -15,11 +15,17 @@ export default function ProfilePage() {
             <PrimaryButton>Редактировать</PrimaryButton>
           </div>
           <div className="space-y-2">
-            <div className="bg-amber-50 p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6">
+            <div
+              className="p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6"
+              //   style={{ backgroundColor: "var(--color-cream)" }}
+            >
               <span className="font-medium w-32">Логин</span>
               <span className="text-sm text-gray-700">ivanov</span>
             </div>
-            <div className="bg-amber-50 p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6 mb-6">
+            <div
+              className="p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6 mb-6"
+              //   style={{ backgroundColor: "var(--color-cream)" }}
+            >
               <span className="font-medium w-32">Пароль</span>
               <span className="text-sm text-gray-700">●●●●●●●</span>
             </div>
@@ -30,15 +36,24 @@ export default function ProfilePage() {
             <h2 className="text-xl font-semibold">Личные данные</h2>
           </div>
           <div className="space-y-2">
-            <div className="bg-amber-50 p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6">
+            <div
+              className="p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6"
+              //   style={{ backgroundColor: "var(--color-cream)" }}
+            >
               <span className="font-medium w-32">Фамилия</span>
               <span className="text-sm text-gray-700">Иванов</span>
             </div>
-            <div className="bg-amber-50 p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6">
+            <div
+              className="p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6"
+              //   style={{ backgroundColor: "var(--color-cream)" }}
+            >
               <span className="font-medium w-32">Имя</span>
               <span className="text-sm text-gray-700">Иван</span>
             </div>
-            <div className="bg-amber-50 p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6">
+            <div
+              className="p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6"
+              //   style={{ backgroundColor: "var(--color-cream)" }}
+            >
               <span className="font-medium w-32">Отчество</span>
               <span className="text-sm text-gray-700">Иванович</span>
             </div>
