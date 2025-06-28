@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { useState } from "react";
 import Header from "../components/Header";
 import InfoCard from "../components/InfoCard";
 import PrimaryButton from "../components/PrimaryButton";
@@ -27,6 +28,24 @@ export default function EventDetailsPage() {
 
   const isPast = new Date(event.date) < new Date();
 
+  const [isParticipant, setIsParticipant] = useState(false);
+  const [isVolunteerPending, setIsVolunteerPending] = useState(false);
+
+  const handleJoin = () => {
+    setIsParticipant(true);
+    setIsVolunteerPending(false);
+  };
+
+  const handleVolunteer = () => {
+    setIsVolunteerPending(true);
+    setIsParticipant(false);
+  };
+
+  const handleCancel = () => {
+    setIsParticipant(false);
+    setIsVolunteerPending(false);
+  };
+
   return (
     <div className="bg-cream min-h-screen text-dark">
       <Header />
@@ -53,10 +72,34 @@ export default function EventDetailsPage() {
             </div>
 
             <div className="flex flex-col gap-4">
-              <PrimaryButton disabled={isPast}>Участвовать</PrimaryButton>
-              <PrimaryButton disabled={isPast}>
-                Подать заявку на волонтёрство
-              </PrimaryButton>
+              {isVolunteerPending && (
+                <div className="text-sm text-gray-600 px-2">
+                  Ожидайте одобрения заявки на волонтёрство
+                </div>
+              )}
+
+              {isParticipant && (
+                <div className="text-sm text-gray-600 px-2">
+                  Вы зарегистрированы как участник
+                </div>
+              )}
+
+              {!isParticipant && !isVolunteerPending && (
+                <>
+                  <PrimaryButton disabled={isPast} onClick={handleJoin}>
+                    Участвовать
+                  </PrimaryButton>
+                  <PrimaryButton disabled={isPast} onClick={handleVolunteer}>
+                    Подать заявку на волонтёрство
+                  </PrimaryButton>
+                </>
+              )}
+
+              {(isParticipant || isVolunteerPending) && (
+                <PrimaryButton disabled={isPast} onClick={handleCancel}>
+                  Отказаться от участия
+                </PrimaryButton>
+              )}
             </div>
           </div>
 
