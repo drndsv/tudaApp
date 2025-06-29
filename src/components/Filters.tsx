@@ -10,23 +10,40 @@ import {
   Stack,
   Transition,
   useMantineTheme,
+  ActionIcon,
 } from "@mantine/core";
+import { IconX } from "@tabler/icons-react";
 import { DateInput } from "@mantine/dates";
 import { FaSearch } from "react-icons/fa";
 
-export default function Filters() {
+type FiltersProps = {
+  date: string | null;
+  setDate: (value: string | null) => void;
+  citySearch: string;
+  setCitySearch: (value: string) => void;
+  eventSearch: string;
+  setEventSearch: (value: string) => void;
+  resetFilters: () => void;
+};
+
+export default function Filters({
+  date,
+  setDate,
+  citySearch,
+  setCitySearch,
+  eventSearch,
+  setEventSearch,
+  resetFilters,
+}: FiltersProps) {
   const theme = useMantineTheme();
 
-  const [citySearch, setCitySearch] = useState("");
-  const [eventSearch, setEventSearch] = useState("");
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [roleOpen, setRoleOpen] = useState(false);
-  const [date, setDate] = useState<string | null>(null);
-
   const roleRef = useRef<HTMLDivElement | null>(null);
-
-  const filteredCities = ["Москва", "Санкт-Петербург", "Казань"].filter(
-    (city) => city.toLowerCase().includes(citySearch.toLowerCase())
+  // TODO: список городов вытащить из мероприятий
+  const allCities = ["Москва", "Санкт-Петербург", "Казань"];
+  const filteredCities = allCities.filter((city) =>
+    city.toLowerCase().includes(citySearch.toLowerCase())
   );
 
   const handleRoleChange = (role: string) => {
@@ -61,6 +78,9 @@ export default function Filters() {
           styles={{ root: { backgroundColor: theme.colors.green[10] } }}
         >
           <FaSearch />
+        </Button>
+        <Button variant="outline" radius="xl" onClick={resetFilters}>
+          Сбросить фильтры
         </Button>
       </Group>
 
@@ -105,6 +125,19 @@ export default function Filters() {
           radius="xl"
           size="sm"
           valueFormat="DD MMMM YYYY"
+          w={200}
+          rightSection={
+            date ? (
+              <ActionIcon
+                variant="subtle"
+                size="sm"
+                onClick={() => setDate(null)}
+                aria-label="Очистить дату"
+              >
+                <IconX size={16} />
+              </ActionIcon>
+            ) : null
+          }
         />
 
         {/* Роль */}
@@ -138,7 +171,7 @@ export default function Filters() {
                   top: "100%",
                   marginTop: 8,
                   width: 180,
-                  backgroundColor: theme.colors.cream[0],
+                  backgroundColor: theme.colors.cream?.[0] || "#fff",
                   ...styles,
                 }}
               >

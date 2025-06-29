@@ -1,5 +1,5 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
 import {
   Box,
   Container,
@@ -12,35 +12,40 @@ import {
   Button,
   rem,
   Center,
+  Loader,
 } from "@mantine/core";
 import Header from "../components/Header";
-import { Event } from "../types/models";
-
-const mockEvent: Event = {
-  id: 1,
-  title: "Волонтёрская уборка парка",
-  city: "Москва",
-  date: "2025-07-01T18:00:00Z",
-  description: "Убираем парк вместе с жителями района!",
-  organizer_id: 1,
-  participants_number: 100,
-  volunteers_number: 5,
-  status: "PUBLISHED",
-  photo: {
-    id: 1,
-    upload_id: "uuid",
-    filename: "cat.jpg",
-  },
-};
+import { EventResponseDTO } from "../api/generated/models/EventResponseDTO";
+import { EventControllerService } from "../api/generated/services/EventControllerService";
 
 export default function EventDetailsPage() {
   const { id } = useParams();
-  const event = mockEvent;
-
-  const isPast = new Date(event.date) < new Date();
+  const [event, setEvent] = useState<EventResponseDTO | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [isParticipant, setIsParticipant] = useState(false);
   const [isVolunteerPending, setIsVolunteerPending] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchEvent = async () => {
+      try {
+        const response = await EventControllerService.getEventById(Number(id));
+        if (!response.error && response.result) {
+          setEvent(response.result);
+        } else {
+          console.error("Ошибка в ответе:", response.errorMassage);
+        }
+      } catch (e) {
+        console.error("Ошибка при загрузке мероприятия:", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvent();
+  }, [id]);
 
   const handleJoin = () => {
     setIsParticipant(true);
@@ -57,16 +62,57 @@ export default function EventDetailsPage() {
     setIsVolunteerPending(false);
   };
 
+  const getReadableStatus = (status?: string): string => {
+    switch (status) {
+      case "WILL":
+        return "Планируется";
+      case "PUBLISHED":
+        return "Опубликовано";
+      case "FINISHED":
+        return "Завершено";
+      case "CANCELLED":
+        return "Отменено";
+      default:
+        return "Неизвестно";
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box>
+        <Header />
+        <Container size="lg" py="xl">
+          <Center>
+            <Loader />
+          </Center>
+        </Container>
+      </Box>
+    );
+  }
+
+  if (!event) {
+    return (
+      <Box>
+        <Header />
+        <Container size="lg" py="xl">
+          <Text>Мероприятие не найдено.</Text>
+        </Container>
+      </Box>
+    );
+  }
+
+  const isPast = new Date(event.date || "") < new Date();
+
   return (
     <Box>
       <Header />
       <Container size="lg" py="xl">
         <Title order={2} mb="sm">
-          {event.title}
+          {event.title || "Без названия"}
         </Title>
 
         <Text fz="lg" fw={500} mb="xl" c="gray.7">
-          Статус: {isPast ? "Завершено" : "Активно"}
+          Статус: {getReadableStatus(event.eventStatus)}
         </Text>
 
         <Grid gutter="xl" align="stretch">
@@ -84,7 +130,7 @@ export default function EventDetailsPage() {
                 {event.photo?.filename ? (
                   <Image
                     src={`/uploads/${event.photo.filename}`}
-                    alt={event.title}
+                    alt={event.title || "Мероприятие"}
                     h="100%"
                     w="100%"
                     fit="cover"
@@ -176,7 +222,7 @@ export default function EventDetailsPage() {
                     <Text fw={600} mb="xs">
                       Участников
                     </Text>
-                    <Text fz="sm">{event.participants_number}/200</Text>
+                    <Text fz="sm">{event.participantsNumber ?? 0}/200</Text>
                   </Card>
                 </Grid.Col>
                 <Grid.Col span={6}>
@@ -190,7 +236,7 @@ export default function EventDetailsPage() {
                     <Text fw={600} mb="xs">
                       Волонтёров
                     </Text>
-                    <Text fz="sm">{event.volunteers_number}/100</Text>
+                    <Text fz="sm">{event.volunteersNumber ?? 0}/100</Text>
                   </Card>
                 </Grid.Col>
               </Grid>
@@ -210,17 +256,25 @@ export default function EventDetailsPage() {
                     </Text>
                     <Stack gap={4} fz="sm">
                       <Text>
-                        📅 {new Date(event.date).toLocaleDateString()}
+                        📅{" "}
+                        {event.date
+                          ? new Date(event.date).toLocaleDateString()
+                          : "—"}
                       </Text>
                       <Text>
                         🕒{" "}
-                        {new Date(event.date).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                        {event.date
+                          ? new Date(event.date).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
+                          : "—"}
                       </Text>
-                      <Text>📍 {event.city}</Text>
-                      <Text>🏢 Организация ID: {event.organizer_id}</Text>
+                      <Text>📍 {event.city || "Город не указан"}</Text>
+                      <Text>
+                        🏢{" "}
+                        {event.organization?.name || "Организация не указана"}
+                      </Text>
                     </Stack>
                   </Card>
                 </Grid.Col>
@@ -238,9 +292,11 @@ export default function EventDetailsPage() {
                       Контактное лицо
                     </Text>
                     <Stack gap={4} fz="sm">
-                      <Text>📞 +7 (999) 123-45-67</Text>
-                      <Text>👤 Иван Иванов</Text>
-                      <Text>✉️ ivan@example.com</Text>
+                      <Text>
+                        📞 {event.organization?.phoneNumber || "Не указан"}
+                      </Text>
+                      <Text>👤 —</Text>
+                      <Text>✉️ —</Text>
                     </Stack>
                   </Card>
                 </Grid.Col>

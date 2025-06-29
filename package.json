@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "generate-api": "openapi --input ./src/api/tuda_swagger.json --output ./src/api/generated --client fetch"
+    "generate-api": "openapi --input http://localhost:8080/v3/api-docs --output ./src/api/generated --client fetch"
   },
   "dependencies": {
     "@mantine/core": "^8.1.2",
@@ -17,6 +17,7 @@
     "@mantine/hooks": "^8.1.2",
     "@mantine/modals": "^8.1.2",
     "@mantine/notifications": "^8.1.2",
+    "@tabler/icons-react": "^3.34.0",
     "@tailwindcss/vite": "^4.1.10",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
