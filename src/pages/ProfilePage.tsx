@@ -1,6 +1,16 @@
+import {
+  Box,
+  Button,
+  Container,
+  Group,
+  Paper,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+} from "@mantine/core";
 import { useState } from "react";
 import Header from "../components/Header";
-import PrimaryButton from "../components/PrimaryButton";
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -33,85 +43,115 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="bg-cream min-h-screen text-dark">
+    <Box style={{ minHeight: "100vh" }}>
       <Header />
-      <main className="max-w-4xl mx-auto px-4 py-12">
-        <h1 className="text-2xl font-bold text-center mb-10">Ваши данные</h1>
+      <Container size="md" py="xl">
+        <Title order={2} mb="lg">
+          Ваши данные
+        </Title>
 
-        <div className="bg-white shadow-md rounded-xl p-6">
+        <Paper
+          shadow="md"
+          radius="xl"
+          p="xl"
+          withBorder
+          style={{ backgroundColor: "white" }}
+        >
           {/* Идентификационные данные */}
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">Идентификационные данные</h2>
+          <Group justify="space-between" mb="lg">
+            <Title order={3}>Идентификационные данные</Title>
             {!isEditing && (
-              <PrimaryButton onClick={() => setIsEditing(true)}>
-                Редактировать
-              </PrimaryButton>
-            )}
-          </div>
-
-          <div className="space-y-2 mb-6">
-            {["login", "password"].map((field) => (
-              <div
-                key={field}
-                className="p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6"
+              <Button
+                radius="xl"
+                color="green.10"
+                onClick={() => setIsEditing(true)}
               >
-                <span className="font-medium w-32">
-                  {field === "login" ? "Логин" : "Пароль"}
-                </span>
-                {isEditing ? (
-                  <input
-                    type={field === "password" ? "password" : "text"}
-                    className="bg-cream px-2 py-1 rounded-md text-sm w-full"
-                    value={formData[field as keyof typeof formData]}
-                    onChange={(e) => handleChange(field, e.target.value)}
-                  />
-                ) : (
-                  <span className="text-sm text-gray-700">
-                    {formData[field as keyof typeof formData]}
-                  </span>
-                )}
-              </div>
+                Редактировать
+              </Button>
+            )}
+          </Group>
+
+          <Stack gap="sm" mb="lg">
+            {["login", "password"].map((field) => (
+              <Box
+                key={field}
+                mb="sm"
+                p="sm"
+                style={{ border: "1px solid #ccc", borderRadius: "8px" }}
+              >
+                <Group align="center" gap="md" wrap="nowrap">
+                  <Text w={100} fw={500}>
+                    {field === "login" ? "Логин" : "Пароль"}
+                  </Text>
+                  {isEditing ? (
+                    <TextInput
+                      type={field === "password" ? "password" : "text"}
+                      value={formData[field as keyof typeof formData]}
+                      onChange={(e) =>
+                        handleChange(field, e.currentTarget.value)
+                      }
+                      radius="md"
+                      style={{ flex: 1 }}
+                    />
+                  ) : (
+                    <Text size="sm" c="dimmed">
+                      {formData[field as keyof typeof formData]}
+                    </Text>
+                  )}
+                </Group>
+              </Box>
             ))}
-          </div>
+          </Stack>
 
           {/* Личные данные */}
-          <div className="flex items-center mb-4">
-            <h2 className="text-xl font-semibold">Личные данные</h2>
-          </div>
-          <div className="space-y-2">
-            {["surname", "name", "patronymic"].map((field, idx) => (
-              <div
-                key={field}
-                className="p-3 rounded-xl shadow-sm border border-b-gray-500 flex items-center gap-6"
-              >
-                <span className="font-medium w-32">
-                  {["Фамилия", "Имя", "Отчество"][idx]}
-                </span>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    className="bg-cream px-2 py-1 rounded-md text-sm w-full"
-                    value={formData[field as keyof typeof formData]}
-                    onChange={(e) => handleChange(field, e.target.value)}
-                  />
-                ) : (
-                  <span className="text-sm text-gray-700">
-                    {formData[field as keyof typeof formData]}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
+          <Title order={3} mb="sm" style={{ textAlign: "left" }}>
+            Личные данные
+          </Title>
 
-          {/* Кнопки "Сохранить" и "Отмена" */}
+          <Stack gap="sm">
+            {["surname", "name", "patronymic"].map((field, idx) => (
+              <Box
+                key={field}
+                mb="sm"
+                p="sm"
+                style={{ border: "1px solid #ccc", borderRadius: "8px" }}
+              >
+                <Group align="center" gap="md" wrap="nowrap">
+                  <Text w={100} fw={500}>
+                    {["Фамилия", "Имя", "Отчество"][idx]}
+                  </Text>
+                  {isEditing ? (
+                    <TextInput
+                      value={formData[field as keyof typeof formData]}
+                      onChange={(e) =>
+                        handleChange(field, e.currentTarget.value)
+                      }
+                      radius="md"
+                      style={{ flex: 1 }}
+                    />
+                  ) : (
+                    <Text size="sm" c="dimmed">
+                      {formData[field as keyof typeof formData]}
+                    </Text>
+                  )}
+                </Group>
+              </Box>
+            ))}
+          </Stack>
+
+          {/* Кнопки */}
           {isEditing && (
-            <div className="flex justify-end gap-4 mt-6">
-              <PrimaryButton onClick={handleCancel}>Отмена</PrimaryButton>
-              <PrimaryButton onClick={handleSave}>Сохранить</PrimaryButton>
-            </div>
+            <Group justify="end" gap="sm" mt="xl">
+              <Button radius="xl" variant="default" onClick={handleCancel}>
+                Отмена
+              </Button>
+              <Button radius="xl" color="green.10" onClick={handleSave}>
+                Сохранить
+              </Button>
+            </Group>
           )}
-        </div>
-      </main>
-    </div>
+        </Paper>
+      </Container>
+    </Box>
   );
 }
