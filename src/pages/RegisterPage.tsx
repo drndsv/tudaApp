@@ -3,6 +3,7 @@ import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
+import { leftAlignedLabel } from "../styles/formStyles";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ export default function RegisterPage() {
             placeholder="Введите логин"
             radius="xl"
             {...form.getInputProps("login")}
+            styles={{ label: leftAlignedLabel }}
           />
           <TextInput
             mb={8}
@@ -63,6 +65,7 @@ export default function RegisterPage() {
             type="password"
             radius="xl"
             {...form.getInputProps("password")}
+            styles={{ label: leftAlignedLabel }}
           />
 
           <Radio.Group
@@ -82,36 +85,48 @@ export default function RegisterPage() {
             <>
               <TextInput
                 label="Фамилия"
+                placeholder="Введите фамилию"
                 radius="xl"
                 {...form.getInputProps("lastName")}
+                styles={{ label: leftAlignedLabel }}
               />
               <TextInput
                 label="Имя"
+                placeholder="Введите имя"
                 radius="xl"
                 {...form.getInputProps("firstName")}
+                styles={{ label: leftAlignedLabel }}
               />
               <TextInput
                 label="Отчество"
+                placeholder="Введите отчество"
                 radius="xl"
                 {...form.getInputProps("middleName")}
+                styles={{ label: leftAlignedLabel }}
               />
             </>
           ) : (
             <>
               <TextInput
                 label="Название организации"
+                placeholder="Введите название организации"
                 radius="xl"
                 {...form.getInputProps("orgName")}
+                styles={{ label: leftAlignedLabel }}
               />
               <TextInput
                 label="ФИО координатора"
+                placeholder="Введите ФИО координатора"
                 radius="xl"
                 {...form.getInputProps("coordinatorName")}
+                styles={{ label: leftAlignedLabel }}
               />
               <TextInput
                 label="Телефон координатора"
+                placeholder="Введите телефон координатора"
                 radius="xl"
                 {...form.getInputProps("coordinatorPhone")}
+                styles={{ label: leftAlignedLabel }}
               />
             </>
           )}

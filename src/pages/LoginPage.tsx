@@ -24,17 +24,33 @@ export default function LoginPage() {
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="sm">
           <TextInput
-            label="Логин"
+            // label="Логин"
             placeholder="Введите логин"
             radius="xl"
             {...form.getInputProps("login")}
+            styles={{
+              label: {
+                textAlign: "left", // выравнивание по левому краю
+                display: "block", // обязательно — иначе flex или grid могут влиять
+                width: "100%", // растягиваем по ширине поля
+                paddingLeft: 16,
+              },
+            }}
           />
           <TextInput
-            label="Пароль"
+            // label="Пароль"
             placeholder="Введите пароль"
             type="password"
             radius="xl"
             {...form.getInputProps("password")}
+            styles={{
+              label: {
+                textAlign: "left",
+                display: "block",
+                width: "100%",
+                paddingLeft: 16,
+              },
+            }}
           />
           <Button type="submit" fullWidth radius="xl" color="green.10">
             Войти
