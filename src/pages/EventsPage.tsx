@@ -3,12 +3,13 @@ import { Event } from "../types/models";
 import EventCard from "../components/EventCard";
 import Header from "../components/Header";
 import Filters from "../components/Filters";
+import { Box, Container, Grid, Title } from "@mantine/core";
 
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
-    // Мок-данные. Позже заменим на API
+    // Мок-данные
     setEvents([
       {
         id: 1,
@@ -39,6 +40,17 @@ export default function EventsPage() {
       },
       {
         id: 3,
+        title: "Сбор помощи приюту",
+        city: "Казань",
+        date: "2025-07-10T12:00:00Z",
+        description: "",
+        organizer_id: 3,
+        participants_number: 15,
+        volunteers_number: 3,
+        status: "PUBLISHED",
+      },
+      {
+        id: 4,
         title: "Волонтёрская уборка парка",
         city: "Москва",
         date: "2025-07-01T18:00:00Z",
@@ -54,7 +66,7 @@ export default function EventsPage() {
         },
       },
       {
-        id: 4,
+        id: 5,
         title: "Волонтёрская уборка парка",
         city: "Москва",
         date: "2025-07-01T18:00:00Z",
@@ -73,17 +85,23 @@ export default function EventsPage() {
   }, []);
 
   return (
-    <div className="bg-cream min-h-screen text-dark">
+    <Box style={{ minHeight: "100vh" }}>
       <Header />
-      <main className="max-w-7xl mx-auto px-4 py-6">
-        <h1 className="text-2xl font-bold mb-2">Мероприятия</h1>
+      <Container size="lg" px="md" py="xl">
+        <Title order={2} mb="lg">
+          Мероприятия
+        </Title>
+
         <Filters />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
-          {events.map((e) => (
-            <EventCard key={e.id} event={e} />
+
+        <Grid mt="lg">
+          {events.map((event) => (
+            <Grid.Col key={event.id} span={{ base: 12, sm: 6, md: 4 }}>
+              <EventCard event={event} />
+            </Grid.Col>
           ))}
-        </div>
-      </main>
-    </div>
+        </Grid>
+      </Container>
+    </Box>
   );
 }
