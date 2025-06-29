@@ -5,7 +5,6 @@ interface AuthLayoutProps {
   title: string;
   children: React.ReactNode;
 }
-// fff
 
 export default function AuthLayout({ title, children }: AuthLayoutProps) {
   return (
