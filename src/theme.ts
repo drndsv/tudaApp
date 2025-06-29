@@ -1,0 +1,57 @@
+import { createTheme } from "@mantine/core";
+
+export const theme = createTheme({
+  colors: {
+    beige: [
+      "#f9f4ef",
+      "#f2eadf",
+      "#ebe0cf",
+      "#e4d6bf",
+      "#ddccaf",
+      "#d6c29f",
+      "#cfb88f",
+      "#c8ae7f",
+      "#c1a46f",
+      "#ba9a5f",
+    ],
+    cream: [
+      "#fefefc",
+      "#fdfcf9",
+      "#fbfaf5",
+      "#faf8f2",
+      "#f9f6ef",
+      "#f8f4ec",
+      "#f7f2e9",
+      "#f5f0e5",
+      "#f4eee2",
+      "#f3ecdf",
+    ],
+    green: [
+      "#e9f1ea",
+      "#d4e2d5",
+      "#bfd3c0",
+      "#aac4ab",
+      "#95b596",
+      "#80a681",
+      "#6b976c",
+      "#568857",
+      "#417942",
+      "#2c6a2d",
+      "#91af7e",
+    ],
+    dark: [
+      "#e6e6e6",
+      "#cccccc",
+      "#b3b3b3",
+      "#999999",
+      "#808080",
+      "#666666",
+      "#4d4d4d",
+      "#333333",
+      "#1a1a1a",
+      "#151513",
+    ],
+  },
+  primaryColor: "green", // основной цвет проекта
+  fontFamily: "Inter, sans-serif",
+});

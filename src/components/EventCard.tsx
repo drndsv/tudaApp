@@ -1,5 +1,14 @@
 import { Event } from "../types/models";
 import { useNavigate } from "react-router-dom";
+import {
+  Card,
+  Image,
+  Text,
+  Box,
+  Center,
+  rem,
+  useMantineTheme,
+} from "@mantine/core";
 
 interface Props {
   event: Event;
@@ -7,34 +16,64 @@ interface Props {
 
 export default function EventCard({ event }: Props) {
   const navigate = useNavigate();
+  const theme = useMantineTheme();
 
   const handleClick = () => {
     navigate(`/event/${event.id}`);
   };
 
   return (
-    <div
-      className="card cursor-pointer hover:shadow-lg transition"
+    <Card
+      shadow="lg"
+      radius="xl"
+      padding="md"
+      withBorder
       onClick={handleClick}
+      className="transition-transform hover:scale-[1.02]"
+      style={{
+        cursor: "pointer",
+        background: theme.colors.cream[1],
+        boxShadow: "8px 8px 16px #bcc4aa, -8px -8px 16px #ffffff",
+      }}
     >
-      <div className="h-40 mb-2 rounded-xl overflow-hidden bg-gray-200">
+      <Box
+        h={180}
+        mb="sm"
+        style={{ borderRadius: rem(16), overflow: "hidden" }}
+      >
         {event.photo?.filename ? (
-          <img
+          <Image
             src={`/uploads/${event.photo.filename}`}
             alt={event.title}
-            className="w-full h-full object-cover"
+            w="auto"
+            fit="contain"
           />
         ) : (
-          <div className="flex items-center justify-center h-full text-sm text-gray-500">
-            Без фото
-          </div>
+          <Center
+            h={180}
+            style={{
+              backgroundColor: theme.colors.gray[1],
+              borderRadius: rem(16),
+            }}
+          >
+            <Text c="gray.6" fz="sm">
+              Без фото
+            </Text>
+          </Center>
         )}
-      </div>
-      <h2 className="text-lg font-semibold">{event.title}</h2>
-      <p className="text-sm text-olive">
+      </Box>
+
+      <Text ta="center" fw={600} fz="lg" mb={4}>
+        {event.title}
+      </Text>
+
+      <Text ta="center" fz="sm" c="green.6" mb={2}>
         {new Date(event.date).toLocaleDateString()}
-      </p>
-      <p className="text-sm">{event.city}</p>
-    </div>
+      </Text>
+
+      <Text ta="center" fz="sm">
+        {event.city}
+      </Text>
+    </Card>
   );
 }

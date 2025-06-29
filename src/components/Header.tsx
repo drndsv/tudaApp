@@ -1,46 +1,61 @@
-import { FaUserCircle } from "react-icons/fa";
-import Dropdown from "./Dropdown";
 import { useNavigate } from "react-router-dom";
-import "../styles.css";
+import {
+  Group,
+  Text,
+  Menu,
+  ActionIcon,
+  Box,
+  rem,
+  useMantineTheme,
+} from "@mantine/core";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function Header() {
   const navigate = useNavigate();
+  const theme = useMantineTheme();
 
   return (
-    <header
-      className="flex justify-between items-center px-6 py-4 shadow-md relative rounded-xl mb-10"
-      style={{ backgroundColor: "var(--color-green)" }}
+    <Box
+      bg={theme.colors.green[10]}
+      px="lg"
+      py="md"
+      style={{
+        borderRadius: rem(16),
+        marginBottom: rem(40),
+        boxShadow: "8px 8px 16px #bcc4aa, -8px -8px 16px #ffffff",
+      }}
     >
-      <h1
-        className="text-xl font-bold cursor-pointer"
-        onClick={() => navigate("/")}
-      >
-        TUDA
-      </h1>
+      <Group justify="space-between" align="center">
+        <Text
+          fw={700}
+          fz="xl"
+          c={theme.colors.dark[0]}
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/")}
+        >
+          TUDA
+        </Text>
 
-      <Dropdown buttonLabel={<FaUserCircle className="text-2xl text-dark" />}>
-        <li
-          className="px-4 py-2 hover:bg-lime-100 cursor-pointer"
-          onClick={() => navigate("/profile")}
-        >
-          Управление профилем
-        </li>
-        <li
-          className="px-4 py-2 hover:bg-lime-100 cursor-pointer"
-          onClick={() => navigate("/my-events")}
-        >
-          Мои мероприятия
-        </li>
-        <li
-          className="px-4 py-2 hover:bg-lime-100 cursor-pointer"
-          onClick={() => {
-            // Здесь позже добавим логику выхода
-            console.log("Выход из аккаунта");
-          }}
-        >
-          Выход из аккаунта
-        </li>
-      </Dropdown>
-    </header>
+        <Menu shadow="md" width={220} radius="md" withArrow>
+          <Menu.Target>
+            <ActionIcon variant="subtle" size="xl" color={theme.colors.dark[0]}>
+              <FaUserCircle size={28} color={theme.colors.dark[0]} />
+            </ActionIcon>
+          </Menu.Target>
+
+          <Menu.Dropdown>
+            <Menu.Item onClick={() => navigate("/profile")}>
+              Управление профилем
+            </Menu.Item>
+            <Menu.Item onClick={() => navigate("/my-events")}>
+              Мои мероприятия
+            </Menu.Item>
+            <Menu.Item onClick={() => console.log("Выход из аккаунта")}>
+              Выход из аккаунта
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
+      </Group>
+    </Box>
   );
 }

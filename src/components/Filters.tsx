@@ -1,27 +1,40 @@
 import { useState, useEffect, useRef } from "react";
-import Dropdown from "./Dropdown";
+import {
+  TextInput,
+  Button,
+  Group,
+  Menu,
+  Box,
+  Checkbox,
+  Paper,
+  Stack,
+  Transition,
+  useMantineTheme,
+} from "@mantine/core";
+import { DateInput } from "@mantine/dates";
+import { FaSearch } from "react-icons/fa";
 
 export default function Filters() {
-  const [citySearch, setCitySearch] = useState(""); // Состояние для поиска городов
-  const [eventSearch, setEventSearch] = useState(""); // Состояние для поиска мероприятий
-  const [selectedRoles, setSelectedRoles] = useState<string[]>([]); // Состояние для выбранных ролей
-  const [roleOpen, setRoleOpen] = useState(false); // Состояние открытия списка ролей
+  const theme = useMantineTheme();
 
-  const roleRef = useRef<HTMLDivElement | null>(null); // Ссылка на выпадающий список ролей
+  const [citySearch, setCitySearch] = useState("");
+  const [eventSearch, setEventSearch] = useState("");
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [roleOpen, setRoleOpen] = useState(false);
+  const [date, setDate] = useState<string | null>(null);
+
+  const roleRef = useRef<HTMLDivElement | null>(null);
 
   const filteredCities = ["Москва", "Санкт-Петербург", "Казань"].filter(
     (city) => city.toLowerCase().includes(citySearch.toLowerCase())
   );
 
   const handleRoleChange = (role: string) => {
-    setSelectedRoles((prevSelectedRoles) =>
-      prevSelectedRoles.includes(role)
-        ? prevSelectedRoles.filter((r) => r !== role)
-        : [...prevSelectedRoles, role]
+    setSelectedRoles((prev) =>
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
     );
   };
 
-  // Закрытие списка ролей при клике вне
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (roleRef.current && !roleRef.current.contains(event.target as Node)) {
@@ -30,84 +43,120 @@ export default function Filters() {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
-    <div className="my-6">
-      {/* Поисковая строка для мероприятий */}
-      <div className="flex items-center gap-2 mb-4">
-        <input
-          type="text"
+    <Box my="xl">
+      <Group mb="md">
+        <TextInput
           placeholder="Найти мероприятие"
-          className="flex-1 px-4 py-2 rounded-xl border border-olive shadow-inner text-sm"
           value={eventSearch}
-          onChange={(e) => setEventSearch(e.target.value)}
+          onChange={(e) => setEventSearch(e.currentTarget.value)}
+          radius="xl"
+          className="flex-1"
         />
-        <button className="px-4 py-2 bg-olive text-white rounded-xl shadow-md">
-          🔍
-        </button>
-      </div>
+        <Button
+          radius="xl"
+          styles={{ root: { backgroundColor: theme.colors.green[10] } }}
+        >
+          <FaSearch />
+        </Button>
+      </Group>
 
-      {/* Фильтры */}
-      <div className="flex flex-wrap gap-3">
+      <Group gap="sm" wrap="wrap">
         {/* Город */}
-        <Dropdown buttonLabel="Все города">
-          <div>
-            <input
-              type="text"
+        <Menu shadow="md" width={200} radius="md" withArrow>
+          <Menu.Target>
+            <Button
+              variant="default"
+              radius="xl"
+              styles={{
+                root: {
+                  fontWeight: 500,
+                },
+              }}
+            >
+              Все города
+            </Button>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <TextInput
               placeholder="Поиск города"
-              className="px-4 py-2 rounded-xl border border-olive shadow-inner mb-2 text-sm w-36"
               value={citySearch}
-              onChange={(e) => setCitySearch(e.target.value)}
+              onChange={(e) => setCitySearch(e.currentTarget.value)}
+              mb="xs"
+              size="xs"
             />
             {filteredCities.map((city) => (
-              <li
-                key={city}
-                className="px-4 py-2 hover:bg-lime-100 cursor-pointer"
-                onClick={() => setCitySearch(city)}
-              >
+              <Menu.Item key={city} onClick={() => setCitySearch(city)}>
                 {city}
-              </li>
+              </Menu.Item>
             ))}
-          </div>
-        </Dropdown>
+          </Menu.Dropdown>
+        </Menu>
 
         {/* Дата */}
-        <input
-          type="date"
-          className="px-4 py-2 bg-beige rounded-xl shadow-md text-sm"
+        <DateInput
+          locale="ru"
+          placeholder="Выбрать дату"
+          value={date}
+          onChange={setDate}
+          radius="xl"
+          size="sm"
+          valueFormat="DD MMMM YYYY"
         />
 
         {/* Роль */}
-        <div ref={roleRef} className="relative">
-          <button
-            onClick={() => setRoleOpen((prev) => !prev)}
-            className="px-4 py-2 bg-beige rounded-xl shadow-md"
+        <Box ref={roleRef} pos="relative">
+          <Button
+            radius="xl"
+            variant="default"
+            onClick={() => setRoleOpen((v) => !v)}
+            styles={{
+              root: {
+                fontWeight: 500,
+              },
+            }}
           >
             Требуемая роль
-          </button>
-          {roleOpen && (
-            <ul className="absolute mt-2 bg-lime-50 shadow-lg w-40 text-sm z-10 transform transition-all duration-300 rounded-xl overflow-hidden">
-              {["Волонтёр", "Участник"].map((role) => (
-                <li key={role} className="px-4 py-2 cursor-pointer">
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
+          </Button>
+
+          <Transition
+            mounted={roleOpen}
+            transition="scale-y"
+            duration={200}
+            timingFunction="ease"
+          >
+            {(styles) => (
+              <Paper
+                shadow="md"
+                radius="md"
+                style={{
+                  position: "absolute",
+                  zIndex: 10,
+                  top: "100%",
+                  marginTop: 8,
+                  width: 180,
+                  backgroundColor: theme.colors.cream[0],
+                  ...styles,
+                }}
+              >
+                <Stack p="xs" gap="xs">
+                  {["Волонтёр", "Участник"].map((role) => (
+                    <Checkbox
+                      key={role}
+                      label={role}
                       checked={selectedRoles.includes(role)}
                       onChange={() => handleRoleChange(role)}
-                      className="form-checkbox"
                     />
-                    {role}
-                  </label>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-    </div>
+                  ))}
+                </Stack>
+              </Paper>
+            )}
+          </Transition>
+        </Box>
+      </Group>
+    </Box>
   );
 }
