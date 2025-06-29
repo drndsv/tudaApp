@@ -1,8 +1,19 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
+import {
+  Box,
+  Container,
+  Grid,
+  Image,
+  Text,
+  Title,
+  Stack,
+  Card,
+  Button,
+  rem,
+  Center,
+} from "@mantine/core";
 import Header from "../components/Header";
-import InfoCard from "../components/InfoCard";
-import PrimaryButton from "../components/PrimaryButton";
 import { Event } from "../types/models";
 
 const mockEvent: Event = {
@@ -47,100 +58,197 @@ export default function EventDetailsPage() {
   };
 
   return (
-    <div className="bg-cream min-h-screen text-dark">
+    <Box>
       <Header />
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-4">{event.title}</h1>
-        <p className="text-lg font-medium text-gray-700 mb-16">
+      <Container size="lg" py="xl">
+        <Title order={2} mb="sm">
+          {event.title}
+        </Title>
+
+        <Text fz="lg" fw={500} mb="xl" c="gray.7">
           Статус: {isPast ? "Завершено" : "Активно"}
-        </p>
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-          {/* Левая часть */}
-          <div className="flex-1 flex flex-col self-stretch">
-            <div className="rounded-2xl overflow-hidden bg-gray-200 h-80 mb-4 shadow-md">
-              {event.photo?.filename ? (
-                <img
-                  src={`/uploads/${event.photo.filename}`}
-                  alt={event.title}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full text-gray-500">
-                  Без фото
-                </div>
-              )}
-            </div>
+        </Text>
 
-            <div className="flex flex-col gap-4">
-              {isVolunteerPending && (
-                <div className="text-sm text-gray-600 px-2">
-                  Ожидайте одобрения заявки на волонтёрство
-                </div>
-              )}
+        <Grid gutter="xl" align="stretch">
+          {/* Левая колонка */}
+          <Grid.Col span={{ base: 12, md: 6 }} h="100%">
+            <Stack h="100%" justify="space-between">
+              <Box
+                h={320}
+                style={{
+                  borderRadius: rem(16),
+                  overflow: "hidden",
+                  boxShadow: "8px 8px 16px #bcc4aa, -8px -8px 16px #ffffff",
+                }}
+              >
+                {event.photo?.filename ? (
+                  <Image
+                    src={`/uploads/${event.photo.filename}`}
+                    alt={event.title}
+                    h="100%"
+                    w="100%"
+                    fit="cover"
+                  />
+                ) : (
+                  <Center h="100%" bg="gray.0">
+                    <Text c="gray.6">Без фото</Text>
+                  </Center>
+                )}
+              </Box>
 
-              {isParticipant && (
-                <div className="text-sm text-gray-600 px-2">
-                  Вы зарегистрированы как участник
-                </div>
-              )}
+              <Stack gap="sm">
+                {isVolunteerPending && (
+                  <Text fz="sm" c="gray.6">
+                    Ожидайте одобрения заявки на волонтёрство
+                  </Text>
+                )}
 
-              {!isParticipant && !isVolunteerPending && (
-                <>
-                  <PrimaryButton disabled={isPast} onClick={handleJoin}>
-                    Участвовать
-                  </PrimaryButton>
-                  <PrimaryButton disabled={isPast} onClick={handleVolunteer}>
-                    Подать заявку на волонтёрство
-                  </PrimaryButton>
-                </>
-              )}
+                {isParticipant && (
+                  <Text fz="sm" c="gray.6">
+                    Вы зарегистрированы как участник
+                  </Text>
+                )}
 
-              {(isParticipant || isVolunteerPending) && (
-                <PrimaryButton disabled={isPast} onClick={handleCancel}>
-                  Отказаться от участия
-                </PrimaryButton>
-              )}
-            </div>
-          </div>
+                {!isParticipant && !isVolunteerPending && (
+                  <>
+                    <Button
+                      fullWidth
+                      color="green.10"
+                      radius="xl"
+                      disabled={isPast}
+                      onClick={handleJoin}
+                    >
+                      Участвовать
+                    </Button>
+                    <Button
+                      fullWidth
+                      color="green.10"
+                      radius="xl"
+                      disabled={isPast}
+                      onClick={handleVolunteer}
+                    >
+                      Подать заявку на волонтёрство
+                    </Button>
+                  </>
+                )}
 
-          {/* Правая часть */}
-          <div className="flex-1 flex flex-col gap-4 self-stretch">
-            <InfoCard title="Описание" className="min-h-40">
-              {event.description || "Нет описания."}
-            </InfoCard>
+                {(isParticipant || isVolunteerPending) && (
+                  <Button
+                    fullWidth
+                    color="red"
+                    radius="xl"
+                    disabled={isPast}
+                    onClick={handleCancel}
+                  >
+                    Отказаться от участия
+                  </Button>
+                )}
+              </Stack>
+            </Stack>
+          </Grid.Col>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <InfoCard title="Участников">
-                {event.participants_number}/200
-              </InfoCard>
-              <InfoCard title="Волонтёров">
-                {event.volunteers_number}/100
-              </InfoCard>
-              <InfoCard title="Основная информация" className="min-h-40">
-                <ul className="space-y-1">
-                  <li>📅 {new Date(event.date).toLocaleDateString()}</li>
-                  <li>
-                    🕒{" "}
-                    {new Date(event.date).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </li>
-                  <li>📍 {event.city}</li>
-                  <li>🏢 Организация ID: {event.organizer_id}</li>
-                </ul>
-              </InfoCard>
-              <InfoCard title="Контактное лицо">
-                <ul className="space-y-1">
-                  <li>📞 +7 (999) 123-45-67</li>
-                  <li>👤 Иван Иванов</li>
-                  <li>✉️ ivan@example.com</li>
-                </ul>
-              </InfoCard>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
+          {/* Правая колонка */}
+          <Grid.Col span={{ base: 12, md: 6 }} h="100%">
+            <Stack gap="md" h="100%">
+              <Card
+                shadow="sm"
+                radius="xl"
+                padding="md"
+                bg="white"
+                withBorder
+                style={{ minHeight: "120px" }}
+              >
+                <Text fw={600} mb="xs">
+                  Описание
+                </Text>
+                <Text fz="sm">{event.description || "Нет описания."}</Text>
+              </Card>
+
+              <Grid>
+                <Grid.Col span={6}>
+                  <Card
+                    shadow="sm"
+                    radius="xl"
+                    padding="md"
+                    bg="white"
+                    withBorder
+                  >
+                    <Text fw={600} mb="xs">
+                      Участников
+                    </Text>
+                    <Text fz="sm">{event.participants_number}/200</Text>
+                  </Card>
+                </Grid.Col>
+                <Grid.Col span={6}>
+                  <Card
+                    shadow="sm"
+                    radius="xl"
+                    padding="md"
+                    bg="white"
+                    withBorder
+                  >
+                    <Text fw={600} mb="xs">
+                      Волонтёров
+                    </Text>
+                    <Text fz="sm">{event.volunteers_number}/100</Text>
+                  </Card>
+                </Grid.Col>
+              </Grid>
+
+              <Grid>
+                <Grid.Col span={6}>
+                  <Card
+                    shadow="sm"
+                    radius="xl"
+                    padding="md"
+                    bg="white"
+                    withBorder
+                    h="100%"
+                  >
+                    <Text fw={600} mb="xs">
+                      Основная информация
+                    </Text>
+                    <Stack gap={4} fz="sm">
+                      <Text>
+                        📅 {new Date(event.date).toLocaleDateString()}
+                      </Text>
+                      <Text>
+                        🕒{" "}
+                        {new Date(event.date).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </Text>
+                      <Text>📍 {event.city}</Text>
+                      <Text>🏢 Организация ID: {event.organizer_id}</Text>
+                    </Stack>
+                  </Card>
+                </Grid.Col>
+
+                <Grid.Col span={6}>
+                  <Card
+                    shadow="sm"
+                    radius="xl"
+                    padding="md"
+                    bg="white"
+                    withBorder
+                    h="100%"
+                  >
+                    <Text fw={600} mb="xs">
+                      Контактное лицо
+                    </Text>
+                    <Stack gap={4} fz="sm">
+                      <Text>📞 +7 (999) 123-45-67</Text>
+                      <Text>👤 Иван Иванов</Text>
+                      <Text>✉️ ivan@example.com</Text>
+                    </Stack>
+                  </Card>
+                </Grid.Col>
+              </Grid>
+            </Stack>
+          </Grid.Col>
+        </Grid>
+      </Container>
+    </Box>
   );
 }

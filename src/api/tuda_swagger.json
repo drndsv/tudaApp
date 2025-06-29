@@ -1,0 +1,1134 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/event/update": {
+      "put": {
+        "tags": ["event-controller"],
+        "operationId": "updateEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseEventResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/update": {
+      "post": {
+        "tags": ["user-controller"],
+        "operationId": "changeUserRefs",
+        "parameters": [
+          {
+            "name": "login",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppUserRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAppUserResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/request/rejectVolunteerForEventById": {
+      "post": {
+        "tags": ["request-controller"],
+        "operationId": "rejectRequest",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "userLogin",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseRequestResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/request/add": {
+      "post": {
+        "tags": ["request-controller"],
+        "operationId": "addRequest",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "userLogin",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseRequestResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/image/upload": {
+      "post": {
+        "tags": ["image-controller"],
+        "operationId": "uploadImage",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": ["file"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponsePhotoResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/image/delete": {
+      "post": {
+        "tags": ["image-controller"],
+        "operationId": "deleteImage",
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/guest/add": {
+      "post": {
+        "tags": ["guest-controller"],
+        "operationId": "addGuest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuestRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseGuestResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/event/add": {
+      "post": {
+        "tags": ["event-controller"],
+        "operationId": "addEvent",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseEventResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accountingAppUser/refuseToParticipate": {
+      "post": {
+        "tags": ["accounting-app-user-controller"],
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "userLogin",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/accountingAppUser/markPresence": {
+      "post": {
+        "tags": ["accounting-app-user-controller"],
+        "operationId": "markPresence",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "userLogin",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAccountingAppUserResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accountingAppUser/addAsVolunteerForEvent": {
+      "post": {
+        "tags": ["accounting-app-user-controller"],
+        "operationId": "saveAsVolunteerForEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "userLogin",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAccountingAppUserResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accountingAppUser/addAsParticipantForEvent": {
+      "post": {
+        "tags": ["accounting-app-user-controller"],
+        "operationId": "saveAsParticipantForEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "userLogin",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAccountingAppUserResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/getById/{id}": {
+      "get": {
+        "tags": ["user-controller"],
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAppUserResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/request/getAll": {
+      "get": {
+        "tags": ["request-controller"],
+        "operationId": "getAllEventRequests",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListRequestResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/image/get/{uuid}": {
+      "get": {
+        "tags": ["image-controller"],
+        "operationId": "getImageByUuid",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/event/getByUserId/{id}": {
+      "get": {
+        "tags": ["event-controller"],
+        "operationId": "getEventsByUserId",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListEventResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/event/getById/{id}": {
+      "get": {
+        "tags": ["event-controller"],
+        "operationId": "getEventById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseEventResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/event/getAll": {
+      "get": {
+        "tags": ["event-controller"],
+        "operationId": "getAllEvents",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListEventResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/request/refuseToVolunteering": {
+      "delete": {
+        "tags": ["request-controller"],
+        "operationId": "deleteRequest",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "userLogin",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EventRequestDTO": {
+        "type": "object",
+        "properties": {
+          "organization": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "city": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "participantsNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "volunteersNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "eventStatus": {
+            "type": "string"
+          },
+          "photo": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResponseEventResponseDTO": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean"
+          },
+          "errorMassage": {
+            "type": "string"
+          },
+          "result": {
+            "$ref": "#/components/schemas/EventResponseDTO"
+          }
+        }
+      },
+      "EventResponseDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "organization": {
+            "$ref": "#/components/schemas/OrganizationResponseDTO"
+          },
+          "city": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "participantsNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "volunteersNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "eventStatus": {
+            "type": "string"
+          },
+          "photo": {
+            "$ref": "#/components/schemas/PhotoResponseDTO"
+          }
+        }
+      },
+      "OrganizationResponseDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          }
+        }
+      },
+      "PhotoResponseDTO": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "filename": {
+            "type": "string"
+          }
+        }
+      },
+      "AppUserRequestDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "patronymic": {
+            "type": "string"
+          },
+          "login": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponseAppUserResponseDTO": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean"
+          },
+          "errorMassage": {
+            "type": "string"
+          },
+          "result": {
+            "$ref": "#/components/schemas/AppUserResponseDTO"
+          }
+        }
+      },
+      "AppUserResponseDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "patronymic": {
+            "type": "string"
+          },
+          "login": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "organization": {
+            "$ref": "#/components/schemas/OrganizationResponseDTO"
+          },
+          "phoneNumber": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponseRequestResponseDTO": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean"
+          },
+          "errorMassage": {
+            "type": "string"
+          },
+          "result": {
+            "$ref": "#/components/schemas/RequestResponseDTO"
+          }
+        }
+      },
+      "AppUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "patronymic": {
+            "type": "string"
+          },
+          "login": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "organization": {
+            "$ref": "#/components/schemas/Organization"
+          },
+          "phoneNumber": {
+            "type": "string"
+          }
+        }
+      },
+      "Event": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "organization": {
+            "$ref": "#/components/schemas/Organization"
+          },
+          "city": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "participantsNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "volunteersNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "eventStatus": {
+            "type": "string",
+            "enum": ["PASSED", "WILL", "CANCELLED"]
+          },
+          "photo": {
+            "$ref": "#/components/schemas/Photo"
+          }
+        }
+      },
+      "Organization": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          }
+        }
+      },
+      "Photo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "uploadId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "filename": {
+            "type": "string"
+          }
+        }
+      },
+      "RequestResponseDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "appUser": {
+            "$ref": "#/components/schemas/AppUser"
+          },
+          "event": {
+            "$ref": "#/components/schemas/Event"
+          },
+          "status": {
+            "type": "boolean"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "ApiResponsePhotoResponseDTO": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean"
+          },
+          "errorMassage": {
+            "type": "string"
+          },
+          "result": {
+            "$ref": "#/components/schemas/PhotoResponseDTO"
+          }
+        }
+      },
+      "GuestRequestDTO": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "mail": {
+            "type": "string"
+          },
+          "status": {
+            "type": "boolean"
+          },
+          "keyId": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponseGuestResponseDTO": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean"
+          },
+          "errorMassage": {
+            "type": "string"
+          },
+          "result": {
+            "$ref": "#/components/schemas/GuestResponseDTO"
+          }
+        }
+      },
+      "GuestResponseDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "event": {
+            "$ref": "#/components/schemas/EventResponseDTO"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "mail": {
+            "type": "string"
+          },
+          "status": {
+            "type": "boolean"
+          },
+          "keyId": {
+            "type": "string"
+          }
+        }
+      },
+      "AccountingAppUserResponseDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "event": {
+            "$ref": "#/components/schemas/EventResponseDTO"
+          },
+          "appUser": {
+            "$ref": "#/components/schemas/AppUserResponseDTO"
+          },
+          "status": {
+            "type": "boolean"
+          },
+          "userRole": {
+            "type": "string"
+          },
+          "keyId": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponseAccountingAppUserResponseDTO": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean"
+          },
+          "errorMassage": {
+            "type": "string"
+          },
+          "result": {
+            "$ref": "#/components/schemas/AccountingAppUserResponseDTO"
+          }
+        }
+      },
+      "ApiResponseListRequestResponseDTO": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean"
+          },
+          "errorMassage": {
+            "type": "string"
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestResponseDTO"
+            }
+          }
+        }
+      },
+      "ApiResponseListEventResponseDTO": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean"
+          },
+          "errorMassage": {
+            "type": "string"
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventResponseDTO"
+            }
+          }
+        }
+      },
+      "ApiResponseString": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "boolean"
+          },
+          "errorMassage": {
+            "type": "string"
+          },
+          "result": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

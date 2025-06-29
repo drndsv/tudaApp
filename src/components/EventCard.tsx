@@ -1,4 +1,3 @@
-import { Event } from "../types/models";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -9,9 +8,10 @@ import {
   rem,
   useMantineTheme,
 } from "@mantine/core";
+import { EventResponseDTO } from "../api/generated/models/EventResponseDTO";
 
 interface Props {
-  event: Event;
+  event: EventResponseDTO;
 }
 
 export default function EventCard({ event }: Props) {
@@ -19,7 +19,9 @@ export default function EventCard({ event }: Props) {
   const theme = useMantineTheme();
 
   const handleClick = () => {
-    navigate(`/event/${event.id}`);
+    if (event.id !== undefined) {
+      navigate(`/event/${event.id}`);
+    }
   };
 
   return (
@@ -32,7 +34,7 @@ export default function EventCard({ event }: Props) {
       className="transition-transform hover:scale-[1.02]"
       style={{
         cursor: "pointer",
-        background: theme.colors.cream[1],
+        background: theme.colors.cream?.[1] || "#f2f3ed",
         boxShadow: "8px 8px 16px #bcc4aa, -8px -8px 16px #ffffff",
       }}
     >
@@ -44,9 +46,10 @@ export default function EventCard({ event }: Props) {
         {event.photo?.filename ? (
           <Image
             src={`/uploads/${event.photo.filename}`}
-            alt={event.title}
-            w="auto"
-            fit="contain"
+            alt={event.title ?? "Мероприятие"}
+            h="100%"
+            w="100%"
+            fit="cover"
           />
         ) : (
           <Center
@@ -64,15 +67,17 @@ export default function EventCard({ event }: Props) {
       </Box>
 
       <Text ta="center" fw={600} fz="lg" mb={4}>
-        {event.title}
+        {event.title ?? "Без названия"}
       </Text>
 
       <Text ta="center" fz="sm" c="green.6" mb={2}>
-        {new Date(event.date).toLocaleDateString()}
+        {event.date
+          ? new Date(event.date).toLocaleDateString()
+          : "Дата не указана"}
       </Text>
 
       <Text ta="center" fz="sm">
-        {event.city}
+        {event.city ?? "Город не указан"}
       </Text>
     </Card>
   );
