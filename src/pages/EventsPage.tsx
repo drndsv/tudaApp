@@ -3,7 +3,6 @@ import Header from "../components/Header";
 import Filters from "../components/Filters";
 import EventCard from "../components/EventCard";
 import { Box, Container, Grid, Title } from "@mantine/core";
-
 import { EventControllerService } from "../api/generated/services/EventControllerService";
 import { EventResponseDTO } from "../api/generated/models/EventResponseDTO";
 
@@ -61,6 +60,14 @@ export default function EventsPage() {
     setEventSearch("");
   };
 
+  const uniqueCities = Array.from(
+    new Set(
+      events
+        .map((event) => event.city)
+        .filter((city): city is string => typeof city === "string")
+    )
+  ).sort();
+
   return (
     <Box style={{ minHeight: "100vh" }}>
       <Header />
@@ -76,6 +83,7 @@ export default function EventsPage() {
           eventSearch={eventSearch}
           setEventSearch={setEventSearch}
           resetFilters={resetFilters}
+          cities={uniqueCities}
         />
         <Grid mt="lg">
           {filteredEvents.map((event) => (
