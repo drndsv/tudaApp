@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type EventRequestDTO = {
-    organization?: number;
+    organizationId?: number;
     city?: string;
     date?: string;
     title?: string;
@@ -11,6 +11,7 @@ export type EventRequestDTO = {
     participantsNumber?: number;
     volunteersNumber?: number;
     eventStatus?: string;
-    photo?: number;
+    filename?: string;
+    uuid?: string;
 };
 

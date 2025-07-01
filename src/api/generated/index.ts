@@ -25,6 +25,7 @@ export type { EventRequestDTO } from './models/EventRequestDTO';
 export type { EventResponseDTO } from './models/EventResponseDTO';
 export type { GuestRequestDTO } from './models/GuestRequestDTO';
 export type { GuestResponseDTO } from './models/GuestResponseDTO';
+export type { JwtRequestDTO } from './models/JwtRequestDTO';
 export type { Organization } from './models/Organization';
 export type { OrganizationResponseDTO } from './models/OrganizationResponseDTO';
 export type { Photo } from './models/Photo';
@@ -32,6 +33,7 @@ export type { PhotoResponseDTO } from './models/PhotoResponseDTO';
 export type { RequestResponseDTO } from './models/RequestResponseDTO';
 
 export { AccountingAppUserControllerService } from './services/AccountingAppUserControllerService';
+export { AuthControllerService } from './services/AuthControllerService';
 export { EventControllerService } from './services/EventControllerService';
 export { GuestControllerService } from './services/GuestControllerService';
 export { ImageControllerService } from './services/ImageControllerService';
