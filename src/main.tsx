@@ -12,6 +12,16 @@ import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import "@mantine/dates/styles.css";
 
+//security
+import { OpenAPI } from "./api/generated/core/OpenAPI";
+import { AuthProvider } from "./context/AuthContext.tsx";
+
+const token = localStorage.getItem("auth_token");
+if (token) {
+  OpenAPI.TOKEN = token;
+}
+//security
+
 dayjs.locale("ru");
 
 createRoot(document.getElementById("root")!).render(
@@ -19,7 +29,9 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <MantineProvider theme={theme} defaultColorScheme="light">
         <DatesProvider settings={{ locale: "ru" }}>
-          <App />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
         </DatesProvider>
       </MantineProvider>
     </BrowserRouter>

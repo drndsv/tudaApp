@@ -24,6 +24,7 @@ type FiltersProps = {
   eventSearch: string;
   setEventSearch: (value: string) => void;
   resetFilters: () => void;
+  cities: string[];
 };
 
 export default function Filters({
@@ -34,15 +35,15 @@ export default function Filters({
   eventSearch,
   setEventSearch,
   resetFilters,
+  cities,
 }: FiltersProps) {
   const theme = useMantineTheme();
 
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [roleOpen, setRoleOpen] = useState(false);
   const roleRef = useRef<HTMLDivElement | null>(null);
-  // TODO: список городов вытащить из мероприятий
-  const allCities = ["Москва", "Санкт-Петербург", "Казань"];
-  const filteredCities = allCities.filter((city) =>
+
+  const filteredCities = cities.filter((city) =>
     city.toLowerCase().includes(citySearch.toLowerCase())
   );
 
@@ -91,11 +92,7 @@ export default function Filters({
             <Button
               variant="default"
               radius="xl"
-              styles={{
-                root: {
-                  fontWeight: 500,
-                },
-              }}
+              styles={{ root: { fontWeight: 500 } }}
             >
               Все города
             </Button>
@@ -146,11 +143,7 @@ export default function Filters({
             radius="xl"
             variant="default"
             onClick={() => setRoleOpen((v) => !v)}
-            styles={{
-              root: {
-                fontWeight: 500,
-              },
-            }}
+            styles={{ root: { fontWeight: 500 } }}
           >
             Требуемая роль
           </Button>

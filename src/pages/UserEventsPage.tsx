@@ -1,22 +1,31 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
-import Filters from "../components/Filters";
+import UserEventFilters from "../components/UserEventFilters";
 import EventCard from "../components/EventCard";
 import { Box, Container, Grid, Title } from "@mantine/core";
 import { EventControllerService } from "../api/generated/services/EventControllerService";
 import { EventResponseDTO } from "../api/generated/models/EventResponseDTO";
 
-export default function EventsPage() {
+export default function UserEventsPage() {
   const [events, setEvents] = useState<EventResponseDTO[]>([]);
   const [filteredEvents, setFilteredEvents] = useState<EventResponseDTO[]>([]);
 
   const [date, setDate] = useState<string | null>(null);
   const [citySearch, setCitySearch] = useState("");
   const [eventSearch, setEventSearch] = useState("");
+  const [visitStatus, setVisitStatus] = useState<
+    "all" | "visited" | "notVisited"
+  >("all");
+
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
-    EventControllerService.getAllEvents()
+    // if (!user?.id) return;
+
+    // EventControllerService.getEventsByUserId(user.id)
+    EventControllerService.getEventsByUserId(1)
       .then((response) => {
+        console.log("Ответ от сервера:", response);
         if (!response.error && response.result) {
           setEvents(response.result);
         } else {
@@ -51,20 +60,37 @@ export default function EventsPage() {
       );
     }
 
+    // if (visitStatus !== "all") {
+    //   filtered = filtered.filter((event) =>
+    //     visitStatus === "visited"
+    //       ? event.status === true
+    //       : event.status === false
+    //   );
+    // }
+
     setFilteredEvents(filtered);
-  }, [date, citySearch, eventSearch, events]);
+  }, [
+    date,
+    citySearch,
+    eventSearch,
+    events,
+    // timeFilter,
+    // roleFilter,
+    visitStatus,
+  ]);
 
   const resetFilters = () => {
     setDate(null);
     setCitySearch("");
     setEventSearch("");
+    // setTimeFilter("all");
+    // setRoleFilter([]);
+    setVisitStatus("all");
   };
 
   const uniqueCities = Array.from(
     new Set(
-      events
-        .map((event) => event.city)
-        .filter((city): city is string => typeof city === "string")
+      events.map((event) => event.city).filter((city): city is string => !!city)
     )
   ).sort();
 
@@ -73,18 +99,21 @@ export default function EventsPage() {
       <Header />
       <Container size="lg" px="md" py="xl">
         <Title order={2} mb="lg">
-          Мероприятия
+          Ваши мероприятия
         </Title>
-        <Filters
+        <UserEventFilters
           date={date}
           setDate={setDate}
           citySearch={citySearch}
           setCitySearch={setCitySearch}
           eventSearch={eventSearch}
           setEventSearch={setEventSearch}
+          visitStatus={visitStatus}
+          setVisitStatus={setVisitStatus}
           resetFilters={resetFilters}
           cities={uniqueCities}
         />
+
         <Grid mt="lg">
           {filteredEvents.map((event) => (
             <Grid.Col key={event.id} span={{ base: 12, sm: 6, md: 4 }}>

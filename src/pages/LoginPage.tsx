@@ -1,10 +1,15 @@
 import { Button, Stack, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
+import { showNotification } from "@mantine/notifications";
 import AuthLayout from "../components/AuthLayout";
+import { AuthControllerService } from "../api/generated/services/AuthControllerService";
+import { JwtRequestDTO } from "../api/generated/models/JwtRequestDTO";
+import { useAuth } from "../context/AuthContext"; // Импортируем хук для работы с контекстом
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { login } = useAuth(); // Получаем функцию login из контекста
 
   const form = useForm({
     initialValues: { login: "", password: "" },
@@ -14,9 +19,39 @@ export default function LoginPage() {
     },
   });
 
-  const handleSubmit = (values: typeof form.values) => {
-    console.log(values);
-    // логика входа
+  const handleSubmit = async (values: typeof form.values) => {
+    try {
+      const response = await AuthControllerService.authenticate({
+        login: values.login,
+        password: values.password,
+      } as JwtRequestDTO);
+
+      const token = response.token;
+      if (!token) throw new Error("Токен не получен");
+
+      // Сохраняем токен через контекст
+      login(token);
+
+      // Перенаправляем на главную страницу
+      navigate("/");
+    } catch (error: any) {
+      // Проверяем тип ошибки
+      if (error.response?.status === 401) {
+        // Неверный логин или пароль
+        showNotification({
+          title: "Ошибка входа",
+          message: "Неверный логин или пароль",
+          color: "red",
+        });
+      } else {
+        // Обработка других ошибок
+        showNotification({
+          title: "Ошибка",
+          message: "Произошла непредвиденная ошибка. Попробуйте позже.",
+          color: "red",
+        });
+      }
+    }
   };
 
   return (
@@ -24,21 +59,19 @@ export default function LoginPage() {
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="sm">
           <TextInput
-            // label="Логин"
             placeholder="Введите логин"
             radius="xl"
             {...form.getInputProps("login")}
             styles={{
               label: {
-                textAlign: "left", // выравнивание по левому краю
-                display: "block", // обязательно — иначе flex или grid могут влиять
-                width: "100%", // растягиваем по ширине поля
+                textAlign: "left",
+                display: "block",
+                width: "100%",
                 paddingLeft: 16,
               },
             }}
           />
           <TextInput
-            // label="Пароль"
             placeholder="Введите пароль"
             type="password"
             radius="xl"

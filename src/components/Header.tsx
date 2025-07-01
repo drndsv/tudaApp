@@ -4,15 +4,24 @@ import {
   Text,
   Menu,
   ActionIcon,
+  Button,
   Box,
   rem,
   useMantineTheme,
 } from "@mantine/core";
 import { FaUserCircle } from "react-icons/fa";
+import { useAuth } from "../context/AuthContext"; //работа с контекстом
 
 export default function Header() {
   const navigate = useNavigate();
   const theme = useMantineTheme();
+  const { token, logout } = useAuth(); //  данные из контекста
+
+  const handleLogout = () => {
+    logout();
+    window.location.reload(); //Обновление для синхронизации
+    // navigate("/"); // на главную страницу после выхода
+  };
 
   return (
     <Box
@@ -36,25 +45,33 @@ export default function Header() {
           TUDA
         </Text>
 
-        <Menu shadow="md" width={220} radius="md" withArrow>
-          <Menu.Target>
-            <ActionIcon variant="subtle" size="xl" color={theme.colors.dark[0]}>
-              <FaUserCircle size={28} color={theme.colors.dark[0]} />
-            </ActionIcon>
-          </Menu.Target>
+        {token ? (
+          <Menu shadow="md" width={220} radius="md" withArrow>
+            <Menu.Target>
+              <ActionIcon
+                variant="subtle"
+                size="xl"
+                color={theme.colors.dark[0]}
+              >
+                <FaUserCircle size={28} color={theme.colors.dark[0]} />
+              </ActionIcon>
+            </Menu.Target>
 
-          <Menu.Dropdown>
-            <Menu.Item onClick={() => navigate("/profile")}>
-              Управление профилем
-            </Menu.Item>
-            <Menu.Item onClick={() => navigate("/my-events")}>
-              Мои мероприятия
-            </Menu.Item>
-            <Menu.Item onClick={() => console.log("Выход из аккаунта")}>
-              Выход из аккаунта
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
+            <Menu.Dropdown>
+              <Menu.Item onClick={() => navigate("/profile")}>
+                Профиль
+              </Menu.Item>
+              <Menu.Item onClick={() => navigate("/userEvents")}>
+                Мои мероприятия
+              </Menu.Item>
+              <Menu.Item onClick={handleLogout}>Выйти</Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        ) : (
+          <Button radius="xl" onClick={() => navigate("/login")}>
+            Войти
+          </Button>
+        )}
       </Group>
     </Box>
   );
