@@ -24,9 +24,7 @@ export const OpenAPI: OpenAPIConfig = {
   VERSION: "0",
   WITH_CREDENTIALS: false,
   CREDENTIALS: "include",
-  TOKEN: async () => {
-    return localStorage.getItem("auth_token") ?? "";
-  },
+  TOKEN: localStorage.getItem("auth_token") ?? "", // Получаем токен из localStorage
   USERNAME: undefined,
   PASSWORD: undefined,
   HEADERS: undefined,

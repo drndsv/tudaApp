@@ -5,6 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
+import { OpenAPI } from "../api/generated/core/OpenAPI"; // Импортируем OpenAPI
 
 // Типы для контекста
 interface AuthContextType {
@@ -26,12 +27,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.getItem("auth_token")
   );
 
-  // При смене токена обновляем localStorage
+  // При смене токена обновляем localStorage и OpenAPI.TOKEN
   useEffect(() => {
     if (token) {
       localStorage.setItem("auth_token", token);
+      OpenAPI.TOKEN = token; // Обновляем токен в OpenAPI
     } else {
       localStorage.removeItem("auth_token");
+      OpenAPI.TOKEN = ""; // Очищаем токен в OpenAPI
     }
   }, [token]);
 
@@ -41,6 +44,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = () => {
     setToken(null);
+    OpenAPI.TOKEN = ""; // Очистить токен в OpenAPI при выходе
   };
 
   return (
@@ -50,7 +54,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 };
 
-// Хук для использования контекста
+//  использование контекста
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
