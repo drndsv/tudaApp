@@ -20,10 +20,10 @@ export default function UserEventsPage() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
-    // if (!user?.id) return;
+    if (!user?.id) return;
 
-    // EventControllerService.getEventsByUserId(user.id)
-    EventControllerService.getEventsByUserId(1)
+    EventControllerService.getEventsByUserId(user.id)
+      // EventControllerService.getEventsByUserId(1)
       .then((response) => {
         console.log("Ответ от сервера:", response);
         if (!response.error && response.result) {

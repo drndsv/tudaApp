@@ -5,11 +5,21 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { OpenAPI } from "../api/generated/core/OpenAPI"; // Импортируем OpenAPI
+import { jwtDecode } from "jwt-decode";
+import { OpenAPI } from "../api/generated/core/OpenAPI";
 
-// Типы для контекста
+// Тип декодированных данных из токена
+interface DecodedUser {
+  login: string;
+  roles?: string[];
+  id?: number;
+  [key: string]: any; // на случай, если в токене появятся другие поля
+}
+
+// Типы контекста
 interface AuthContextType {
   token: string | null;
+  user: DecodedUser | null;
   login: (token: string) => void;
   logout: () => void;
 }
@@ -18,7 +28,7 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// Создаем контекст с дефолтным значением
+// Создаем контекст
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Провайдер контекста
@@ -26,15 +36,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("auth_token")
   );
+  const [user, setUser] = useState<DecodedUser | null>(() => {
+    const storedToken = localStorage.getItem("auth_token");
+    if (storedToken) {
+      try {
+        return jwtDecode<DecodedUser>(storedToken);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  });
 
-  // При смене токена обновляем localStorage и OpenAPI.TOKEN
+  // обновляем OpenAPI и user при изменении токена
   useEffect(() => {
     if (token) {
       localStorage.setItem("auth_token", token);
-      OpenAPI.TOKEN = token; // Обновляем токен в OpenAPI
+      OpenAPI.TOKEN = token;
+      try {
+        const decoded = jwtDecode<DecodedUser>(token);
+        setUser(decoded);
+      } catch {
+        setUser(null);
+      }
     } else {
       localStorage.removeItem("auth_token");
-      OpenAPI.TOKEN = ""; // Очищаем токен в OpenAPI
+      OpenAPI.TOKEN = "";
+      setUser(null);
     }
   }, [token]);
 
@@ -44,17 +72,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = () => {
     setToken(null);
-    OpenAPI.TOKEN = ""; // Очистить токен в OpenAPI при выходе
+    setUser(null);
+    OpenAPI.TOKEN = "";
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
+    <AuthContext.Provider value={{ token, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-//  использование контекста
+// Хук для использования контекста
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
