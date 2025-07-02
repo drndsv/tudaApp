@@ -10,7 +10,7 @@ import { OpenAPI } from "../api/generated/core/OpenAPI";
 
 // Тип декодированных данных из токена
 interface DecodedUser {
-  login: string;
+  sub: string;
   roles?: string[];
   id?: number;
   [key: string]: any; // на случай, если в токене появятся другие поля
@@ -55,6 +55,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       OpenAPI.TOKEN = token;
       try {
         const decoded = jwtDecode<DecodedUser>(token);
+        console.log("✅ Декодированный токен:", decoded);
         setUser(decoded);
       } catch {
         setUser(null);
