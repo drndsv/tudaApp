@@ -1,4 +1,4 @@
-// TODO: не сохраняются изменения в пользователе
+// TODO: разобраться почему в режиме отладке при сохранении выкидывает в debugger
 import {
   Box,
   Button,
@@ -19,7 +19,7 @@ import { UserControllerService } from "../api/generated/services/UserControllerS
 import { AppUserRequestDTO } from "../api/generated/models/AppUserRequestDTO";
 
 export default function ProfilePage() {
-  const { user } = useAuth(); // login и id из токена
+  const { user } = useAuth(); // sub (login) и id из токена
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -37,15 +37,14 @@ export default function ProfilePage() {
   // Загрузка данных с бэка
   useEffect(() => {
     const fetchUser = async () => {
-      // if (!user?.id) return;
+      if (!user?.id) return;
       try {
-        // const res = await UserControllerService.getUser(user.id);
-        const res = await UserControllerService.getUser(51);
+        const res = await UserControllerService.getUser(user.id);
         if (!res.error && res.result) {
           const u = res.result;
           const dto: AppUserRequestDTO = {
             login: u.login || "",
-            password: "", // не загружаем старый пароль
+            password: "",
             name: u.name || "",
             lastName: u.lastName || "",
             patronymic: u.patronymic || "",
@@ -64,8 +63,7 @@ export default function ProfilePage() {
     };
 
     fetchUser();
-    // }, [user?.id]);
-  }, [51]);
+  }, [user?.id]);
 
   const handleChange = (field: keyof AppUserRequestDTO, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -79,21 +77,34 @@ export default function ProfilePage() {
   };
 
   const handleSave = async () => {
-    if (!user?.login) return;
+    console.log("handleSave вызван");
+    console.log("user.sub (login):", user?.sub);
+
+    if (!user?.sub) {
+      console.warn("Нет логина (sub), выходим");
+      return;
+    }
 
     try {
-      const res = await UserControllerService.changeUserRefs(
-        user.login,
-        formData
-      );
+      const payload: AppUserRequestDTO = {
+        ...formData,
+        login: user.sub, // из токена
+      };
+
+      console.log("Отправка:", JSON.stringify(payload, null, 2));
+      const res = await UserControllerService.changeUserRefs(user.sub, payload);
+      console.log("Ответ от сервера:", res);
+
       if (!res.error) {
+        alert("Изменения сохранены");
         setIsEditing(false);
         originalData.current = formData;
       } else {
-        console.error("Ошибка при сохранении:", res.errorMassage);
+        alert("Ошибка при сохранении: " + res.errorMassage);
       }
     } catch (err) {
       console.error("Ошибка при сохранении:", err);
+      alert("Ошибка при сохранении");
     }
   };
 
@@ -118,14 +129,7 @@ export default function ProfilePage() {
           Ваши данные
         </Title>
 
-        <Paper
-          shadow="md"
-          radius="xl"
-          p="xl"
-          withBorder
-          style={{ backgroundColor: "white" }}
-        >
-          {/* Идентификационные данные */}
+        <Paper shadow="md" radius="xl" p="xl" withBorder bg="white">
           <Group justify="space-between" mb="lg">
             <Title order={3}>Идентификационные данные</Title>
             {!isEditing && (
@@ -133,6 +137,7 @@ export default function ProfilePage() {
                 radius="xl"
                 color="green.10"
                 onClick={() => setIsEditing(true)}
+                type="button"
               >
                 Редактировать
               </Button>
@@ -179,7 +184,6 @@ export default function ProfilePage() {
             )}
           </Stack>
 
-          {/* Личные данные */}
           <Title order={3} mb="sm" style={{ textAlign: "left" }}>
             Личные данные
           </Title>
@@ -225,10 +229,20 @@ export default function ProfilePage() {
 
           {isEditing && (
             <Group justify="end" gap="sm" mt="xl">
-              <Button radius="xl" variant="default" onClick={handleCancel}>
+              <Button
+                type="button"
+                radius="xl"
+                variant="default"
+                onClick={handleCancel}
+              >
                 Отмена
               </Button>
-              <Button radius="xl" color="green.10" onClick={handleSave}>
+              <Button
+                type="button"
+                radius="xl"
+                color="green.10"
+                onClick={handleSave}
+              >
                 Сохранить
               </Button>
             </Group>
