@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiResponseEventResponseDTO } from '../models/ApiResponseEventResponseDTO';
+import type { ApiResponseListEventParticipantResponseDTO } from '../models/ApiResponseListEventParticipantResponseDTO';
 import type { ApiResponseListEventResponseDTO } from '../models/ApiResponseListEventResponseDTO';
 import type { EventRequestDTO } from '../models/EventRequestDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -42,6 +43,22 @@ export class EventControllerService {
             url: '/event/add',
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+    /**
+     * @param id
+     * @returns ApiResponseListEventParticipantResponseDTO OK
+     * @throws ApiError
+     */
+    public static getParticipantsByEventId(
+        id: number,
+    ): CancelablePromise<ApiResponseListEventParticipantResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/event/{id}/participants',
+            path: {
+                'id': id,
+            },
         });
     }
     /**

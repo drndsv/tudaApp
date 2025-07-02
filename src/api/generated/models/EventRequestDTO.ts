@@ -12,6 +12,6 @@ export type EventRequestDTO = {
     volunteersNumber?: number;
     eventStatus?: string;
     filename?: string;
-    uuid?: string;
+    uploadId?: string;
 };
 

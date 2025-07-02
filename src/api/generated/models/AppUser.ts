@@ -14,5 +14,6 @@ export type AppUser = {
     password?: string;
     organization?: Organization;
     phoneNumber?: string;
+    fullName?: string;
 };
 
