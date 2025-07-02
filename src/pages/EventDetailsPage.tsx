@@ -17,6 +17,7 @@ import {
 import Header from "../components/Header";
 import { EventResponseDTO } from "../api/generated/models/EventResponseDTO";
 import { EventControllerService } from "../api/generated/services/EventControllerService";
+import { useEventImage } from "../hooks/useEventImage";
 
 export default function EventDetailsPage() {
   const { id } = useParams();
@@ -46,6 +47,8 @@ export default function EventDetailsPage() {
 
     fetchEvent();
   }, [id]);
+
+  const imageSrc = useEventImage(event?.photo);
 
   const handleJoin = () => {
     setIsParticipant(true);
@@ -116,7 +119,6 @@ export default function EventDetailsPage() {
         </Text>
 
         <Grid gutter="xl" align="stretch">
-          {/* Левая колонка */}
           <Grid.Col span={{ base: 12, md: 6 }} h="100%">
             <Stack h="100%" justify="space-between">
               <Box
@@ -127,9 +129,9 @@ export default function EventDetailsPage() {
                   boxShadow: "8px 8px 16px #bcc4aa, -8px -8px 16px #ffffff",
                 }}
               >
-                {event.photo?.filename ? (
+                {imageSrc ? (
                   <Image
-                    src={`/uploads/${event.photo.filename}`}
+                    src={imageSrc}
                     alt={event.title || "Мероприятие"}
                     h="100%"
                     w="100%"

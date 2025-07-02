@@ -12,6 +12,7 @@ export type { ApiResponseAccountingAppUserResponseDTO } from './models/ApiRespon
 export type { ApiResponseAppUserResponseDTO } from './models/ApiResponseAppUserResponseDTO';
 export type { ApiResponseEventResponseDTO } from './models/ApiResponseEventResponseDTO';
 export type { ApiResponseGuestResponseDTO } from './models/ApiResponseGuestResponseDTO';
+export type { ApiResponseListEventParticipantResponseDTO } from './models/ApiResponseListEventParticipantResponseDTO';
 export type { ApiResponseListEventResponseDTO } from './models/ApiResponseListEventResponseDTO';
 export type { ApiResponseListRequestResponseDTO } from './models/ApiResponseListRequestResponseDTO';
 export type { ApiResponsePhotoResponseDTO } from './models/ApiResponsePhotoResponseDTO';
@@ -21,6 +22,7 @@ export type { AppUser } from './models/AppUser';
 export type { AppUserRequestDTO } from './models/AppUserRequestDTO';
 export type { AppUserResponseDTO } from './models/AppUserResponseDTO';
 export { Event } from './models/Event';
+export { EventParticipantResponseDTO } from './models/EventParticipantResponseDTO';
 export type { EventRequestDTO } from './models/EventRequestDTO';
 export type { EventResponseDTO } from './models/EventResponseDTO';
 export type { GuestRequestDTO } from './models/GuestRequestDTO';

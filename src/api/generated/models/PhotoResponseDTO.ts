@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type PhotoResponseDTO = {
-    uuid?: string;
+    uploadId?: string;
     filename?: string;
 };
 

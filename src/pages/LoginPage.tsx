@@ -34,23 +34,12 @@ export default function LoginPage() {
 
       // Перенаправляем на главную страницу
       navigate("/");
-    } catch (error: any) {
-      // Проверяем тип ошибки
-      if (error.response?.status === 401) {
-        // Неверный логин или пароль
-        showNotification({
-          title: "Ошибка входа",
-          message: "Неверный логин или пароль",
-          color: "red",
-        });
-      } else {
-        // Обработка других ошибок
-        showNotification({
-          title: "Ошибка",
-          message: "Произошла непредвиденная ошибка. Попробуйте позже.",
-          color: "red",
-        });
-      }
+    } catch (error) {
+      showNotification({
+        title: "Ошибка входа",
+        message: "Неверный логин или пароль",
+        color: "red",
+      });
     }
   };
 
