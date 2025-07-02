@@ -9,7 +9,6 @@ export function useEventImage(photo?: PhotoResponseDTO): string | null {
       if (!photo?.uploadId || !photo.filename) return;
 
       try {
-        // const response = await fetch(`/image/get/${photo.uploadId}`);
         const response = await fetch(
           `http://localhost:8080/image/get/${photo.uploadId}`
         );
