@@ -4,6 +4,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import { leftAlignedLabel } from "../styles/formStyles";
+import { AuthControllerService } from "../api/generated/services/AuthControllerService";
+import { OpenAPI } from "../api/generated/core/OpenAPI";
+import type { JwtSignUpRequestDTO } from "../api/generated/models/JwtSignUpRequestDTO";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -16,6 +19,7 @@ export default function RegisterPage() {
       lastName: "",
       firstName: "",
       middleName: "",
+      phoneNumber: "", // добавлено поле телефона для USER
       orgName: "",
       coordinatorName: "",
       coordinatorPhone: "",
@@ -30,21 +34,50 @@ export default function RegisterPage() {
         if (!values.lastName) errors.lastName = "Введите фамилию";
         if (!values.firstName) errors.firstName = "Введите имя";
         if (!values.middleName) errors.middleName = "Введите отчество";
+        if (!values.phoneNumber) errors.phoneNumber = "Введите номер телефона"; // валидация
       } else {
         if (!values.orgName) errors.orgName = "Введите название организации";
         if (!values.coordinatorName)
           errors.coordinatorName = "Введите ФИО координатора";
         if (!values.coordinatorPhone)
-          errors.coordinatorPhone = "Введите телефон";
+          errors.coordinatorPhone = "Введите телефон координатора";
       }
 
       return errors;
     },
   });
 
-  const handleSubmit = (values: typeof form.values) => {
-    console.log(values);
-    // логика регистрации
+  const handleSubmit = async (values: typeof form.values) => {
+    const payload: JwtSignUpRequestDTO = {
+      login: values.login,
+      password: values.password,
+      name: accountType === "USER" ? values.firstName : undefined,
+      lastName: accountType === "USER" ? values.lastName : undefined,
+      patronymic: accountType === "USER" ? values.middleName : undefined,
+      phoneNumber:
+        accountType === "USER"
+          ? values.phoneNumber
+          : accountType === "ORGANIZER"
+          ? values.coordinatorPhone
+          : undefined,
+      organizationName:
+        accountType === "ORGANIZER" ? values.orgName : undefined,
+      organizationPhoneNumber:
+        accountType === "ORGANIZER" ? values.coordinatorPhone : undefined,
+    };
+
+    try {
+      const prevToken = OpenAPI.TOKEN;
+      OpenAPI.TOKEN = ""; // убрать токен, если он был
+
+      await AuthControllerService.register(payload);
+
+      OpenAPI.TOKEN = prevToken; // вернуть, если нужно
+
+      navigate("/login");
+    } catch (error) {
+      console.error("Ошибка регистрации", error);
+    }
   };
 
   return (
@@ -102,6 +135,13 @@ export default function RegisterPage() {
                 placeholder="Введите отчество"
                 radius="xl"
                 {...form.getInputProps("middleName")}
+                styles={{ label: leftAlignedLabel }}
+              />
+              <TextInput
+                label="Номер телефона"
+                placeholder="Введите номер телефона"
+                radius="xl"
+                {...form.getInputProps("phoneNumber")}
                 styles={{ label: leftAlignedLabel }}
               />
             </>
