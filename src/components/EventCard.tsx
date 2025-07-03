@@ -9,7 +9,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { EventResponseDTO } from "../api/generated/models/EventResponseDTO";
-import { useEventImage } from "../hooks/useEventImage"; // ✅ импортируем хук
+import { useEventImage } from "../hooks/useEventImage";
 
 interface Props {
   event: EventResponseDTO;
@@ -19,7 +19,7 @@ export default function EventCard({ event }: Props) {
   const navigate = useNavigate();
   const theme = useMantineTheme();
 
-  const imageSrc = useEventImage(event.photo); // ✅ используем хук
+  const imageSrc = useEventImage(event.photo);
 
   const handleClick = () => {
     if (event.id !== undefined) {

@@ -10,16 +10,20 @@ import {
   Textarea,
   Title,
   rem,
+  Select,
 } from "@mantine/core";
 import { DateInput, TimeInput } from "@mantine/dates";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import { useAuth } from "../../context/AuthContext";
 import { EventControllerService } from "../../api/generated/services/EventControllerService";
 import { EventRequestDTO } from "../../api/generated/models/EventRequestDTO";
+import { UserControllerService } from "../../api/generated/services/UserControllerService";
+import { AppUserResponseDTO } from "../../api/generated/models/AppUserResponseDTO";
 
 export default function CreateEventPage() {
   const { user } = useAuth();
+  const [fullUser, setFullUser] = useState<AppUserResponseDTO | null>(null);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -32,6 +36,25 @@ export default function CreateEventPage() {
   const [city, setCity] = useState("");
   const [dateValue, setDateValue] = useState<Date | null>(null);
   const [timeValue, setTimeValue] = useState<string>("");
+  const [eventStatus, setEventStatus] = useState("WILL");
+  const [filename, setFilename] = useState<string | undefined>(undefined);
+  const [uploadId, setUploadId] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (user?.id) {
+      UserControllerService.getUser(user.id)
+        .then((res) => {
+          if (!res.error && res.result) {
+            setFullUser(res.result);
+          } else {
+            console.error("Ошибка получения пользователя:", res.errorMassage);
+          }
+        })
+        .catch((err) => {
+          console.error("Ошибка при получении данных пользователя:", err);
+        });
+    }
+  }, [user?.id]);
 
   const handleSubmit = async () => {
     if (!dateValue) {
@@ -49,11 +72,13 @@ export default function CreateEventPage() {
       title,
       description,
       city,
-      organizationId: user?.organizationId,
+      organizationId: fullUser?.organization?.id,
       participantsNumber,
       volunteersNumber,
       date: date.toISOString(),
-      // filename и uploadId можно добавить позже при реализации загрузки
+      eventStatus,
+      filename,
+      uploadId,
     };
 
     try {
@@ -152,13 +177,9 @@ export default function CreateEventPage() {
               <DateInput
                 label="Дата"
                 value={dateValue}
-                onChange={(value) => {
-                  if (value) {
-                    setDateValue(new Date(value));
-                  } else {
-                    setDateValue(null);
-                  }
-                }}
+                onChange={(value) =>
+                  value ? setDateValue(new Date(value)) : setDateValue(null)
+                }
               />
 
               <TimeInput
@@ -172,9 +193,22 @@ export default function CreateEventPage() {
                 value={city}
                 onChange={(e) => setCity(e.currentTarget.value)}
               />
+
+              <Select
+                label="Статус мероприятия"
+                value={eventStatus}
+                onChange={(val) => setEventStatus(val || "WILL")}
+                data={[
+                  { value: "WILL", label: "Планируется" },
+                  { value: "PASSED", label: "Завершено" },
+                  { value: "CANCELLED", label: "Отменено" },
+                ]}
+                mt="md"
+              />
+
               <TextInput
                 label="Организация"
-                value={user?.organizationName || ""}
+                value={fullUser?.organization?.name || ""}
                 disabled
               />
             </Card>
@@ -185,15 +219,17 @@ export default function CreateEventPage() {
               </Title>
               <TextInput
                 label="ФИО"
-                value={user?.name + " " + user?.lastName}
+                value={`${fullUser?.lastName ?? ""} ${fullUser?.name ?? ""} ${
+                  fullUser?.patronymic ?? ""
+                }`}
                 disabled
               />
               <TextInput
                 label="Номер телефона"
-                value={user?.phoneNumber}
+                value={fullUser?.phoneNumber || ""}
                 disabled
               />
-              <TextInput label="Почта" value={user?.email} disabled />
+              {/* <TextInput label="Почта" value={fullUser?.email || ""} disabled /> */}
             </Card>
 
             <Text mt="md" c="gray.6" fz="xs">

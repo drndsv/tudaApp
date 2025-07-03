@@ -15,11 +15,16 @@ import {
   Loader,
 } from "@mantine/core";
 import Header from "../components/Header";
+import { useAuth } from "../context/AuthContext";
 import { EventResponseDTO } from "../api/generated/models/EventResponseDTO";
 import { EventControllerService } from "../api/generated/services/EventControllerService";
 import { useEventImage } from "../hooks/useEventImage";
+import { AppUserResponseDTO, UserControllerService } from "../api/generated";
 
 export default function EventDetailsPage() {
+  const { user } = useAuth();
+  const [fullUser, setFullUser] = useState<AppUserResponseDTO | null>(null);
+
   const { id } = useParams();
   const [event, setEvent] = useState<EventResponseDTO | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,6 +52,22 @@ export default function EventDetailsPage() {
 
     fetchEvent();
   }, [id]);
+
+  useEffect(() => {
+    if (user?.id) {
+      UserControllerService.getUser(user.id)
+        .then((res) => {
+          if (!res.error && res.result) {
+            setFullUser(res.result);
+          } else {
+            console.error("Ошибка получения пользователя:", res.errorMassage);
+          }
+        })
+        .catch((err) => {
+          console.error("Ошибка при получении данных пользователя:", err);
+        });
+    }
+  }, [user?.id]);
 
   const imageSrc = useEventImage(event?.photo);
 
@@ -297,8 +318,13 @@ export default function EventDetailsPage() {
                       <Text>
                         📞 {event.organization?.phoneNumber || "Не указан"}
                       </Text>
-                      <Text>👤 —</Text>
-                      <Text>✉️ —</Text>
+                      <Text>
+                        👤{" "}
+                        {`${fullUser?.lastName ?? ""} ${fullUser?.name ?? ""} ${
+                          fullUser?.patronymic ?? ""
+                        }` || "Не указан"}
+                      </Text>
+                      {/* <Text>✉️ —</Text> */}
                     </Stack>
                   </Card>
                 </Grid.Col>
