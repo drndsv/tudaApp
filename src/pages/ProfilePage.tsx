@@ -1,4 +1,4 @@
-// TODO: разобраться почему в режиме отладке при сохранении выкидывает в debugger
+// TODO: разобраться почему в режиме отладки при сохранении выкидывает в debugger
 import {
   Box,
   Button,
@@ -32,9 +32,14 @@ export default function ProfilePage() {
     phoneNumber: "",
   });
 
-  const originalData = useRef<AppUserRequestDTO | null>(null); // для сброса при отмене
+  const [organizationData, setOrganizationData] = useState({
+    name: "",
+    phone: "",
+  });
 
-  // Загрузка данных с бэка
+  const originalData = useRef<AppUserRequestDTO | null>(null);
+  const originalOrgData = useRef<{ name: string; phone: string } | null>(null);
+
   useEffect(() => {
     const fetchUser = async () => {
       if (!user?.id) return;
@@ -52,6 +57,15 @@ export default function ProfilePage() {
           };
           setFormData(dto);
           originalData.current = dto;
+
+          if (u.organization) {
+            const org = {
+              name: u.organization.name || "",
+              phone: u.organization.phoneNumber || "",
+            };
+            setOrganizationData(org);
+            originalOrgData.current = org;
+          }
         } else {
           console.error("Ошибка получения пользователя:", res.errorMassage);
         }
@@ -73,6 +87,9 @@ export default function ProfilePage() {
     if (originalData.current) {
       setFormData(originalData.current);
     }
+    if (originalOrgData.current) {
+      setOrganizationData(originalOrgData.current);
+    }
     setIsEditing(false);
   };
 
@@ -88,7 +105,7 @@ export default function ProfilePage() {
     try {
       const payload: AppUserRequestDTO = {
         ...formData,
-        login: user.sub, // из токена
+        login: user.sub,
       };
 
       console.log("Отправка:", JSON.stringify(payload, null, 2));
@@ -99,9 +116,13 @@ export default function ProfilePage() {
         alert("Изменения сохранены");
         setIsEditing(false);
         originalData.current = formData;
+        originalOrgData.current = organizationData;
       } else {
         alert("Ошибка при сохранении: " + res.errorMassage);
       }
+
+      //  обновление организации, когда Даня сделает мне ручку (((
+      // OrganizationControllerService.update(...);
     } catch (err) {
       console.error("Ошибка при сохранении:", err);
       alert("Ошибка при сохранении");
@@ -226,6 +247,58 @@ export default function ProfilePage() {
               </Box>
             ))}
           </Stack>
+
+          {user?.roles?.includes("ROLE_ORGANIZER") && (
+            <>
+              <Title order={3} mt="xl" mb="sm" style={{ textAlign: "left" }}>
+                Организация
+              </Title>
+              <Stack gap="sm">
+                {[
+                  { field: "name", label: "Название организации" },
+                  { field: "phone", label: "Телефон организации" },
+                ].map(({ field, label }) => (
+                  <Box
+                    key={field}
+                    mb="sm"
+                    p="sm"
+                    style={{ border: "1px solid #ccc", borderRadius: "8px" }}
+                  >
+                    <Group align="center" gap="md" wrap="nowrap">
+                      <Text w={160} fw={500}>
+                        {label}
+                      </Text>
+                      {isEditing ? (
+                        <TextInput
+                          value={
+                            organizationData[
+                              field as keyof typeof organizationData
+                            ] || ""
+                          }
+                          onChange={(e) =>
+                            setOrganizationData((prev) => ({
+                              ...prev,
+                              [field]: e.currentTarget.value,
+                            }))
+                          }
+                          radius="md"
+                          style={{ flex: 1 }}
+                        />
+                      ) : (
+                        <Text size="sm" c="dimmed">
+                          {
+                            organizationData[
+                              field as keyof typeof organizationData
+                            ]
+                          }
+                        </Text>
+                      )}
+                    </Group>
+                  </Box>
+                ))}
+              </Stack>
+            </>
+          )}
 
           {isEditing && (
             <Group justify="end" gap="sm" mt="xl">

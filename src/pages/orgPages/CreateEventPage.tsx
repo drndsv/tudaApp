@@ -20,8 +20,13 @@ import { EventControllerService } from "../../api/generated/services/EventContro
 import { EventRequestDTO } from "../../api/generated/models/EventRequestDTO";
 import { UserControllerService } from "../../api/generated/services/UserControllerService";
 import { AppUserResponseDTO } from "../../api/generated/models/AppUserResponseDTO";
+import { ImageControllerService } from "../../api/generated/services/ImageControllerService";
+import { PhotoResponseDTO } from "../../api/generated/models/PhotoResponseDTO";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateEventPage() {
+  const navigate = useNavigate();
+
   const { user } = useAuth();
   const [fullUser, setFullUser] = useState<AppUserResponseDTO | null>(null);
 
@@ -37,6 +42,8 @@ export default function CreateEventPage() {
   const [dateValue, setDateValue] = useState<Date | null>(null);
   const [timeValue, setTimeValue] = useState<string>("");
   const [eventStatus, setEventStatus] = useState("WILL");
+
+  const [photo, setPhoto] = useState<PhotoResponseDTO | null>(null);
   const [filename, setFilename] = useState<string | undefined>(undefined);
   const [uploadId, setUploadId] = useState<string | undefined>(undefined);
 
@@ -55,6 +62,28 @@ export default function CreateEventPage() {
         });
     }
   }, [user?.id]);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const response = await ImageControllerService.uploadImage({ file });
+      if (!response.error && response.result) {
+        setPhoto(response.result);
+        setFilename(response.result.filename);
+        setUploadId(response.result.uploadId);
+      } else {
+        alert(
+          "Ошибка при загрузке изображения (возможно слишком большой объем): " +
+            response.errorMassage
+        );
+      }
+    } catch (err) {
+      console.error("Ошибка загрузки изображения", err);
+      alert("Ошибка при загрузке изображения");
+    }
+  };
 
   const handleSubmit = async () => {
     if (!dateValue) {
@@ -85,7 +114,7 @@ export default function CreateEventPage() {
       const response = await EventControllerService.addEvent(payload);
       if (!response.error) {
         alert("Мероприятие успешно создано");
-        // TODO: navigate("/organizerEvents");
+        navigate("/");
       } else {
         alert("Ошибка: " + response.errorMassage);
       }
@@ -114,9 +143,28 @@ export default function CreateEventPage() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                flexDirection: "column",
               }}
             >
-              <Text>Изображение (загрузка будет реализована позже)</Text>
+              {photo ? (
+                <Text c="green">Изображение загружено</Text>
+              ) : (
+                <Text>Изображение не выбрано</Text>
+              )}
+
+              <label htmlFor="file-upload">
+                <Button component="span" mt="sm" radius="xl">
+                  Выбрать изображение
+                </Button>
+              </label>
+
+              <input
+                id="file-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                style={{ display: "none" }}
+              />
             </Box>
 
             <Stack mt="md">
@@ -229,7 +277,6 @@ export default function CreateEventPage() {
                 value={fullUser?.phoneNumber || ""}
                 disabled
               />
-              {/* <TextInput label="Почта" value={fullUser?.email || ""} disabled /> */}
             </Card>
 
             <Text mt="md" c="gray.6" fz="xs">
