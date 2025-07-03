@@ -7,7 +7,7 @@ import EventDetailsPage from "./pages/EventDetailsPage";
 import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import UserEventsPage from "./pages/UserEventsPage";
+import UserEventsPage from "./pages/userPages/UserEventsPage";
 
 function App() {
   return (

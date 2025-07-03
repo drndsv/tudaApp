@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import Header from "../components/Header";
-import UserEventFilters from "../components/UserEventFilters";
-import EventCard from "../components/EventCard";
+import Header from "../../components/Header";
+import UserEventFilters from "../../components/UserEventFilters";
+import EventCard from "../../components/EventCard";
 import { Box, Container, Grid, Title } from "@mantine/core";
-import { EventControllerService } from "../api/generated/services/EventControllerService";
-import { EventResponseDTO } from "../api/generated/models/EventResponseDTO";
-import { useAuth } from "../context/AuthContext";
+import { EventControllerService } from "../../api/generated/services/EventControllerService";
+import { EventResponseDTO } from "../../api/generated/models/EventResponseDTO";
+import { useAuth } from "../../context/AuthContext";
 
 export default function UserEventsPage() {
   const { user } = useAuth();

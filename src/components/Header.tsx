@@ -10,17 +10,20 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { FaUserCircle } from "react-icons/fa";
-import { useAuth } from "../context/AuthContext"; //работа с контекстом
+import { useAuth } from "../context/AuthContext"; // работа с контекстом
 
 export default function Header() {
   const navigate = useNavigate();
   const theme = useMantineTheme();
-  const { token, logout } = useAuth(); //  данные из контекста
+  const { token, logout, user } = useAuth(); // user из контекста
+
+  const roles = user?.roles || [];
+  const isOrganizer = roles.includes("ROLE_ORGANIZER");
 
   const handleLogout = () => {
     logout();
-    window.location.reload(); //Обновление для синхронизации
-    // navigate("/"); // на главную страницу после выхода
+    window.location.reload(); // Обновление для синхронизации
+    // navigate("/"); // можно включить, если нужен переход на главную
   };
 
   return (
@@ -61,9 +64,21 @@ export default function Header() {
               <Menu.Item onClick={() => navigate("/profile")}>
                 Профиль
               </Menu.Item>
-              <Menu.Item onClick={() => navigate("/userEvents")}>
+
+              <Menu.Item
+                onClick={() =>
+                  navigate(isOrganizer ? "/organizerEvents" : "/userEvents")
+                }
+              >
                 Мои мероприятия
               </Menu.Item>
+
+              {isOrganizer && (
+                <Menu.Item onClick={() => navigate("/createEvent")}>
+                  Создать мероприятие
+                </Menu.Item>
+              )}
+
               <Menu.Item onClick={handleLogout}>Выйти</Menu.Item>
             </Menu.Dropdown>
           </Menu>

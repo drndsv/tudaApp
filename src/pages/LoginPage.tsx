@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import AuthLayout from "../components/AuthLayout";
 import { AuthControllerService } from "../api/generated/services/AuthControllerService";
-import { JwtRequestDTO } from "../api/generated/models/JwtRequestDTO";
+import { JwtLoginRequestDTO } from "../api/generated/models/JwtLoginRequestDTO";
 import { useAuth } from "../context/AuthContext"; // Импортируем хук для работы с контекстом
 
 export default function LoginPage() {
@@ -24,7 +24,7 @@ export default function LoginPage() {
       const response = await AuthControllerService.authenticate({
         login: values.login,
         password: values.password,
-      } as JwtRequestDTO);
+      } as JwtLoginRequestDTO);
 
       const token = response.token;
       if (!token) throw new Error("Токен не получен");

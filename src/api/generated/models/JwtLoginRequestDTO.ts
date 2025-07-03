@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type JwtLoginRequestDTO = {
-    login?: string;
-    password?: string;
+  login?: string;
+  password?: string;
 };
-
