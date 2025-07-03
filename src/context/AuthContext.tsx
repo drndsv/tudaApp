@@ -55,7 +55,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       OpenAPI.TOKEN = token;
       try {
         const decoded = jwtDecode<DecodedUser>(token);
-        console.log("✅ Декодированный токен:", decoded);
+        console.log("Декодированный токен:", decoded);
         setUser(decoded);
       } catch {
         setUser(null);

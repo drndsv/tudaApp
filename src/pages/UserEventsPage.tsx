@@ -5,8 +5,10 @@ import EventCard from "../components/EventCard";
 import { Box, Container, Grid, Title } from "@mantine/core";
 import { EventControllerService } from "../api/generated/services/EventControllerService";
 import { EventResponseDTO } from "../api/generated/models/EventResponseDTO";
+import { useAuth } from "../context/AuthContext";
 
 export default function UserEventsPage() {
+  const { user } = useAuth();
   const [events, setEvents] = useState<EventResponseDTO[]>([]);
   const [filteredEvents, setFilteredEvents] = useState<EventResponseDTO[]>([]);
 
@@ -17,13 +19,10 @@ export default function UserEventsPage() {
     "all" | "visited" | "notVisited"
   >("all");
 
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-
   useEffect(() => {
     if (!user?.id) return;
 
     EventControllerService.getEventsByUserId(user.id)
-      // EventControllerService.getEventsByUserId(1)
       .then((response) => {
         console.log("Ответ от сервера:", response);
         if (!response.error && response.result) {
@@ -35,7 +34,7 @@ export default function UserEventsPage() {
       .catch((err) => {
         console.error("Ошибка при получении мероприятий:", err);
       });
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     let filtered = [...events];
