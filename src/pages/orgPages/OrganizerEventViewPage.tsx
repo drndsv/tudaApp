@@ -2,22 +2,21 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
-  Card,
   Center,
   Container,
   Grid,
-  Image,
   Loader,
   Stack,
   Text,
   Title,
-  rem,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import { EventControllerService, EventResponseDTO } from "../../api/generated";
 import { useEventImage } from "../../hooks/useEventImage";
 import { useFullUser } from "../../hooks/useFullUser";
+import EventImageBlock from "../../components/EventImageBlock";
+import EventDetailsInfo from "../../components/EventDetailsInfo";
 
 export default function OrganizerEventViewPage() {
   const fullUser = useFullUser();
@@ -102,28 +101,10 @@ export default function OrganizerEventViewPage() {
           {/* Левая колонка: фото и кнопки */}
           <Grid.Col span={{ base: 12, md: 6 }} h="100%">
             <Stack h="100%" justify="space-between">
-              <Box
-                h={320}
-                style={{
-                  borderRadius: rem(16),
-                  overflow: "hidden",
-                  boxShadow: "8px 8px 16px #bcc4aa, -8px -8px 16px #ffffff",
-                }}
-              >
-                {imageSrc ? (
-                  <Image
-                    src={imageSrc}
-                    alt={event.title || "Мероприятие"}
-                    h="100%"
-                    w="100%"
-                    fit="cover"
-                  />
-                ) : (
-                  <Center h="100%" bg="gray.0">
-                    <Text c="gray.6">Без фото</Text>
-                  </Center>
-                )}
-              </Box>
+              <EventImageBlock
+                src={imageSrc}
+                alt={event.title || "Мероприятие"}
+              />
 
               {/* Кнопки организатора */}
               <Grid grow gutter="sm">
@@ -181,94 +162,7 @@ export default function OrganizerEventViewPage() {
 
           {/* Правая колонка: описание и блоки */}
           <Grid.Col span={{ base: 12, md: 6 }} h="100%">
-            <Stack gap="md" h="100%">
-              <Card
-                shadow="sm"
-                radius="xl"
-                padding="md"
-                bg="white"
-                withBorder
-                style={{ minHeight: "120px" }}
-              >
-                <Text fw={600} mb="xs">
-                  Описание
-                </Text>
-                <Text fz="sm">{event.description || "Нет описания."}</Text>
-              </Card>
-
-              <Grid>
-                <Grid.Col span={6}>
-                  <Card shadow="sm" radius="xl" padding="md" withBorder>
-                    <Text fw={600} mb="xs">
-                      Участников
-                    </Text>
-                    <Text fz="sm">{event.participantsNumber ?? 0}/100</Text>
-                  </Card>
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <Card shadow="sm" radius="xl" padding="md" withBorder>
-                    <Text fw={600} mb="xs">
-                      Волонтёров
-                    </Text>
-                    <Text fz="sm">{event.volunteersNumber ?? 0}/100</Text>
-                  </Card>
-                </Grid.Col>
-              </Grid>
-
-              <Grid>
-                <Grid.Col span={6}>
-                  <Card shadow="sm" radius="xl" padding="md" withBorder>
-                    <Text fw={600} mb="xs">
-                      Основная информация
-                    </Text>
-                    <Stack gap={4} fz="sm">
-                      <Text>
-                        📅{" "}
-                        {event.date
-                          ? new Date(event.date).toLocaleDateString()
-                          : "—"}
-                      </Text>
-                      <Text>
-                        🕒{" "}
-                        {event.date
-                          ? new Date(event.date).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })
-                          : "—"}
-                      </Text>
-                      <Text>📍 {event.city || "Город не указан"}</Text>
-                      <Text>🏢 {event.organization?.name || "Не указано"}</Text>
-                    </Stack>
-                  </Card>
-                </Grid.Col>
-
-                <Grid.Col span={6}>
-                  <Card
-                    shadow="sm"
-                    radius="xl"
-                    padding="md"
-                    withBorder
-                    h="100%"
-                  >
-                    <Text fw={600} mb="xs">
-                      Контактное лицо
-                    </Text>
-                    <Stack gap={4} fz="sm">
-                      <Text>
-                        📞 {event.organization?.phoneNumber || "Не указан"}
-                      </Text>
-                      <Text>
-                        👤{" "}
-                        {`${fullUser?.lastName ?? ""} ${fullUser?.name ?? ""} ${
-                          fullUser?.patronymic ?? ""
-                        }` || "Не указан"}
-                      </Text>
-                    </Stack>
-                  </Card>
-                </Grid.Col>
-              </Grid>
-            </Stack>
+            <EventDetailsInfo event={event} fullUser={fullUser} />
           </Grid.Col>
         </Grid>
       </Container>
