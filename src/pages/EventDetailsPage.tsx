@@ -16,9 +16,9 @@ import {
 } from "@mantine/core";
 import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
+import { useFullUser } from "../hooks/useFullUser";
 import { useEventImage } from "../hooks/useEventImage";
 import {
-  AppUserResponseDTO,
   UserControllerService,
   AccountingAppUserControllerService,
   RequestControllerService,
@@ -28,13 +28,16 @@ import {
 
 export default function EventDetailsPage() {
   const { user } = useAuth();
-  const [fullUser, setFullUser] = useState<AppUserResponseDTO | null>(null);
+  const fullUser = useFullUser();
+
   const { id } = useParams();
   const [event, setEvent] = useState<EventResponseDTO | null>(null);
   const [loading, setLoading] = useState(true);
   const [isParticipant, setIsParticipant] = useState(false);
   const [isVolunteerPending, setIsVolunteerPending] = useState(false);
   const [isVolunteerConfirmed, setIsVolunteerConfirmed] = useState(false);
+
+  const isOrganizer = user?.roles?.includes("ROLE_ORGANIZER");
 
   useEffect(() => {
     if (!id) return;
@@ -58,22 +61,8 @@ export default function EventDetailsPage() {
   }, [id]);
 
   useEffect(() => {
-    if (user?.id) {
-      UserControllerService.getUser(user.id)
-        .then((res) => {
-          if (!res.error && res.result) {
-            setFullUser(res.result);
-          } else {
-            console.error("Ошибка получения пользователя:", res.errorMassage);
-          }
-        })
-        .catch((err) => {
-          console.error("Ошибка при получении данных пользователя:", err);
-        });
-    }
-  }, [user?.id]);
+    if (isOrganizer) return;
 
-  useEffect(() => {
     const fetchStatus = async () => {
       if (user?.id && event?.id) {
         try {
@@ -96,7 +85,7 @@ export default function EventDetailsPage() {
     };
 
     fetchStatus();
-  }, [user?.id, event?.id]);
+  }, [user?.id, event?.id, isOrganizer]);
 
   const imageSrc = useEventImage(event?.photo);
 
@@ -157,9 +146,7 @@ export default function EventDetailsPage() {
     switch (status) {
       case "WILL":
         return "Планируется";
-      case "PUBLISHED":
-        return "Опубликовано";
-      case "FINISHED":
+      case "PASSED":
         return "Завершено";
       case "CANCELLED":
         return "Отменено";
@@ -232,64 +219,66 @@ export default function EventDetailsPage() {
                 )}
               </Box>
 
-              <Stack gap="sm">
-                {isParticipant && (
-                  <Text fz="sm" c="gray.6">
-                    Вы зарегистрированы как участник
-                  </Text>
-                )}
-
-                {isVolunteerConfirmed && (
-                  <Text fz="sm" c="gray.6">
-                    Вы зарегистрированы как волонтёр
-                  </Text>
-                )}
-
-                {isVolunteerPending && (
-                  <Text fz="sm" c="gray.6">
-                    Ожидайте одобрения заявки на волонтёрство
-                  </Text>
-                )}
-
-                {!isParticipant &&
-                  !isVolunteerPending &&
-                  !isVolunteerConfirmed && (
-                    <>
-                      <Button
-                        fullWidth
-                        color="green.10"
-                        radius="xl"
-                        disabled={isPast}
-                        onClick={handleJoin}
-                      >
-                        Участвовать
-                      </Button>
-                      <Button
-                        fullWidth
-                        color="green.10"
-                        radius="xl"
-                        disabled={isPast}
-                        onClick={handleVolunteer}
-                      >
-                        Подать заявку на волонтёрство
-                      </Button>
-                    </>
+              {!isOrganizer && (
+                <Stack gap="sm">
+                  {isParticipant && (
+                    <Text fz="sm" c="gray.6">
+                      Вы зарегистрированы как участник
+                    </Text>
                   )}
 
-                {(isParticipant ||
-                  isVolunteerPending ||
-                  isVolunteerConfirmed) && (
-                  <Button
-                    fullWidth
-                    color="red"
-                    radius="xl"
-                    disabled={isPast}
-                    onClick={handleCancel}
-                  >
-                    Отказаться от участия
-                  </Button>
-                )}
-              </Stack>
+                  {isVolunteerConfirmed && (
+                    <Text fz="sm" c="gray.6">
+                      Вы зарегистрированы как волонтёр
+                    </Text>
+                  )}
+
+                  {isVolunteerPending && (
+                    <Text fz="sm" c="gray.6">
+                      Ожидайте одобрения заявки на волонтёрство
+                    </Text>
+                  )}
+
+                  {!isParticipant &&
+                    !isVolunteerPending &&
+                    !isVolunteerConfirmed && (
+                      <>
+                        <Button
+                          fullWidth
+                          color="green.10"
+                          radius="xl"
+                          disabled={isPast}
+                          onClick={handleJoin}
+                        >
+                          Участвовать
+                        </Button>
+                        <Button
+                          fullWidth
+                          color="green.10"
+                          radius="xl"
+                          disabled={isPast}
+                          onClick={handleVolunteer}
+                        >
+                          Подать заявку на волонтёрство
+                        </Button>
+                      </>
+                    )}
+
+                  {(isParticipant ||
+                    isVolunteerPending ||
+                    isVolunteerConfirmed) && (
+                    <Button
+                      fullWidth
+                      color="red"
+                      radius="xl"
+                      disabled={isPast}
+                      onClick={handleCancel}
+                    >
+                      Отказаться от участия
+                    </Button>
+                  )}
+                </Stack>
+              )}
             </Stack>
           </Grid.Col>
 
@@ -312,13 +301,7 @@ export default function EventDetailsPage() {
 
               <Grid>
                 <Grid.Col span={6}>
-                  <Card
-                    shadow="sm"
-                    radius="xl"
-                    padding="md"
-                    bg="white"
-                    withBorder
-                  >
+                  <Card shadow="sm" radius="xl" padding="md" withBorder>
                     <Text fw={600} mb="xs">
                       Участников
                     </Text>
@@ -326,13 +309,7 @@ export default function EventDetailsPage() {
                   </Card>
                 </Grid.Col>
                 <Grid.Col span={6}>
-                  <Card
-                    shadow="sm"
-                    radius="xl"
-                    padding="md"
-                    bg="white"
-                    withBorder
-                  >
+                  <Card shadow="sm" radius="xl" padding="md" withBorder>
                     <Text fw={600} mb="xs">
                       Волонтёров
                     </Text>
@@ -347,7 +324,6 @@ export default function EventDetailsPage() {
                     shadow="sm"
                     radius="xl"
                     padding="md"
-                    bg="white"
                     withBorder
                     h="100%"
                   >
@@ -384,7 +360,6 @@ export default function EventDetailsPage() {
                     shadow="sm"
                     radius="xl"
                     padding="md"
-                    bg="white"
                     withBorder
                     h="100%"
                   >
