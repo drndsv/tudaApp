@@ -5,8 +5,8 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import EventDetailsPage from "./pages/EventDetailsPage";
 import ProfilePage from "./pages/ProfilePage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
 import UserEventsPage from "./pages/userPages/UserEventsPage";
 import CreateEventPage from "./pages/orgPages/CreateEventPage";
 

@@ -2,11 +2,13 @@ import { Button, Group, Radio, Stack, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AuthLayout from "../components/AuthLayout";
-import { leftAlignedLabel } from "../styles/formStyles";
-import { AuthControllerService } from "../api/generated/services/AuthControllerService";
-import { OpenAPI } from "../api/generated/core/OpenAPI";
-import type { JwtSignUpRequestDTO } from "../api/generated/models/JwtSignUpRequestDTO";
+import {
+  AuthControllerService,
+  JwtSignUpRequestDTO,
+  OpenAPI,
+} from "../../api/generated";
+import AuthLayout from "../../components/AuthLayout";
+import { leftAlignedLabel } from "../../styles/formStyles";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
