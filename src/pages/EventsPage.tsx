@@ -3,8 +3,7 @@ import Header from "../components/Header";
 import Filters from "../components/Filters";
 import EventCard from "../components/EventCard";
 import { Box, Container, Grid, Title } from "@mantine/core";
-import { EventControllerService } from "../api/generated/services/EventControllerService";
-import { EventResponseDTO } from "../api/generated/models/EventResponseDTO";
+import { EventControllerService, EventResponseDTO } from "../api/generated";
 
 export default function EventsPage() {
   const [events, setEvents] = useState<EventResponseDTO[]>([]);

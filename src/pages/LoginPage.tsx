@@ -5,7 +5,7 @@ import { showNotification } from "@mantine/notifications";
 import AuthLayout from "../components/AuthLayout";
 import { AuthControllerService } from "../api/generated/services/AuthControllerService";
 import { JwtLoginRequestDTO } from "../api/generated/models/JwtLoginRequestDTO";
-import { useAuth } from "../context/AuthContext"; // Импортируем хук для работы с контекстом
+import { useAuth } from "../context/AuthContext";
 
 export default function LoginPage() {
   const navigate = useNavigate();

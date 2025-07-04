@@ -16,12 +16,14 @@ import { DateInput, TimeInput } from "@mantine/dates";
 import { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import { useAuth } from "../../context/AuthContext";
-import { EventControllerService } from "../../api/generated/services/EventControllerService";
-import { EventRequestDTO } from "../../api/generated/models/EventRequestDTO";
-import { UserControllerService } from "../../api/generated/services/UserControllerService";
-import { AppUserResponseDTO } from "../../api/generated/models/AppUserResponseDTO";
-import { ImageControllerService } from "../../api/generated/services/ImageControllerService";
-import { PhotoResponseDTO } from "../../api/generated/models/PhotoResponseDTO";
+import {
+  EventControllerService,
+  EventRequestDTO,
+  UserControllerService,
+  AppUserResponseDTO,
+  ImageControllerService,
+  PhotoResponseDTO,
+} from "../../api/generated";
 import { useNavigate } from "react-router-dom";
 
 export default function CreateEventPage() {
