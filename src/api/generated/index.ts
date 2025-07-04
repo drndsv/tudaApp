@@ -11,6 +11,7 @@ export type { AccountingAppUserResponseDTO } from './models/AccountingAppUserRes
 export type { ApiResponseAccountingAppUserResponseDTO } from './models/ApiResponseAccountingAppUserResponseDTO';
 export type { ApiResponseAppUserResponseDTO } from './models/ApiResponseAppUserResponseDTO';
 export type { ApiResponseEventResponseDTO } from './models/ApiResponseEventResponseDTO';
+export { ApiResponseEventUserStatus } from './models/ApiResponseEventUserStatus';
 export type { ApiResponseGuestResponseDTO } from './models/ApiResponseGuestResponseDTO';
 export type { ApiResponseListEventParticipantResponseDTO } from './models/ApiResponseListEventParticipantResponseDTO';
 export type { ApiResponseListEventResponseDTO } from './models/ApiResponseListEventResponseDTO';

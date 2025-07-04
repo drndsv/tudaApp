@@ -109,8 +109,8 @@ export default function UserEventFilters({
         {/* Статус посещения */}
         <Menu shadow="md" width={200} radius="md" withArrow>
           <Menu.Target>
-            <Button variant="default" radius="xl">
-              Любой статус
+            <Button variant="default" radius="xl" disabled>
+              Любой статус (в разработке)
             </Button>
           </Menu.Target>
           <Menu.Dropdown>
