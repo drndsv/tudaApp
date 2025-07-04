@@ -13,18 +13,24 @@ import { useEventImage } from "../hooks/useEventImage";
 
 interface Props {
   event: EventResponseDTO;
+  navigateTo?: "user" | "organizer"; // по умолчанию — user
 }
 
-export default function EventCard({ event }: Props) {
+export default function EventCard({ event, navigateTo = "user" }: Props) {
   const navigate = useNavigate();
   const theme = useMantineTheme();
 
   const imageSrc = useEventImage(event.photo);
 
   const handleClick = () => {
-    if (event.id !== undefined) {
-      navigate(`/event/${event.id}`);
-    }
+    if (event.id === undefined) return;
+
+    const url =
+      navigateTo === "organizer"
+        ? `/organizer/events/${event.id}`
+        : `/event/${event.id}`;
+
+    navigate(url);
   };
 
   return (

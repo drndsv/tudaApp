@@ -21,7 +21,7 @@ export default function RegisterPage() {
       lastName: "",
       firstName: "",
       middleName: "",
-      phoneNumber: "", // добавлено поле телефона для USER
+      phoneNumber: "",
       orgName: "",
       coordinatorName: "",
       coordinatorPhone: "",

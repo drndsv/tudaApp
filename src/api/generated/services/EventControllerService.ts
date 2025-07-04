@@ -62,6 +62,22 @@ export class EventControllerService {
         });
     }
     /**
+     * @param organizerId
+     * @returns ApiResponseListEventResponseDTO OK
+     * @throws ApiError
+     */
+    public static getOrganizationEventsByOrganizerId(
+        organizerId: number,
+    ): CancelablePromise<ApiResponseListEventResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/event/getEventsByOrganizerId',
+            query: {
+                'organizerId': organizerId,
+            },
+        });
+    }
+    /**
      * @param id
      * @returns ApiResponseListEventResponseDTO OK
      * @throws ApiError
@@ -101,6 +117,25 @@ export class EventControllerService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/event/getAll',
+        });
+    }
+    /**
+     * @param status
+     * @param appUserId
+     * @returns ApiResponseListEventResponseDTO OK
+     * @throws ApiError
+     */
+    public static getEventsByStatusAndAppUserId(
+        status: 'PASSED' | 'WILL' | 'CANCELLED',
+        appUserId: number,
+    ): CancelablePromise<ApiResponseListEventResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/event/filterByStatusAndAppUserId',
+            query: {
+                'status': status,
+                'appUserId': appUserId,
+            },
         });
     }
 }

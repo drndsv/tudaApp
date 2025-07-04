@@ -144,8 +144,9 @@ export default function Filters({
             variant="default"
             onClick={() => setRoleOpen((v) => !v)}
             styles={{ root: { fontWeight: 500 } }}
+            disabled
           >
-            Требуемая роль
+            Требуемая роль (в разработке)
           </Button>
 
           <Transition

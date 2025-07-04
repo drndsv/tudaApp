@@ -9,6 +9,8 @@ import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import UserEventsPage from "./pages/userPages/UserEventsPage";
 import CreateEventPage from "./pages/orgPages/CreateEventPage";
+import OrganizerEventsPage from "./pages/orgPages/OrganizerEventsPage";
+import OrganizerEventViewPage from "./pages/orgPages/OrganizerEventViewPage";
 
 function App() {
   return (
@@ -20,6 +22,11 @@ function App() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/userEvents" element={<UserEventsPage />} />
       <Route path="/createEvent" element={<CreateEventPage />} />
+      <Route path="/organizerEvents" element={<OrganizerEventsPage />} />
+      <Route
+        path="/organizer/events/:id"
+        element={<OrganizerEventViewPage />}
+      />
     </Routes>
   );
 }

@@ -219,66 +219,70 @@ export default function EventDetailsPage() {
                 )}
               </Box>
 
-              {!isOrganizer && (
-                <Stack gap="sm">
-                  {isParticipant && (
-                    <Text fz="sm" c="gray.6">
-                      Вы зарегистрированы как участник
-                    </Text>
+              <Stack gap="sm">
+                {isParticipant && (
+                  <Text fz="sm" c="gray.6">
+                    Вы зарегистрированы как участник
+                  </Text>
+                )}
+
+                {isVolunteerConfirmed && (
+                  <Text fz="sm" c="gray.6">
+                    Вы зарегистрированы как волонтёр
+                  </Text>
+                )}
+
+                {isVolunteerPending && (
+                  <Text fz="sm" c="gray.6">
+                    Ожидайте одобрения заявки на волонтёрство
+                  </Text>
+                )}
+
+                {!isParticipant &&
+                  !isVolunteerPending &&
+                  !isVolunteerConfirmed && (
+                    <>
+                      <Button
+                        fullWidth
+                        color="green.10"
+                        radius="xl"
+                        disabled={isPast || isOrganizer}
+                        onClick={handleJoin}
+                      >
+                        Участвовать
+                      </Button>
+                      <Button
+                        fullWidth
+                        color="green.10"
+                        radius="xl"
+                        disabled={isPast || isOrganizer}
+                        onClick={handleVolunteer}
+                      >
+                        Подать заявку на волонтёрство
+                      </Button>
+                    </>
                   )}
 
-                  {isVolunteerConfirmed && (
-                    <Text fz="sm" c="gray.6">
-                      Вы зарегистрированы как волонтёр
-                    </Text>
-                  )}
+                {(isParticipant ||
+                  isVolunteerPending ||
+                  isVolunteerConfirmed) && (
+                  <Button
+                    fullWidth
+                    color="red"
+                    radius="xl"
+                    disabled={isPast || isOrganizer}
+                    onClick={handleCancel}
+                  >
+                    Отказаться от участия
+                  </Button>
+                )}
 
-                  {isVolunteerPending && (
-                    <Text fz="sm" c="gray.6">
-                      Ожидайте одобрения заявки на волонтёрство
-                    </Text>
-                  )}
-
-                  {!isParticipant &&
-                    !isVolunteerPending &&
-                    !isVolunteerConfirmed && (
-                      <>
-                        <Button
-                          fullWidth
-                          color="green.10"
-                          radius="xl"
-                          disabled={isPast}
-                          onClick={handleJoin}
-                        >
-                          Участвовать
-                        </Button>
-                        <Button
-                          fullWidth
-                          color="green.10"
-                          radius="xl"
-                          disabled={isPast}
-                          onClick={handleVolunteer}
-                        >
-                          Подать заявку на волонтёрство
-                        </Button>
-                      </>
-                    )}
-
-                  {(isParticipant ||
-                    isVolunteerPending ||
-                    isVolunteerConfirmed) && (
-                    <Button
-                      fullWidth
-                      color="red"
-                      radius="xl"
-                      disabled={isPast}
-                      onClick={handleCancel}
-                    >
-                      Отказаться от участия
-                    </Button>
-                  )}
-                </Stack>
-              )}
+                {isOrganizer && (
+                  <Text fz="xs" c="gray.6" ta="center">
+                    Действия недоступны для организатора мероприятия
+                  </Text>
+                )}
+              </Stack>
             </Stack>
           </Grid.Col>
 
