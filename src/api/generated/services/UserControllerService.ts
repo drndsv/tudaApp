@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiResponseAppUserResponseDTO } from "../models/ApiResponseAppUserResponseDTO";
+import type { ApiResponseEventUserStatus } from "../models/ApiResponseEventUserStatus";
 import type { AppUserRequestDTO } from "../models/AppUserRequestDTO";
 import type { CancelablePromise } from "../core/CancelablePromise";
 import { OpenAPI } from "../core/OpenAPI";
@@ -26,6 +27,25 @@ export class UserControllerService {
       },
       body: requestBody,
       mediaType: "application/json",
+    });
+  }
+  /**
+   * @param appUserId
+   * @param eventId
+   * @returns ApiResponseEventUserStatus OK
+   * @throws ApiError
+   */
+  public static getUserEventStatus(
+    appUserId: number,
+    eventId: number
+  ): CancelablePromise<ApiResponseEventUserStatus> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/user/getEventStatus",
+      query: {
+        appUserId: appUserId,
+        eventId: eventId,
+      },
     });
   }
   /**

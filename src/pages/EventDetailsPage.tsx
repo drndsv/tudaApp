@@ -16,21 +16,25 @@ import {
 } from "@mantine/core";
 import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
-import { EventResponseDTO } from "../api/generated/models/EventResponseDTO";
-import { EventControllerService } from "../api/generated/services/EventControllerService";
 import { useEventImage } from "../hooks/useEventImage";
-import { AppUserResponseDTO, UserControllerService } from "../api/generated";
+import {
+  AppUserResponseDTO,
+  UserControllerService,
+  AccountingAppUserControllerService,
+  RequestControllerService,
+  EventControllerService,
+  EventResponseDTO,
+} from "../api/generated";
 
 export default function EventDetailsPage() {
   const { user } = useAuth();
   const [fullUser, setFullUser] = useState<AppUserResponseDTO | null>(null);
-
   const { id } = useParams();
   const [event, setEvent] = useState<EventResponseDTO | null>(null);
   const [loading, setLoading] = useState(true);
-
   const [isParticipant, setIsParticipant] = useState(false);
   const [isVolunteerPending, setIsVolunteerPending] = useState(false);
+  const [isVolunteerConfirmed, setIsVolunteerConfirmed] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -69,21 +73,84 @@ export default function EventDetailsPage() {
     }
   }, [user?.id]);
 
+  useEffect(() => {
+    const fetchStatus = async () => {
+      if (user?.id && event?.id) {
+        try {
+          const res = await UserControllerService.getUserEventStatus(
+            user.id,
+            event.id
+          );
+          const status = res.result;
+          if (status === "PARTICIPANT") {
+            setIsParticipant(true);
+          } else if (status === "USER_WITH_REQUEST") {
+            setIsVolunteerPending(true);
+          } else if (status === "VOLUNTEER") {
+            setIsVolunteerConfirmed(true);
+          }
+        } catch (err) {
+          console.error("Ошибка при получении статуса:", err);
+        }
+      }
+    };
+
+    fetchStatus();
+  }, [user?.id, event?.id]);
+
   const imageSrc = useEventImage(event?.photo);
 
-  const handleJoin = () => {
-    setIsParticipant(true);
-    setIsVolunteerPending(false);
+  const handleJoin = async () => {
+    if (!user?.sub || !event?.id) return;
+    try {
+      const res =
+        await AccountingAppUserControllerService.saveAsParticipantForEvent(
+          event.id,
+          user.sub
+        );
+      if (!res.error) {
+        setIsParticipant(true);
+        setIsVolunteerPending(false);
+        setIsVolunteerConfirmed(false);
+      } else {
+        alert("Ошибка при записи на участие: " + res.errorMassage);
+      }
+    } catch (err) {
+      console.error("Ошибка при участии:", err);
+    }
   };
 
-  const handleVolunteer = () => {
-    setIsVolunteerPending(true);
-    setIsParticipant(false);
+  const handleVolunteer = async () => {
+    if (!user?.sub || !event?.id) return;
+    try {
+      const res = await RequestControllerService.addRequest(event.id, user.sub);
+      if (!res.error) {
+        setIsVolunteerPending(true);
+        setIsParticipant(false);
+        setIsVolunteerConfirmed(false);
+      } else {
+        alert("Ошибка при подаче заявки: " + res.errorMassage);
+      }
+    } catch (err) {
+      console.error("Ошибка при подаче заявки:", err);
+    }
   };
 
-  const handleCancel = () => {
-    setIsParticipant(false);
-    setIsVolunteerPending(false);
+  const handleCancel = async () => {
+    if (!user?.sub || !event?.id) return;
+
+    try {
+      if (isVolunteerPending) {
+        await RequestControllerService.deleteRequest(event.id, user.sub);
+      } else if (isParticipant || isVolunteerConfirmed) {
+        await AccountingAppUserControllerService.delete(event.id, user.sub);
+      }
+      setIsParticipant(false);
+      setIsVolunteerPending(false);
+      setIsVolunteerConfirmed(false);
+    } catch (err) {
+      console.error("Ошибка при отказе от участия:", err);
+    }
   };
 
   const getReadableStatus = (status?: string): string => {
@@ -166,42 +233,52 @@ export default function EventDetailsPage() {
               </Box>
 
               <Stack gap="sm">
-                {isVolunteerPending && (
-                  <Text fz="sm" c="gray.6">
-                    Ожидайте одобрения заявки на волонтёрство
-                  </Text>
-                )}
-
                 {isParticipant && (
                   <Text fz="sm" c="gray.6">
                     Вы зарегистрированы как участник
                   </Text>
                 )}
 
-                {!isParticipant && !isVolunteerPending && (
-                  <>
-                    <Button
-                      fullWidth
-                      color="green.10"
-                      radius="xl"
-                      disabled={isPast}
-                      onClick={handleJoin}
-                    >
-                      Участвовать
-                    </Button>
-                    <Button
-                      fullWidth
-                      color="green.10"
-                      radius="xl"
-                      disabled={isPast}
-                      onClick={handleVolunteer}
-                    >
-                      Подать заявку на волонтёрство
-                    </Button>
-                  </>
+                {isVolunteerConfirmed && (
+                  <Text fz="sm" c="gray.6">
+                    Вы зарегистрированы как волонтёр
+                  </Text>
                 )}
 
-                {(isParticipant || isVolunteerPending) && (
+                {isVolunteerPending && (
+                  <Text fz="sm" c="gray.6">
+                    Ожидайте одобрения заявки на волонтёрство
+                  </Text>
+                )}
+
+                {!isParticipant &&
+                  !isVolunteerPending &&
+                  !isVolunteerConfirmed && (
+                    <>
+                      <Button
+                        fullWidth
+                        color="green.10"
+                        radius="xl"
+                        disabled={isPast}
+                        onClick={handleJoin}
+                      >
+                        Участвовать
+                      </Button>
+                      <Button
+                        fullWidth
+                        color="green.10"
+                        radius="xl"
+                        disabled={isPast}
+                        onClick={handleVolunteer}
+                      >
+                        Подать заявку на волонтёрство
+                      </Button>
+                    </>
+                  )}
+
+                {(isParticipant ||
+                  isVolunteerPending ||
+                  isVolunteerConfirmed) && (
                   <Button
                     fullWidth
                     color="red"
@@ -324,7 +401,6 @@ export default function EventDetailsPage() {
                           fullUser?.patronymic ?? ""
                         }` || "Не указан"}
                       </Text>
-                      {/* <Text>✉️ —</Text> */}
                     </Stack>
                   </Card>
                 </Grid.Col>

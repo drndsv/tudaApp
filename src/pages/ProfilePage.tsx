@@ -15,8 +15,7 @@ import {
 import { useState, useEffect, useRef } from "react";
 import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
-import { UserControllerService } from "../api/generated/services/UserControllerService";
-import { AppUserRequestDTO } from "../api/generated/models/AppUserRequestDTO";
+import { UserControllerService, AppUserRequestDTO } from "../api/generated";
 
 export default function ProfilePage() {
   const { user } = useAuth(); // sub (login) и id из токена

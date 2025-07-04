@@ -22,8 +22,8 @@ export default function Header() {
 
   const handleLogout = () => {
     logout();
-    window.location.reload(); // Обновление для синхронизации
-    // navigate("/"); // можно включить, если нужен переход на главную
+    // window.location.reload(); // Обновление для синхронизации
+    navigate("/"); // переход на главную
   };
 
   return (
