@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type JwtLoginRequestDTO = {
+export type JwtSignInRequestDTO = {
     login?: string;
     password?: string;
 };

@@ -260,7 +260,7 @@ export default function EventDetailsPage() {
 
                 {isOrganizer && (
                   <Text fz="xs" c="gray.6" ta="center">
-                    Действия недоступны для организатора мероприятия
+                    Действия недоступны для аккаунта организатора
                   </Text>
                 )}
               </Stack>

@@ -3,12 +3,15 @@ import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
 import AuthLayout from "../../components/AuthLayout";
-import { AuthControllerService, JwtLoginRequestDTO } from "../../api/generated";
+import {
+  AuthControllerService,
+  JwtSignInRequestDTO,
+} from "../../api/generated";
 import { useAuth } from "../../context/AuthContext";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { login } = useAuth(); // Получаем функцию login из контекста
+  const { login } = useAuth();
 
   const form = useForm({
     initialValues: { login: "", password: "" },
@@ -20,18 +23,17 @@ export default function LoginPage() {
 
   const handleSubmit = async (values: typeof form.values) => {
     try {
-      const response = await AuthControllerService.authenticate({
+      const response = await AuthControllerService.signIn({
         login: values.login,
         password: values.password,
-      } as JwtLoginRequestDTO);
+      } as JwtSignInRequestDTO);
 
-      const token = response.token;
+      const token = response.accessToken;
       if (!token) throw new Error("Токен не получен");
 
       // Сохраняем токен через контекст
       login(token);
 
-      // Перенаправляем на главную страницу
       navigate("/");
     } catch (error) {
       showNotification({

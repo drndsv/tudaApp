@@ -1,10 +1,9 @@
 import { Card, Grid, Stack, Text } from "@mantine/core";
 import { EventResponseDTO } from "../api/generated";
-// import { UserFull } from "../types"; // тип для fullUser — если у тебя есть, или можешь заменить на any
 
 interface EventDetailsInfoProps {
   event: EventResponseDTO;
-  fullUser?: any | null; // подставь правильный тип или используй any
+  fullUser?: any | null;
 }
 
 export default function EventDetailsInfo({
