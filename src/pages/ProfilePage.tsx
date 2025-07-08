@@ -16,9 +16,11 @@ import { useState, useEffect, useRef } from "react";
 import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
 import { UserControllerService, AppUserRequestDTO } from "../api/generated";
+import { useFullUser } from "../hooks/useFullUser";
 
 export default function ProfilePage() {
   const { user } = useAuth(); // sub (login) и id из токена
+  const fullUser = useFullUser();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -40,43 +42,29 @@ export default function ProfilePage() {
   const originalOrgData = useRef<{ name: string; phone: string } | null>(null);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      if (!user?.id) return;
-      try {
-        const res = await UserControllerService.getUser(user.id);
-        if (!res.error && res.result) {
-          const u = res.result;
-          const dto: AppUserRequestDTO = {
-            login: u.login || "",
-            password: "",
-            name: u.name || "",
-            lastName: u.lastName || "",
-            patronymic: u.patronymic || "",
-            phoneNumber: u.phoneNumber || "",
-          };
-          setFormData(dto);
-          originalData.current = dto;
+    if (fullUser) {
+      const dto: AppUserRequestDTO = {
+        login: fullUser.login || "",
+        password: "",
+        name: fullUser.name || "",
+        lastName: fullUser.lastName || "",
+        patronymic: fullUser.patronymic || "",
+        phoneNumber: fullUser.phoneNumber || "",
+      };
+      setFormData(dto);
+      originalData.current = dto;
 
-          if (u.organization) {
-            const org = {
-              name: u.organization.name || "",
-              phone: u.organization.phoneNumber || "",
-            };
-            setOrganizationData(org);
-            originalOrgData.current = org;
-          }
-        } else {
-          console.error("Ошибка получения пользователя:", res.errorMassage);
-        }
-      } catch (err) {
-        console.error("Ошибка при запросе пользователя:", err);
-      } finally {
-        setLoading(false);
+      if (fullUser.organization) {
+        const org = {
+          name: fullUser.organization.name || "",
+          phone: fullUser.organization.phoneNumber || "",
+        };
+        setOrganizationData(org);
+        originalOrgData.current = org;
       }
-    };
-
-    fetchUser();
-  }, [user?.id]);
+      setLoading(false);
+    }
+  }, [fullUser]);
 
   const handleChange = (field: keyof AppUserRequestDTO, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
