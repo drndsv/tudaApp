@@ -6,6 +6,7 @@ import {
   Group,
   Loader,
   Menu,
+  Modal,
   Paper,
   Stack,
   Text,
@@ -19,6 +20,7 @@ import { EventControllerService } from "../../api/generated";
 import { EventParticipantResponseDTO } from "../../api/generated/models/EventParticipantResponseDTO";
 import { FaSearch } from "react-icons/fa";
 import PillBadge from "../../components/PillBadge";
+import QRScanner from "../../components/QRScanner";
 
 export default function EventParticipantsPage() {
   const { id } = useParams<{ id: string }>();
@@ -33,6 +35,7 @@ export default function EventParticipantsPage() {
     "Пришёл" | "Не пришёл" | null
   >(null);
   const [loading, setLoading] = useState(true);
+  const [scannerOpen, setScannerOpen] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -86,6 +89,17 @@ export default function EventParticipantsPage() {
     }
   };
 
+  const handleScan = (data: string) => {
+    alert(`Считан QR-код: ${data}`);
+    setScannerOpen(false);
+
+    // TODO: Распарсить ID и отметить участника как "пришёл" через API
+    // Например:
+    // const participantId = parseInt(data);
+    // EventControllerService.markParticipantAsArrived(participantId)
+    //   .then(() => reloadParticipants());
+  };
+
   if (loading) {
     return (
       <Box>
@@ -132,9 +146,10 @@ export default function EventParticipantsPage() {
           </Button>
         </Group>
 
+        {/* Меню фильтров и кнопка сканирования */}
         <Group wrap="wrap" gap="sm" mb="xl" justify="space-between">
           <Group gap="sm">
-            {/* Роль */}
+            {/* Фильтр по роли */}
             <Menu shadow="md" width={200} radius="md" withArrow>
               <Menu.Target>
                 <Button variant="default" radius="xl">
@@ -154,7 +169,7 @@ export default function EventParticipantsPage() {
               </Menu.Dropdown>
             </Menu>
 
-            {/* Статус */}
+            {/* Фильтр по статусу */}
             <Menu shadow="md" width={200} radius="md" withArrow>
               <Menu.Target>
                 <Button variant="default" radius="xl">
@@ -175,8 +190,12 @@ export default function EventParticipantsPage() {
             </Menu>
           </Group>
 
-          {/* сканировать */}
-          <Button color="green.10" radius="xl">
+          {/* Кнопка сканирования */}
+          <Button
+            color="green.10"
+            radius="xl"
+            onClick={() => setScannerOpen(true)}
+          >
             Сканировать
           </Button>
         </Group>
@@ -189,7 +208,6 @@ export default function EventParticipantsPage() {
                 <Text>{p.fullName || "Без имени"}</Text>
                 <Group gap="sm" wrap="wrap">
                   <PillBadge label={getRoleLabel(p.role)} />
-
                   <PillBadge
                     label={p.status ? "Пришёл" : "Не пришёл"}
                     color={p.status ? "green.6" : "gray.6"}
@@ -202,6 +220,20 @@ export default function EventParticipantsPage() {
           ))}
         </Stack>
       </Container>
+
+      {/* Модальное окно со сканером */}
+      <Modal
+        opened={scannerOpen}
+        onClose={() => setScannerOpen(false)}
+        title="Сканируйте QR-код"
+        size="lg"
+        centered
+      >
+        <QRScanner
+          onScanSuccess={handleScan}
+          onClose={() => setScannerOpen(false)}
+        />
+      </Modal>
     </Box>
   );
 }
