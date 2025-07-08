@@ -16,6 +16,10 @@ import "@mantine/dates/styles.css";
 import { OpenAPI } from "./api/generated/core/OpenAPI";
 import { AuthProvider } from "./context/AuthContext.tsx";
 
+// уведы
+import { Notifications } from "@mantine/notifications";
+import "@mantine/notifications/styles.css";
+
 const token = localStorage.getItem("auth_token");
 if (token) {
   OpenAPI.TOKEN = token;
@@ -30,6 +34,7 @@ createRoot(document.getElementById("root")!).render(
       <MantineProvider theme={theme} defaultColorScheme="light">
         <DatesProvider settings={{ locale: "ru" }}>
           <AuthProvider>
+            <Notifications position="top-center" />
             <App />
           </AuthProvider>
         </DatesProvider>

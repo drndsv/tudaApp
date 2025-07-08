@@ -31,15 +31,28 @@ export default function LoginPage() {
       const accessToken = response.accessToken;
       const refreshToken = response.refreshToken;
 
-      if (!accessToken || !refreshToken) throw new Error("Токены не получены");
+      if (!accessToken || !refreshToken) {
+        throw new Error("Токены не получены");
+      }
 
       login(accessToken, refreshToken);
-
       navigate("/");
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Ошибка входа:", error);
+
+      const status = error?.response?.status; // исправлено
+
+      let message = "Произошла ошибка при попытке входа";
+
+      if (status === 401) {
+        message = "Неверный логин или пароль";
+      } else if (status === 404) {
+        message = "Сервер не отвечает или маршрут /auth/login не найден";
+      }
+
       showNotification({
         title: "Ошибка входа",
-        message: "Неверный логин или пароль",
+        message,
         color: "red",
       });
     }

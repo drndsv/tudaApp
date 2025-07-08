@@ -1,4 +1,3 @@
-// TODO: разобраться почему в режиме отладки при сохранении выкидывает в debugger
 import {
   Box,
   Button,
@@ -13,13 +12,16 @@ import {
   Center,
 } from "@mantine/core";
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
 import { UserControllerService, AppUserRequestDTO } from "../api/generated";
 import { useFullUser } from "../hooks/useFullUser";
 
 export default function ProfilePage() {
-  const { user } = useAuth(); // sub (login) и id из токена
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
   const fullUser = useFullUser();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -37,6 +39,8 @@ export default function ProfilePage() {
     name: "",
     phone: "",
   });
+
+  const [passwordInput, setPasswordInput] = useState("");
 
   const originalData = useRef<AppUserRequestDTO | null>(null);
   const originalOrgData = useRef<{ name: string; phone: string } | null>(null);
@@ -77,39 +81,61 @@ export default function ProfilePage() {
     if (originalOrgData.current) {
       setOrganizationData(originalOrgData.current);
     }
+    setPasswordInput("");
     setIsEditing(false);
   };
 
-  const handleSave = async () => {
-    console.log("handleSave вызван");
-    console.log("user.sub (login):", user?.sub);
+  const canSave = () => {
+    return (
+      (formData.login ?? "").trim() !== "" &&
+      passwordInput.trim() !== "" &&
+      (formData.name ?? "").trim() !== "" &&
+      (formData.lastName ?? "").trim() !== "" &&
+      (formData.patronymic ?? "").trim() !== "" &&
+      (formData.phoneNumber ?? "").trim() !== ""
+    );
+  };
 
-    if (!user?.sub) {
-      console.warn("Нет логина (sub), выходим");
+  const handleSave = async () => {
+    if (!canSave()) {
+      alert("Пожалуйста, заполните все обязательные поля, включая пароль.");
       return;
     }
 
-    try {
-      const payload: AppUserRequestDTO = {
-        ...formData,
-        login: user.sub,
-      };
+    if (!user?.sub) {
+      alert("Ошибка: пользователь не авторизован");
+      return;
+    }
 
-      console.log("Отправка:", JSON.stringify(payload, null, 2));
+    const payload: AppUserRequestDTO = {
+      ...formData,
+      password: passwordInput.trim(),
+    };
+
+    try {
       const res = await UserControllerService.changeUserRefs(user.sub, payload);
-      console.log("Ответ от сервера:", res);
 
       if (!res.error) {
         alert("Изменения сохранены");
         setIsEditing(false);
         originalData.current = formData;
         originalOrgData.current = organizationData;
+        setPasswordInput("");
+
+        // Проверка, изменился ли логин или пароль
+        if (
+          formData.login !== user.sub ||
+          (passwordInput.trim() !== "" && passwordInput !== formData.password)
+        ) {
+          alert(
+            "Логин или пароль были изменены, пожалуйста, выполните повторный вход"
+          );
+          logout();
+          navigate("/login");
+        }
       } else {
         alert("Ошибка при сохранении: " + res.errorMassage);
       }
-
-      //  обновление организации, когда Даня сделает мне ручку (((
-      // OrganizationControllerService.update(...);
     } catch (err) {
       console.error("Ошибка при сохранении:", err);
       alert("Ошибка при сохранении");
@@ -144,7 +170,10 @@ export default function ProfilePage() {
               <Button
                 radius="xl"
                 color="green.10"
-                onClick={() => setIsEditing(true)}
+                onClick={() => {
+                  setIsEditing(true);
+                  setPasswordInput("");
+                }}
                 type="button"
               >
                 Редактировать
@@ -162,9 +191,20 @@ export default function ProfilePage() {
                 <Text w={100} fw={500}>
                   Логин
                 </Text>
-                <Text size="sm" c="dimmed">
-                  {formData.login}
-                </Text>
+                {isEditing ? (
+                  <TextInput
+                    value={formData.login}
+                    onChange={(e) =>
+                      handleChange("login", e.currentTarget.value)
+                    }
+                    radius="md"
+                    style={{ flex: 1 }}
+                  />
+                ) : (
+                  <Text size="sm" c="dimmed">
+                    {formData.login}
+                  </Text>
+                )}
               </Group>
             </Box>
 
@@ -176,16 +216,16 @@ export default function ProfilePage() {
               >
                 <Group align="center" gap="md" wrap="nowrap">
                   <Text w={100} fw={500}>
-                    Новый пароль
+                    Пароль*
                   </Text>
                   <TextInput
                     type="password"
-                    value={formData.password}
-                    onChange={(e) =>
-                      handleChange("password", e.currentTarget.value)
-                    }
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.currentTarget.value)}
                     radius="md"
                     style={{ flex: 1 }}
+                    placeholder="Для сохранения изменений обязательно введите пароль"
+                    required
                   />
                 </Group>
               </Box>
@@ -302,6 +342,7 @@ export default function ProfilePage() {
                 radius="xl"
                 color="green.10"
                 onClick={handleSave}
+                disabled={!canSave()}
               >
                 Сохранить
               </Button>
