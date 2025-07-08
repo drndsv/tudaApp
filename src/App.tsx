@@ -11,6 +11,7 @@ import UserEventsPage from "./pages/userPages/UserEventsPage";
 import CreateEventPage from "./pages/orgPages/CreateEventPage";
 import OrganizerEventsPage from "./pages/orgPages/OrganizerEventsPage";
 import OrganizerEventViewPage from "./pages/orgPages/OrganizerEventViewPage";
+import EventParticipantsPage from "./pages/orgPages/EventParticipantsPage";
 
 function App() {
   return (
@@ -26,6 +27,10 @@ function App() {
       <Route
         path="/organizer/events/:id"
         element={<OrganizerEventViewPage />}
+      />
+      <Route
+        path="/organizer/events/:id/participants"
+        element={<EventParticipantsPage />}
       />
     </Routes>
   );

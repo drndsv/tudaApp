@@ -116,8 +116,9 @@ export default function OrganizerEventViewPage() {
                     onClick={() =>
                       navigate(`/organizer/events/${event.id}/requests`)
                     }
+                    disabled
                   >
-                    Список заявок
+                    Список заявок (в разработке)
                   </Button>
                 </Grid.Col>
                 <Grid.Col span={6}>
@@ -128,8 +129,9 @@ export default function OrganizerEventViewPage() {
                     onClick={() =>
                       navigate(`/organizer/events/${event.id}/edit`)
                     }
+                    disabled
                   >
-                    Редактировать данные
+                    Редактировать данные (в разработке)
                   </Button>
                 </Grid.Col>
                 <Grid.Col span={6}>
@@ -152,8 +154,9 @@ export default function OrganizerEventViewPage() {
                     onClick={() => {
                       alert("Функция формирования отчёта в разработке.");
                     }}
+                    disabled
                   >
-                    Сформировать отчёт
+                    Сформировать отчёт (в разработке)
                   </Button>
                 </Grid.Col>
               </Grid>
