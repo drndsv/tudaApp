@@ -28,11 +28,12 @@ export default function LoginPage() {
         password: values.password,
       } as JwtSignInRequestDTO);
 
-      const token = response.accessToken;
-      if (!token) throw new Error("Токен не получен");
+      const accessToken = response.accessToken;
+      const refreshToken = response.refreshToken;
 
-      // Сохраняем токен через контекст
-      login(token);
+      if (!accessToken || !refreshToken) throw new Error("Токены не получены");
+
+      login(accessToken, refreshToken);
 
       navigate("/");
     } catch (error) {
