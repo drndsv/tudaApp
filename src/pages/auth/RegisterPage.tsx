@@ -2,11 +2,13 @@ import { Button, Group, Radio, Stack, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AuthLayout from "../components/AuthLayout";
-import { leftAlignedLabel } from "../styles/formStyles";
-import { AuthControllerService } from "../api/generated/services/AuthControllerService";
-import { OpenAPI } from "../api/generated/core/OpenAPI";
-import type { JwtSignUpRequestDTO } from "../api/generated/models/JwtSignUpRequestDTO";
+import {
+  AuthControllerService,
+  JwtSignUpRequestDTO,
+  OpenAPI,
+} from "../../api/generated";
+import AuthLayout from "../../components/AuthLayout";
+import { leftAlignedLabel } from "../../styles/formStyles";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -18,8 +20,8 @@ export default function RegisterPage() {
       password: "",
       lastName: "",
       firstName: "",
-      middleName: "",
-      phoneNumber: "", // добавлено поле телефона для USER
+      patronymic: "",
+      phoneNumber: "",
       orgName: "",
       coordinatorName: "",
       coordinatorPhone: "",
@@ -33,7 +35,7 @@ export default function RegisterPage() {
       if (accountType === "USER") {
         if (!values.lastName) errors.lastName = "Введите фамилию";
         if (!values.firstName) errors.firstName = "Введите имя";
-        if (!values.middleName) errors.middleName = "Введите отчество";
+        if (!values.patronymic) errors.patronymic = "Введите отчество";
         if (!values.phoneNumber) errors.phoneNumber = "Введите номер телефона"; // валидация
       } else {
         if (!values.orgName) errors.orgName = "Введите название организации";
@@ -53,7 +55,7 @@ export default function RegisterPage() {
       password: values.password,
       name: accountType === "USER" ? values.firstName : undefined,
       lastName: accountType === "USER" ? values.lastName : undefined,
-      patronymic: accountType === "USER" ? values.middleName : undefined,
+      patronymic: accountType === "USER" ? values.patronymic : undefined,
       phoneNumber:
         accountType === "USER"
           ? values.phoneNumber
@@ -70,7 +72,7 @@ export default function RegisterPage() {
       const prevToken = OpenAPI.TOKEN;
       OpenAPI.TOKEN = ""; // убрать токен, если он был
 
-      await AuthControllerService.register(payload);
+      await AuthControllerService.signUp(payload);
 
       OpenAPI.TOKEN = prevToken; // вернуть, если нужно
 
@@ -134,7 +136,7 @@ export default function RegisterPage() {
                 label="Отчество"
                 placeholder="Введите отчество"
                 radius="xl"
-                {...form.getInputProps("middleName")}
+                {...form.getInputProps("patronymic")}
                 styles={{ label: leftAlignedLabel }}
               />
               <TextInput

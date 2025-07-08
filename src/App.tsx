@@ -5,10 +5,13 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import EventDetailsPage from "./pages/EventDetailsPage";
 import ProfilePage from "./pages/ProfilePage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
 import UserEventsPage from "./pages/userPages/UserEventsPage";
 import CreateEventPage from "./pages/orgPages/CreateEventPage";
+import OrganizerEventsPage from "./pages/orgPages/OrganizerEventsPage";
+import OrganizerEventViewPage from "./pages/orgPages/OrganizerEventViewPage";
+import EventParticipantsPage from "./pages/orgPages/EventParticipantsPage";
 
 function App() {
   return (
@@ -20,6 +23,15 @@ function App() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/userEvents" element={<UserEventsPage />} />
       <Route path="/createEvent" element={<CreateEventPage />} />
+      <Route path="/organizerEvents" element={<OrganizerEventsPage />} />
+      <Route
+        path="/organizer/events/:id"
+        element={<OrganizerEventViewPage />}
+      />
+      <Route
+        path="/organizer/events/:id/participants"
+        element={<EventParticipantsPage />}
+      />
     </Routes>
   );
 }

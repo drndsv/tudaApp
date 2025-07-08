@@ -4,37 +4,39 @@ import {
   Box,
   Container,
   Grid,
-  Image,
   Text,
   Title,
   Stack,
-  Card,
   Button,
-  rem,
   Center,
   Loader,
 } from "@mantine/core";
 import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
+import { useFullUser } from "../hooks/useFullUser";
 import { useEventImage } from "../hooks/useEventImage";
 import {
-  AppUserResponseDTO,
   UserControllerService,
   AccountingAppUserControllerService,
   RequestControllerService,
   EventControllerService,
   EventResponseDTO,
 } from "../api/generated";
+import EventImageBlock from "../components/EventImageBlock";
+import EventDetailsInfo from "../components/EventDetailsInfo";
 
 export default function EventDetailsPage() {
   const { user } = useAuth();
-  const [fullUser, setFullUser] = useState<AppUserResponseDTO | null>(null);
+  const fullUser = useFullUser();
+
   const { id } = useParams();
   const [event, setEvent] = useState<EventResponseDTO | null>(null);
   const [loading, setLoading] = useState(true);
   const [isParticipant, setIsParticipant] = useState(false);
   const [isVolunteerPending, setIsVolunteerPending] = useState(false);
   const [isVolunteerConfirmed, setIsVolunteerConfirmed] = useState(false);
+
+  const isOrganizer = user?.roles?.includes("ROLE_ORGANIZER");
 
   useEffect(() => {
     if (!id) return;
@@ -58,22 +60,8 @@ export default function EventDetailsPage() {
   }, [id]);
 
   useEffect(() => {
-    if (user?.id) {
-      UserControllerService.getUser(user.id)
-        .then((res) => {
-          if (!res.error && res.result) {
-            setFullUser(res.result);
-          } else {
-            console.error("Ошибка получения пользователя:", res.errorMassage);
-          }
-        })
-        .catch((err) => {
-          console.error("Ошибка при получении данных пользователя:", err);
-        });
-    }
-  }, [user?.id]);
+    if (isOrganizer) return;
 
-  useEffect(() => {
     const fetchStatus = async () => {
       if (user?.id && event?.id) {
         try {
@@ -96,7 +84,7 @@ export default function EventDetailsPage() {
     };
 
     fetchStatus();
-  }, [user?.id, event?.id]);
+  }, [user?.id, event?.id, isOrganizer]);
 
   const imageSrc = useEventImage(event?.photo);
 
@@ -157,9 +145,7 @@ export default function EventDetailsPage() {
     switch (status) {
       case "WILL":
         return "Планируется";
-      case "PUBLISHED":
-        return "Опубликовано";
-      case "FINISHED":
+      case "PASSED":
         return "Завершено";
       case "CANCELLED":
         return "Отменено";
@@ -209,28 +195,10 @@ export default function EventDetailsPage() {
         <Grid gutter="xl" align="stretch">
           <Grid.Col span={{ base: 12, md: 6 }} h="100%">
             <Stack h="100%" justify="space-between">
-              <Box
-                h={320}
-                style={{
-                  borderRadius: rem(16),
-                  overflow: "hidden",
-                  boxShadow: "8px 8px 16px #bcc4aa, -8px -8px 16px #ffffff",
-                }}
-              >
-                {imageSrc ? (
-                  <Image
-                    src={imageSrc}
-                    alt={event.title || "Мероприятие"}
-                    h="100%"
-                    w="100%"
-                    fit="cover"
-                  />
-                ) : (
-                  <Center h="100%" bg="gray.0">
-                    <Text c="gray.6">Без фото</Text>
-                  </Center>
-                )}
-              </Box>
+              <EventImageBlock
+                src={imageSrc}
+                alt={event.title || "Мероприятие"}
+              />
 
               <Stack gap="sm">
                 {isParticipant && (
@@ -259,7 +227,7 @@ export default function EventDetailsPage() {
                         fullWidth
                         color="green.10"
                         radius="xl"
-                        disabled={isPast}
+                        disabled={isPast || isOrganizer}
                         onClick={handleJoin}
                       >
                         Участвовать
@@ -268,7 +236,7 @@ export default function EventDetailsPage() {
                         fullWidth
                         color="green.10"
                         radius="xl"
-                        disabled={isPast}
+                        disabled={isPast || isOrganizer}
                         onClick={handleVolunteer}
                       >
                         Подать заявку на волонтёрство
@@ -283,11 +251,17 @@ export default function EventDetailsPage() {
                     fullWidth
                     color="red"
                     radius="xl"
-                    disabled={isPast}
+                    disabled={isPast || isOrganizer}
                     onClick={handleCancel}
                   >
                     Отказаться от участия
                   </Button>
+                )}
+
+                {isOrganizer && (
+                  <Text fz="xs" c="gray.6" ta="center">
+                    Действия недоступны для аккаунта организатора
+                  </Text>
                 )}
               </Stack>
             </Stack>
@@ -295,117 +269,7 @@ export default function EventDetailsPage() {
 
           {/* Правая колонка */}
           <Grid.Col span={{ base: 12, md: 6 }} h="100%">
-            <Stack gap="md" h="100%">
-              <Card
-                shadow="sm"
-                radius="xl"
-                padding="md"
-                bg="white"
-                withBorder
-                style={{ minHeight: "120px" }}
-              >
-                <Text fw={600} mb="xs">
-                  Описание
-                </Text>
-                <Text fz="sm">{event.description || "Нет описания."}</Text>
-              </Card>
-
-              <Grid>
-                <Grid.Col span={6}>
-                  <Card
-                    shadow="sm"
-                    radius="xl"
-                    padding="md"
-                    bg="white"
-                    withBorder
-                  >
-                    <Text fw={600} mb="xs">
-                      Участников
-                    </Text>
-                    <Text fz="sm">{event.participantsNumber ?? 0}/200</Text>
-                  </Card>
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <Card
-                    shadow="sm"
-                    radius="xl"
-                    padding="md"
-                    bg="white"
-                    withBorder
-                  >
-                    <Text fw={600} mb="xs">
-                      Волонтёров
-                    </Text>
-                    <Text fz="sm">{event.volunteersNumber ?? 0}/100</Text>
-                  </Card>
-                </Grid.Col>
-              </Grid>
-
-              <Grid>
-                <Grid.Col span={6}>
-                  <Card
-                    shadow="sm"
-                    radius="xl"
-                    padding="md"
-                    bg="white"
-                    withBorder
-                    h="100%"
-                  >
-                    <Text fw={600} mb="xs">
-                      Основная информация
-                    </Text>
-                    <Stack gap={4} fz="sm">
-                      <Text>
-                        📅{" "}
-                        {event.date
-                          ? new Date(event.date).toLocaleDateString()
-                          : "—"}
-                      </Text>
-                      <Text>
-                        🕒{" "}
-                        {event.date
-                          ? new Date(event.date).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })
-                          : "—"}
-                      </Text>
-                      <Text>📍 {event.city || "Город не указан"}</Text>
-                      <Text>
-                        🏢{" "}
-                        {event.organization?.name || "Организация не указана"}
-                      </Text>
-                    </Stack>
-                  </Card>
-                </Grid.Col>
-
-                <Grid.Col span={6}>
-                  <Card
-                    shadow="sm"
-                    radius="xl"
-                    padding="md"
-                    bg="white"
-                    withBorder
-                    h="100%"
-                  >
-                    <Text fw={600} mb="xs">
-                      Контактное лицо
-                    </Text>
-                    <Stack gap={4} fz="sm">
-                      <Text>
-                        📞 {event.organization?.phoneNumber || "Не указан"}
-                      </Text>
-                      <Text>
-                        👤{" "}
-                        {`${fullUser?.lastName ?? ""} ${fullUser?.name ?? ""} ${
-                          fullUser?.patronymic ?? ""
-                        }` || "Не указан"}
-                      </Text>
-                    </Stack>
-                  </Card>
-                </Grid.Col>
-              </Grid>
-            </Stack>
+            <EventDetailsInfo event={event} fullUser={fullUser} />
           </Grid.Col>
         </Grid>
       </Container>

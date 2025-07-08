@@ -2,14 +2,16 @@ import { Button, Stack, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
-import AuthLayout from "../components/AuthLayout";
-import { AuthControllerService } from "../api/generated/services/AuthControllerService";
-import { JwtLoginRequestDTO } from "../api/generated/models/JwtLoginRequestDTO";
-import { useAuth } from "../context/AuthContext";
+import AuthLayout from "../../components/AuthLayout";
+import {
+  AuthControllerService,
+  JwtSignInRequestDTO,
+} from "../../api/generated";
+import { useAuth } from "../../context/AuthContext";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { login } = useAuth(); // Получаем функцию login из контекста
+  const { login } = useAuth();
 
   const form = useForm({
     initialValues: { login: "", password: "" },
@@ -21,23 +23,36 @@ export default function LoginPage() {
 
   const handleSubmit = async (values: typeof form.values) => {
     try {
-      const response = await AuthControllerService.authenticate({
+      const response = await AuthControllerService.signIn({
         login: values.login,
         password: values.password,
-      } as JwtLoginRequestDTO);
+      } as JwtSignInRequestDTO);
 
-      const token = response.token;
-      if (!token) throw new Error("Токен не получен");
+      const accessToken = response.accessToken;
+      const refreshToken = response.refreshToken;
 
-      // Сохраняем токен через контекст
-      login(token);
+      if (!accessToken || !refreshToken) {
+        throw new Error("Токены не получены");
+      }
 
-      // Перенаправляем на главную страницу
+      login(accessToken, refreshToken);
       navigate("/");
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Ошибка входа:", error);
+
+      const status = error?.response?.status; // исправлено
+
+      let message = "Произошла ошибка при попытке входа";
+
+      if (status === 401) {
+        message = "Неверный логин или пароль";
+      } else if (status === 404) {
+        message = "Сервер не отвечает или маршрут /auth/login не найден";
+      }
+
       showNotification({
         title: "Ошибка входа",
-        message: "Неверный логин или пароль",
+        message,
         color: "red",
       });
     }

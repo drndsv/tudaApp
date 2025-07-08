@@ -13,24 +13,21 @@ import {
   Select,
 } from "@mantine/core";
 import { DateInput, TimeInput } from "@mantine/dates";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Header from "../../components/Header";
-import { useAuth } from "../../context/AuthContext";
 import {
   EventControllerService,
   EventRequestDTO,
-  UserControllerService,
-  AppUserResponseDTO,
   ImageControllerService,
   PhotoResponseDTO,
 } from "../../api/generated";
 import { useNavigate } from "react-router-dom";
+import { useFullUser } from "../../hooks/useFullUser";
 
 export default function CreateEventPage() {
   const navigate = useNavigate();
 
-  const { user } = useAuth();
-  const [fullUser, setFullUser] = useState<AppUserResponseDTO | null>(null);
+  const fullUser = useFullUser();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -48,22 +45,6 @@ export default function CreateEventPage() {
   const [photo, setPhoto] = useState<PhotoResponseDTO | null>(null);
   const [filename, setFilename] = useState<string | undefined>(undefined);
   const [uploadId, setUploadId] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    if (user?.id) {
-      UserControllerService.getUser(user.id)
-        .then((res) => {
-          if (!res.error && res.result) {
-            setFullUser(res.result);
-          } else {
-            console.error("Ошибка получения пользователя:", res.errorMassage);
-          }
-        })
-        .catch((err) => {
-          console.error("Ошибка при получении данных пользователя:", err);
-        });
-    }
-  }, [user?.id]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
