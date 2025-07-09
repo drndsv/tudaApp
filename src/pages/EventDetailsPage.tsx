@@ -24,6 +24,7 @@ import {
 } from "../api/generated";
 import EventImageBlock from "../components/EventImageBlock";
 import EventDetailsInfo from "../components/EventDetailsInfo";
+import { showNotification } from "@mantine/notifications";
 
 export default function EventDetailsPage() {
   const { user } = useAuth();
@@ -101,7 +102,11 @@ export default function EventDetailsPage() {
         setIsVolunteerPending(false);
         setIsVolunteerConfirmed(false);
       } else {
-        alert("Ошибка при записи на участие: " + res.errorMassage);
+        showNotification({
+          title: "Ошибка при записи на участие",
+          message: res.errorMassage,
+          color: "red",
+        });
       }
     } catch (err) {
       console.error("Ошибка при участии:", err);
@@ -117,7 +122,11 @@ export default function EventDetailsPage() {
         setIsParticipant(false);
         setIsVolunteerConfirmed(false);
       } else {
-        alert("Ошибка при подаче заявки: " + res.errorMassage);
+        showNotification({
+          title: "Ошибка при подаче заявки",
+          message: res.errorMassage,
+          color: "red",
+        });
       }
     } catch (err) {
       console.error("Ошибка при подаче заявки:", err);

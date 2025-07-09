@@ -12,6 +12,7 @@ import ImageUploadBlock from "../../components/ImageUploadBlock";
 import EventForm from "../../components/EventForm";
 import dayjs from "dayjs";
 import { uploadImage } from "../../hooks/uploadImage";
+import { showNotification } from "@mantine/notifications";
 
 export default function CreateEventPage() {
   const navigate = useNavigate();
@@ -41,17 +42,30 @@ export default function CreateEventPage() {
     const result = await uploadImage(file);
 
     if (result.error) {
-      alert("Ошибка при загрузке изображения: " + result.error);
+      showNotification({
+        title: "Ошибка загрузки изображения",
+        message: result.error,
+        color: "red",
+      });
     } else if (result.photo) {
       setPhoto(result.photo);
       setFilename(result.filename);
       setUploadId(result.uploadId);
+      showNotification({
+        title: "Изображение загружено",
+        message: "Файл успешно загружен",
+        color: "green",
+      });
     }
   };
 
   const handleSubmit = async () => {
     if (!dateValue) {
-      alert("Укажите дату");
+      showNotification({
+        title: "Некорректные данные",
+        message: "Укажите дату мероприятия",
+        color: "red",
+      });
       return;
     }
 
@@ -78,14 +92,26 @@ export default function CreateEventPage() {
     try {
       const response = await EventControllerService.addEvent(payload);
       if (!response.error) {
-        alert("Мероприятие успешно создано");
+        showNotification({
+          title: "Успех",
+          message: "Мероприятие успешно создано",
+          color: "green",
+        });
         navigate("/");
       } else {
-        alert("Ошибка: " + response.errorMassage);
+        showNotification({
+          title: "Ошибка создания",
+          message: response.errorMassage,
+          color: "red",
+        });
       }
     } catch (err) {
       console.error(err);
-      alert("Ошибка при создании мероприятия");
+      showNotification({
+        title: "Системная ошибка",
+        message: "Произошла ошибка при создании мероприятия",
+        color: "red",
+      });
     }
   };
 

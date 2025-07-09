@@ -12,6 +12,7 @@ import EventForm from "../../components/EventForm";
 import ImageUploadBlock from "../../components/ImageUploadBlock";
 import dayjs from "dayjs";
 import { uploadImage } from "../../hooks/uploadImage";
+import { showNotification } from "@mantine/notifications";
 
 export default function EditEventPage() {
   const { id } = useParams<{ id: string }>();
@@ -62,11 +63,19 @@ export default function EditEventPage() {
             setUploadId(e.photo.uploadId);
           }
         } else {
-          alert("Ошибка загрузки мероприятия: " + response.errorMassage);
+          showNotification({
+            title: "Ошибка загрузки мероприятия",
+            message: response.errorMassage,
+            color: "red",
+          });
         }
       } catch (err) {
         console.error(err);
-        alert("Ошибка при загрузке мероприятия");
+        showNotification({
+          title: "Ошибка",
+          message: "Ошибка при загрузке мероприятия",
+          color: "red",
+        });
       }
     };
 
@@ -80,7 +89,11 @@ export default function EditEventPage() {
     const result = await uploadImage(file);
 
     if (result.error) {
-      alert("Ошибка при загрузке изображения: " + result.error);
+      showNotification({
+        title: "Ошибка при загрузке изображения",
+        message: result.error,
+        color: "red",
+      });
     } else if (result.photo) {
       setPhoto(result.photo);
       setFilename(result.filename);
@@ -90,7 +103,11 @@ export default function EditEventPage() {
 
   const handleSubmit = async () => {
     if (!dateValue || !id) {
-      alert("Укажите дату");
+      showNotification({
+        title: "Ошибка",
+        message: "Укажите дату мероприятия",
+        color: "red",
+      });
       return;
     }
 
@@ -120,14 +137,26 @@ export default function EditEventPage() {
         payload
       );
       if (!response.error) {
-        alert("Мероприятие обновлено");
+        showNotification({
+          title: "Успешно",
+          message: "Мероприятие обновлено",
+          color: "green",
+        });
         navigate(`/organizer/events/${id}`);
       } else {
-        alert("Ошибка: " + response.errorMassage);
+        showNotification({
+          title: "Ошибка при обновлении",
+          message: response.errorMassage,
+          color: "red",
+        });
       }
     } catch (err) {
       console.error(err);
-      alert("Ошибка при обновлении мероприятия");
+      showNotification({
+        title: "Системная ошибка",
+        message: "Ошибка при обновлении мероприятия",
+        color: "red",
+      });
     }
   };
 

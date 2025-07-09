@@ -17,6 +17,7 @@ import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
 import { UserControllerService, AppUserRequestDTO } from "../api/generated";
 import { useFullUser } from "../hooks/useFullUser";
+import { showNotification } from "@mantine/notifications";
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
@@ -98,12 +99,20 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     if (!canSave()) {
-      alert("Пожалуйста, заполните все обязательные поля, включая пароль.");
+      showNotification({
+        title: "Ошибка",
+        message: "Пожалуйста, заполните все обязательные поля, включая пароль",
+        color: "red",
+      });
       return;
     }
 
     if (!user?.sub) {
-      alert("Ошибка: пользователь не авторизован");
+      showNotification({
+        title: "Ошибка",
+        message: "Пользователь не авторизован",
+        color: "red",
+      });
       return;
     }
 
@@ -116,7 +125,11 @@ export default function ProfilePage() {
       const res = await UserControllerService.changeUserRefs(user.sub, payload);
 
       if (!res.error) {
-        alert("Изменения сохранены");
+        showNotification({
+          title: "Успех",
+          message: "Изменения сохранены",
+          color: "green",
+        });
         setIsEditing(false);
         originalData.current = formData;
         originalOrgData.current = organizationData;
@@ -127,18 +140,29 @@ export default function ProfilePage() {
           formData.login !== user.sub ||
           (passwordInput.trim() !== "" && passwordInput !== formData.password)
         ) {
-          alert(
-            "Логин или пароль были изменены, пожалуйста, выполните повторный вход"
-          );
+          showNotification({
+            title: "Изменение данных пользователя",
+            message:
+              "Логин или пароль были изменены, пожалуйста, выполните повторный вход",
+            color: "yellow",
+          });
           logout();
           navigate("/login");
         }
       } else {
-        alert("Ошибка при сохранении: " + res.errorMassage);
+        showNotification({
+          title: "Ошибка при сохранении",
+          message: res.errorMassage,
+          color: "red",
+        });
       }
     } catch (err) {
       console.error("Ошибка при сохранении:", err);
-      alert("Ошибка при сохранении");
+      showNotification({
+        title: "Ошибка",
+        message: "Ошибка при сохранении",
+        color: "red",
+      });
     }
   };
 
