@@ -178,7 +178,14 @@ export default function EventDetailsPage() {
     );
   }
 
+  {
+    /* Доступ к кнопкам */
+  }
   const isPast = new Date(event.date || "") < new Date();
+  const isInactiveStatus =
+    event.eventStatus === "CANCELLED" || event.eventStatus === "PASSED";
+
+  const isDisabled = isPast || isInactiveStatus || isOrganizer;
 
   return (
     <Box>
@@ -227,7 +234,7 @@ export default function EventDetailsPage() {
                         fullWidth
                         color="green.10"
                         radius="xl"
-                        disabled={isPast || isOrganizer}
+                        disabled={isDisabled}
                         onClick={handleJoin}
                       >
                         Участвовать
@@ -236,7 +243,7 @@ export default function EventDetailsPage() {
                         fullWidth
                         color="green.10"
                         radius="xl"
-                        disabled={isPast || isOrganizer}
+                        disabled={isDisabled}
                         onClick={handleVolunteer}
                       >
                         Подать заявку на волонтёрство
@@ -251,7 +258,7 @@ export default function EventDetailsPage() {
                     fullWidth
                     color="red"
                     radius="xl"
-                    disabled={isPast || isOrganizer}
+                    disabled={isDisabled}
                     onClick={handleCancel}
                   >
                     Отказаться от участия
