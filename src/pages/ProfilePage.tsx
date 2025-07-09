@@ -16,9 +16,10 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
 import { UserControllerService, AppUserRequestDTO } from "../api/generated";
-import { OrganizationControllerService } from "../api/generated"; // импортируй сервис организации
+import { OrganizationControllerService } from "../api/generated";
 import { useFullUser } from "../hooks/useFullUser";
 import { showNotification } from "@mantine/notifications";
+import { isValidEmail, isValidPhone } from "../utils/validators";
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
@@ -94,7 +95,7 @@ export default function ProfilePage() {
     setOrganizationData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const canSaveUser = () => {
+  const isUserFormFilled = () => {
     return (
       (formData.login ?? "").trim() !== "" &&
       passwordInput.trim() !== "" &&
@@ -105,12 +106,15 @@ export default function ProfilePage() {
     );
   };
 
-  const canSaveOrg = () => {
+  const isOrgFormFilled = () => {
     return (
       (organizationData.name ?? "").trim() !== "" &&
       (organizationData.phone ?? "").trim() !== ""
     );
   };
+
+  const canSaveUser = isUserFormFilled;
+  const canSaveOrg = isOrgFormFilled;
 
   const handleUserCancel = () => {
     if (originalUserData.current) {
@@ -128,10 +132,30 @@ export default function ProfilePage() {
   };
 
   const handleUserSave = async () => {
-    if (!canSaveUser()) {
+    if (!isUserFormFilled()) {
       showNotification({
         title: "Ошибка",
         message: "Пожалуйста, заполните все обязательные поля, включая пароль",
+        color: "red",
+      });
+      return;
+    }
+
+    if (!isValidEmail(formData.login ?? "")) {
+      showNotification({
+        title: "Некорректный email",
+        message:
+          "Пожалуйста, введите корректный email (пример: example@mail.ru)",
+        color: "red",
+      });
+      return;
+    }
+
+    if (!isValidPhone(formData.phoneNumber ?? "")) {
+      showNotification({
+        title: "Некорректный номер телефона",
+        message:
+          "Пожалуйста, введите корректный телефон (пример: +7XXXXXXXXXX)",
         color: "red",
       });
       return;
@@ -164,7 +188,7 @@ export default function ProfilePage() {
         originalUserData.current = formData;
         setPasswordInput("");
 
-        // Проверка, изменился ли логин или пароль
+        //изменился ли логин или пароль
         if (
           formData.login !== user.sub ||
           (passwordInput.trim() !== "" && passwordInput !== formData.password)
@@ -196,10 +220,20 @@ export default function ProfilePage() {
   };
 
   const handleOrgSave = async () => {
-    if (!canSaveOrg()) {
+    if (!isOrgFormFilled()) {
       showNotification({
         title: "Ошибка",
         message: "Пожалуйста, заполните все обязательные поля организации",
+        color: "red",
+      });
+      return;
+    }
+
+    if (!isValidPhone(organizationData.phone ?? "")) {
+      showNotification({
+        title: "Некорректный номер телефона организации",
+        message:
+          "Пожалуйста, введите корректный телефон (пример: +7XXXXXXXXXX)",
         color: "red",
       });
       return;
@@ -295,7 +329,7 @@ export default function ProfilePage() {
             >
               <Group align="center" gap="md" wrap="nowrap">
                 <Text w={100} fw={500}>
-                  Логин
+                  email
                 </Text>
                 {isUserEditing ? (
                   <TextInput

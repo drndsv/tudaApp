@@ -13,6 +13,7 @@ import OrganizerEventsPage from "./pages/orgPages/OrganizerEventsPage";
 import OrganizerEventViewPage from "./pages/orgPages/OrganizerEventViewPage";
 import EventParticipantsPage from "./pages/orgPages/EventParticipantsPage";
 import EditEventPage from "./pages/orgPages/EditEventPage";
+import EventRequestsPage from "./pages/orgPages/EventRequestsPage";
 
 function App() {
   return (
@@ -34,6 +35,10 @@ function App() {
         element={<EventParticipantsPage />}
       />
       <Route path="/organizer/events/:id/edit" element={<EditEventPage />} />
+      <Route
+        path="/organizer/events/:id/requests"
+        element={<EventRequestsPage />}
+      />
     </Routes>
   );
 }

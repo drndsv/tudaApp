@@ -97,9 +97,8 @@ export default function OrganizerEventViewPage() {
                     onClick={() =>
                       navigate(`/organizer/events/${event.id}/requests`)
                     }
-                    disabled
                   >
-                    Список заявок (в разработке)
+                    Список заявок
                   </Button>
                 </Grid.Col>
                 <Grid.Col span={6}>
