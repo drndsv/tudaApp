@@ -97,7 +97,7 @@ export default function CreateEventPage() {
           message: "Мероприятие успешно создано",
           color: "green",
         });
-        navigate("/");
+        navigate("/organizerEvents");
       } else {
         showNotification({
           title: "Ошибка создания",

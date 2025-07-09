@@ -10,43 +10,24 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+
 import Header from "../../components/Header";
-import { EventControllerService, EventResponseDTO } from "../../api/generated";
 import { useEventImage } from "../../hooks/useEventImage";
 import { useFullUser } from "../../hooks/useFullUser";
 import EventImageBlock from "../../components/EventImageBlock";
 import EventDetailsInfo from "../../components/EventDetailsInfo";
+import { useEventById } from "../../hooks/useEventById";
 
 export default function OrganizerEventViewPage() {
   const fullUser = useFullUser();
+
   const { id } = useParams<{ id: string }>();
+
+  const { event, loading } = useEventById(id);
+
   const navigate = useNavigate();
-  const [event, setEvent] = useState<EventResponseDTO | null>(null);
-  const [loading, setLoading] = useState(true);
 
   const imageSrc = useEventImage(event?.photo);
-
-  useEffect(() => {
-    if (!id) return;
-
-    const load = async () => {
-      try {
-        const res = await EventControllerService.getEventById(Number(id));
-        if (!res.error && res.result) {
-          setEvent(res.result);
-        } else {
-          console.error("Ошибка:", res.errorMassage);
-        }
-      } catch (err) {
-        console.error("Ошибка загрузки:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    load();
-  }, [id]);
 
   const getReadableStatus = (status?: string): string => {
     switch (status) {

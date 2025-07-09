@@ -9,6 +9,26 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class OrganizationControllerService {
     /**
+     * @param organizationId
+     * @param requestBody
+     * @returns ApiResponseOrganizationResponseDTO OK
+     * @throws ApiError
+     */
+    public static updateOrganization(
+        organizationId: number,
+        requestBody: OrganizationRequestDTO,
+    ): CancelablePromise<ApiResponseOrganizationResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/organization/update',
+            query: {
+                'organizationId': organizationId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+    /**
      * @param requestBody
      * @returns ApiResponseOrganizationResponseDTO OK
      * @throws ApiError

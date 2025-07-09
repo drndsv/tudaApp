@@ -110,6 +110,7 @@ export default function EditEventPage() {
       });
       return;
     }
+    console.log("Отправляем filename, uploadId:", filename, uploadId);
 
     const [h, m] = timeValue.split(":");
     const localDate = dayjs(dateValue)
