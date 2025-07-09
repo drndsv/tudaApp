@@ -50,7 +50,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return null;
   });
 
-  // Обновить access-токен через refresh
+  // обновление access-токен через refresh
   const refreshAccessToken = async () => {
     const refreshToken = localStorage.getItem("refresh_token");
     if (!refreshToken) {

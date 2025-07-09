@@ -19,45 +19,31 @@ import {
   UserControllerService,
   AccountingAppUserControllerService,
   RequestControllerService,
-  EventControllerService,
-  EventResponseDTO,
 } from "../api/generated";
 import EventImageBlock from "../components/EventImageBlock";
 import EventDetailsInfo from "../components/EventDetailsInfo";
+import { showNotification } from "@mantine/notifications";
+
+import GuestJoinModal from "../components/GuestJoinModal";
+import { GuestControllerService } from "../api/generated";
+import { useEventById } from "../hooks/useEventById";
 
 export default function EventDetailsPage() {
   const { user } = useAuth();
   const fullUser = useFullUser();
 
   const { id } = useParams();
-  const [event, setEvent] = useState<EventResponseDTO | null>(null);
-  const [loading, setLoading] = useState(true);
+
+  const { event, loading } = useEventById(id);
+
   const [isParticipant, setIsParticipant] = useState(false);
   const [isVolunteerPending, setIsVolunteerPending] = useState(false);
   const [isVolunteerConfirmed, setIsVolunteerConfirmed] = useState(false);
 
   const isOrganizer = user?.roles?.includes("ROLE_ORGANIZER");
+  const imageSrc = useEventImage(event?.photo);
 
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchEvent = async () => {
-      try {
-        const response = await EventControllerService.getEventById(Number(id));
-        if (!response.error && response.result) {
-          setEvent(response.result);
-        } else {
-          console.error("Ошибка в ответе:", response.errorMassage);
-        }
-      } catch (e) {
-        console.error("Ошибка при загрузке мероприятия:", e);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEvent();
-  }, [id]);
+  const [guestModalOpened, setGuestModalOpened] = useState(false);
 
   useEffect(() => {
     if (isOrganizer) return;
@@ -86,8 +72,6 @@ export default function EventDetailsPage() {
     fetchStatus();
   }, [user?.id, event?.id, isOrganizer]);
 
-  const imageSrc = useEventImage(event?.photo);
-
   const handleJoin = async () => {
     if (!user?.sub || !event?.id) return;
     try {
@@ -101,7 +85,11 @@ export default function EventDetailsPage() {
         setIsVolunteerPending(false);
         setIsVolunteerConfirmed(false);
       } else {
-        alert("Ошибка при записи на участие: " + res.errorMassage);
+        showNotification({
+          title: "Ошибка при записи на участие",
+          message: res.errorMassage,
+          color: "red",
+        });
       }
     } catch (err) {
       console.error("Ошибка при участии:", err);
@@ -117,7 +105,11 @@ export default function EventDetailsPage() {
         setIsParticipant(false);
         setIsVolunteerConfirmed(false);
       } else {
-        alert("Ошибка при подаче заявки: " + res.errorMassage);
+        showNotification({
+          title: "Ошибка при подаче заявки",
+          message: res.errorMassage,
+          color: "red",
+        });
       }
     } catch (err) {
       console.error("Ошибка при подаче заявки:", err);
@@ -154,6 +146,34 @@ export default function EventDetailsPage() {
     }
   };
 
+  const handleGuestSubmit = async (fullName: string, mail: string) => {
+    if (!event?.id) return;
+    try {
+      const res = await GuestControllerService.addGuest({
+        event: event.id,
+        fullName,
+        mail,
+        status: true,
+      });
+      if (!res.error) {
+        showNotification({
+          title: "Вы успешно зарегистрированы как участник",
+          message: "",
+          color: "green",
+        });
+        setGuestModalOpened(false);
+      } else {
+        showNotification({
+          title: "Ошибка",
+          message: res.errorMassage,
+          color: "red",
+        });
+      }
+    } catch (err) {
+      console.error("Ошибка регистрации гостя:", err);
+    }
+  };
+
   if (loading) {
     return (
       <Box>
@@ -178,7 +198,14 @@ export default function EventDetailsPage() {
     );
   }
 
+  {
+    /* Доступ к кнопкам */
+  }
   const isPast = new Date(event.date || "") < new Date();
+  const isInactiveStatus =
+    event.eventStatus === "CANCELLED" || event.eventStatus === "PASSED";
+
+  const isDisabled = isPast || isInactiveStatus || isOrganizer;
 
   return (
     <Box>
@@ -227,7 +254,7 @@ export default function EventDetailsPage() {
                         fullWidth
                         color="green.10"
                         radius="xl"
-                        disabled={isPast || isOrganizer}
+                        disabled={isDisabled}
                         onClick={handleJoin}
                       >
                         Участвовать
@@ -236,11 +263,17 @@ export default function EventDetailsPage() {
                         fullWidth
                         color="green.10"
                         radius="xl"
-                        disabled={isPast || isOrganizer}
+                        disabled={isDisabled || !user}
                         onClick={handleVolunteer}
                       >
                         Подать заявку на волонтёрство
                       </Button>
+
+                      {!user && (
+                        <Text fz="xs" c="gray.6" ta="center">
+                          Доступно только для авторизованных пользователей
+                        </Text>
+                      )}
                     </>
                   )}
 
@@ -251,7 +284,7 @@ export default function EventDetailsPage() {
                     fullWidth
                     color="red"
                     radius="xl"
-                    disabled={isPast || isOrganizer}
+                    disabled={isDisabled}
                     onClick={handleCancel}
                   >
                     Отказаться от участия
@@ -273,6 +306,12 @@ export default function EventDetailsPage() {
           </Grid.Col>
         </Grid>
       </Container>
+
+      <GuestJoinModal
+        opened={guestModalOpened}
+        onClose={() => setGuestModalOpened(false)}
+        onSubmit={handleGuestSubmit}
+      />
     </Box>
   );
 }

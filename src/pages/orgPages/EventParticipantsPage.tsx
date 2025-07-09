@@ -85,7 +85,7 @@ export default function EventParticipantsPage() {
       case "VOLUNTEER":
         return "Волонтёр";
       default:
-        return "Неизвестно";
+        return "Участник (гость)";
     }
   };
 

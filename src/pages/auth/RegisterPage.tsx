@@ -9,6 +9,7 @@ import {
 } from "../../api/generated";
 import AuthLayout from "../../components/AuthLayout";
 import { leftAlignedLabel } from "../../styles/formStyles";
+import { isValidEmail, isValidPhone } from "../../utils/validators";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -29,20 +30,32 @@ export default function RegisterPage() {
     validate: (values) => {
       const errors: Record<string, string> = {};
 
-      if (!values.login) errors.login = "Введите логин";
+      if (!values.login) {
+        errors.login = "Введите email";
+      } else if (!isValidEmail(values.login)) {
+        errors.login = "Некорректный email";
+      }
+
       if (!values.password) errors.password = "Введите пароль";
 
       if (accountType === "USER") {
         if (!values.lastName) errors.lastName = "Введите фамилию";
         if (!values.firstName) errors.firstName = "Введите имя";
         if (!values.patronymic) errors.patronymic = "Введите отчество";
-        if (!values.phoneNumber) errors.phoneNumber = "Введите номер телефона"; // валидация
+        if (!values.phoneNumber) {
+          errors.phoneNumber = "Введите номер телефона";
+        } else if (!isValidPhone(values.phoneNumber)) {
+          errors.phoneNumber = "Формат: +7XXXXXXXXXX";
+        }
       } else {
         if (!values.orgName) errors.orgName = "Введите название организации";
         if (!values.coordinatorName)
           errors.coordinatorName = "Введите ФИО координатора";
-        if (!values.coordinatorPhone)
+        if (!values.coordinatorPhone) {
           errors.coordinatorPhone = "Введите телефон координатора";
+        } else if (!isValidPhone(values.coordinatorPhone)) {
+          errors.coordinatorPhone = "Формат: +7XXXXXXXXXX";
+        }
       }
 
       return errors;
@@ -87,8 +100,8 @@ export default function RegisterPage() {
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="sm">
           <TextInput
-            label="Логин"
-            placeholder="Введите логин"
+            label="email"
+            placeholder="example@mail.com"
             radius="xl"
             {...form.getInputProps("login")}
             styles={{ label: leftAlignedLabel }}
@@ -141,7 +154,7 @@ export default function RegisterPage() {
               />
               <TextInput
                 label="Номер телефона"
-                placeholder="Введите номер телефона"
+                placeholder="+7XXXXXXXXXX"
                 radius="xl"
                 {...form.getInputProps("phoneNumber")}
                 styles={{ label: leftAlignedLabel }}
@@ -165,7 +178,7 @@ export default function RegisterPage() {
               />
               <TextInput
                 label="Телефон координатора"
-                placeholder="Введите телефон координатора"
+                placeholder="+7XXXXXXXXXX"
                 radius="xl"
                 {...form.getInputProps("coordinatorPhone")}
                 styles={{ label: leftAlignedLabel }}
