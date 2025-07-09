@@ -106,7 +106,7 @@ export default function OrganizerEventViewPage() {
                 alt={event.title || "Мероприятие"}
               />
 
-              {/* Кнопки организатора */}
+              {/* Кнопки */}
               <Grid grow gutter="sm">
                 <Grid.Col span={6}>
                   <Button
@@ -129,9 +129,8 @@ export default function OrganizerEventViewPage() {
                     onClick={() =>
                       navigate(`/organizer/events/${event.id}/edit`)
                     }
-                    disabled
                   >
-                    Редактировать данные (в разработке)
+                    Редактировать данные
                   </Button>
                 </Grid.Col>
                 <Grid.Col span={6}>
