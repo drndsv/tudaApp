@@ -16,6 +16,7 @@ export type { ApiResponseGuestResponseDTO } from './models/ApiResponseGuestRespo
 export type { ApiResponseListEventParticipantResponseDTO } from './models/ApiResponseListEventParticipantResponseDTO';
 export type { ApiResponseListEventResponseDTO } from './models/ApiResponseListEventResponseDTO';
 export type { ApiResponseListRequestResponseDTO } from './models/ApiResponseListRequestResponseDTO';
+export type { ApiResponseObject } from './models/ApiResponseObject';
 export type { ApiResponseOrganizationResponseDTO } from './models/ApiResponseOrganizationResponseDTO';
 export type { ApiResponsePhotoResponseDTO } from './models/ApiResponsePhotoResponseDTO';
 export type { ApiResponseRequestResponseDTO } from './models/ApiResponseRequestResponseDTO';

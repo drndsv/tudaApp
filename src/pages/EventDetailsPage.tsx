@@ -75,7 +75,13 @@ export default function EventDetailsPage() {
   }, [user?.id, event?.id, isOrganizer]);
 
   const handleJoin = async () => {
-    if (!user?.sub || !event?.id) return;
+    if (!event?.id) return;
+
+    if (!user?.sub) {
+      setGuestModalOpened(true);
+      return;
+    }
+
     try {
       const res =
         await AccountingAppUserControllerService.saveAsParticipantForEvent(

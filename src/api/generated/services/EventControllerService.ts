@@ -5,6 +5,7 @@
 import type { ApiResponseEventResponseDTO } from '../models/ApiResponseEventResponseDTO';
 import type { ApiResponseListEventParticipantResponseDTO } from '../models/ApiResponseListEventParticipantResponseDTO';
 import type { ApiResponseListEventResponseDTO } from '../models/ApiResponseListEventResponseDTO';
+import type { ApiResponseObject } from '../models/ApiResponseObject';
 import type { EventRequestDTO } from '../models/EventRequestDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -28,6 +29,22 @@ export class EventControllerService {
             },
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+    /**
+     * @param key
+     * @returns ApiResponseObject OK
+     * @throws ApiError
+     */
+    public static markPresence(
+        key: string,
+    ): CancelablePromise<ApiResponseObject> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/event/markPresence',
+            query: {
+                'key': key,
+            },
         });
     }
     /**

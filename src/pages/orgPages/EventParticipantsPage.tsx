@@ -21,6 +21,7 @@ import { EventParticipantResponseDTO } from "../../api/generated/models/EventPar
 import { FaSearch } from "react-icons/fa";
 import PillBadge from "../../components/PillBadge";
 import QRScanner from "../../components/QRScanner";
+import { showNotification } from "@mantine/notifications";
 
 export default function EventParticipantsPage() {
   const { id } = useParams<{ id: string }>();
@@ -89,11 +90,42 @@ export default function EventParticipantsPage() {
     }
   };
 
-  const handleScan = (data: string) => {
-    alert(`Считан QR-код: ${data}`);
+  const handleScan = async (data: string) => {
     setScannerOpen(false);
 
-    // QR
+    try {
+      const res = await EventControllerService.markPresence(data);
+
+      if (!res.error) {
+        showNotification({
+          title: "Посещение успешно отмечено",
+          message: "",
+          color: "green",
+        });
+
+        if (id) {
+          const updated = await EventControllerService.getParticipantsByEventId(
+            Number(id)
+          );
+          if (!updated.error && updated.result) {
+            setParticipants(updated.result);
+          }
+        }
+      } else {
+        showNotification({
+          title: "Ошибка",
+          message: res.errorMassage || "Не удалось отметить присутствие",
+          color: "red",
+        });
+      }
+    } catch (err) {
+      console.error("Ошибка при вызове markPresence:", err);
+      showNotification({
+        title: "Ошибка",
+        message: "Ошибка при отметке присутствия",
+        color: "red",
+      });
+    }
   };
 
   if (loading) {
