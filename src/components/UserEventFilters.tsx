@@ -61,11 +61,14 @@ export default function UserEventFilters({
       </Group>
 
       <Group wrap="wrap" gap="sm">
-        {/* Города */}
         <Menu shadow="md" width={200} radius="md" withArrow>
           <Menu.Target>
-            <Button variant="default" radius="xl">
-              Все города
+            <Button
+              variant="default"
+              radius="xl"
+              styles={{ root: { fontWeight: 500 } }}
+            >
+              {citySearch ? citySearch : "Все города"}
             </Button>
           </Menu.Target>
           <Menu.Dropdown>
@@ -76,6 +79,11 @@ export default function UserEventFilters({
               mb="xs"
               size="xs"
             />
+
+            <Menu.Item onClick={() => setCitySearch("")} c="green">
+              Сбросить фильтр
+            </Menu.Item>
+
             {cities.map((city) => (
               <Menu.Item key={city} onClick={() => setCitySearch(city)}>
                 {city}
@@ -106,7 +114,6 @@ export default function UserEventFilters({
           }
         />
 
-        {/* Статус посещения */}
         <Menu shadow="md" width={200} radius="md" withArrow>
           <Menu.Target>
             <Button variant="default" radius="xl" disabled>
@@ -123,7 +130,6 @@ export default function UserEventFilters({
           </Menu.Dropdown>
         </Menu>
 
-        {/* Заглушка под фильтр ролей */}
         <Button variant="default" radius="xl" disabled>
           Роль (в разработке)
         </Button>

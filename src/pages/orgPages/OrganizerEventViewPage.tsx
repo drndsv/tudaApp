@@ -79,7 +79,7 @@ export default function OrganizerEventViewPage() {
         </Text>
 
         <Grid gutter="xl" align="stretch">
-          {/* Левая колонка: фото и кнопки */}
+          {/* Левая часть */}
           <Grid.Col span={{ base: 12, md: 6 }} h="100%">
             <Stack h="100%" justify="space-between">
               <EventImageBlock
@@ -142,7 +142,7 @@ export default function OrganizerEventViewPage() {
             </Stack>
           </Grid.Col>
 
-          {/* Правая колонка: описание и блоки */}
+          {/* Правая часть*/}
           <Grid.Col span={{ base: 12, md: 6 }} h="100%">
             <EventDetailsInfo event={event} fullUser={fullUser} />
           </Grid.Col>

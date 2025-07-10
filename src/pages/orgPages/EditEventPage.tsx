@@ -170,7 +170,7 @@ export default function EditEventPage() {
         </Title>
 
         <Grid gutter="xl">
-          {/* Левая колонка: изображение и кнопки */}
+          {/* Левая часть */}
           <Grid.Col span={{ base: 12, md: 6 }}>
             <ImageUploadBlock
               photoUploaded={!!photo}
@@ -191,7 +191,7 @@ export default function EditEventPage() {
             </Stack>
           </Grid.Col>
 
-          {/* Правая колонка: форма */}
+          {/* Правая часть */}
           <Grid.Col span={{ base: 12, md: 6 }}>
             <EventForm
               title={title}

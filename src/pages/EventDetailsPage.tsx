@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Box,
   Container,
@@ -44,6 +44,8 @@ export default function EventDetailsPage() {
   const imageSrc = useEventImage(event?.photo);
 
   const [guestModalOpened, setGuestModalOpened] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isOrganizer) return;
@@ -288,6 +290,20 @@ export default function EventDetailsPage() {
                     onClick={handleCancel}
                   >
                     Отказаться от участия
+                  </Button>
+                )}
+
+                {isVolunteerConfirmed && (
+                  <Button
+                    fullWidth
+                    color="green.10"
+                    radius="xl"
+                    // disabled={isDisabled}
+                    onClick={() =>
+                      navigate(`/organizer/events/${event.id}/participants`)
+                    }
+                  >
+                    Список участников
                   </Button>
                 )}
 

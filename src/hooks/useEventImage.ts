@@ -10,7 +10,7 @@ export function useEventImage(photo?: PhotoResponseDTO): string | null {
 
       try {
         const response = await fetch(
-          `http://192.168.0.161:8080/image/get/${photo.uploadId}`
+          `http://localhost:8080/image/get/${photo.uploadId}`
         );
 
         if (!response.ok) throw new Error("Ошибка при получении изображения");

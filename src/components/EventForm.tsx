@@ -50,6 +50,7 @@ export default function EventForm({
         label="Название мероприятия"
         value={title}
         onChange={(e) => onChange.setTitle(e.currentTarget.value)}
+        radius="xl"
       />
 
       <Textarea
@@ -58,6 +59,7 @@ export default function EventForm({
         onChange={(e) => onChange.setDescription(e.currentTarget.value)}
         minRows={4}
         mt="md"
+        radius="xl"
       />
 
       <Grid mt="md">
@@ -69,6 +71,7 @@ export default function EventForm({
             onChange={(e) =>
               onChange.setVolunteersNumber(Number(e.currentTarget.value))
             }
+            radius="xl"
           />
         </Grid.Col>
         <Grid.Col span={6}>
@@ -79,6 +82,7 @@ export default function EventForm({
             onChange={(e) =>
               onChange.setParticipantsNumber(Number(e.currentTarget.value))
             }
+            radius="xl"
           />
         </Grid.Col>
       </Grid>
@@ -92,16 +96,19 @@ export default function EventForm({
           label="Дата"
           value={date}
           onChange={(val) => onChange.setDate(val as Date | null)}
+          radius="xl"
         />
         <TimeInput
           label="Время"
           value={time}
           onChange={(e) => onChange.setTime(e.currentTarget.value)}
+          radius="xl"
         />
         <TextInput
           label="Город"
           value={city}
           onChange={(e) => onChange.setCity(e.currentTarget.value)}
+          radius="xl"
         />
         <Select
           label="Статус мероприятия"
@@ -113,11 +120,13 @@ export default function EventForm({
             { value: "CANCELLED", label: "Отменено" },
           ]}
           mt="md"
+          radius="xl"
         />
         <TextInput
           label="Организация"
           value={fullUser?.organization?.name || ""}
           disabled
+          radius="xl"
         />
       </Card>
 
@@ -131,11 +140,13 @@ export default function EventForm({
             fullUser?.patronymic ?? ""
           }`}
           disabled
+          radius="xl"
         />
         <TextInput
           label="Номер телефона"
           value={fullUser?.phoneNumber || ""}
           disabled
+          radius="xl"
         />
       </Card>
 

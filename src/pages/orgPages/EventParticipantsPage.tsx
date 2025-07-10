@@ -93,11 +93,7 @@ export default function EventParticipantsPage() {
     alert(`Считан QR-код: ${data}`);
     setScannerOpen(false);
 
-    // TODO: Распарсить ID и отметить участника как "пришёл" через API
-    // Например:
-    // const participantId = parseInt(data);
-    // EventControllerService.markParticipantAsArrived(participantId)
-    //   .then(() => reloadParticipants());
+    // QR
   };
 
   if (loading) {
@@ -121,7 +117,6 @@ export default function EventParticipantsPage() {
           Участники
         </Title>
 
-        {/* Фильтры */}
         <Group mb="md" wrap="wrap">
           <TextInput
             placeholder="Найти по ФИО"
@@ -146,13 +141,15 @@ export default function EventParticipantsPage() {
           </Button>
         </Group>
 
-        {/* Меню фильтров и кнопка сканирования */}
         <Group wrap="wrap" gap="sm" mb="xl" justify="space-between">
           <Group gap="sm">
-            {/* Фильтр по роли */}
             <Menu shadow="md" width={200} radius="md" withArrow>
               <Menu.Target>
-                <Button variant="default" radius="xl">
+                <Button
+                  variant="default"
+                  radius="xl"
+                  styles={{ root: { fontWeight: 500 } }}
+                >
                   {roleFilter || "Все роли"}
                 </Button>
               </Menu.Target>
@@ -163,16 +160,19 @@ export default function EventParticipantsPage() {
                 <Menu.Item onClick={() => setRoleFilter("Волонтёр")}>
                   Волонтёр
                 </Menu.Item>
-                <Menu.Item onClick={() => setRoleFilter(null)}>
+                <Menu.Item onClick={() => setRoleFilter(null)} color="green">
                   Сбросить
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
 
-            {/* Фильтр по статусу */}
             <Menu shadow="md" width={200} radius="md" withArrow>
               <Menu.Target>
-                <Button variant="default" radius="xl">
+                <Button
+                  variant="default"
+                  radius="xl"
+                  styles={{ root: { fontWeight: 500 } }}
+                >
                   {statusFilter || "Все статусы"}
                 </Button>
               </Menu.Target>
@@ -183,14 +183,13 @@ export default function EventParticipantsPage() {
                 <Menu.Item onClick={() => setStatusFilter("Не пришёл")}>
                   Не пришёл
                 </Menu.Item>
-                <Menu.Item onClick={() => setStatusFilter(null)}>
+                <Menu.Item onClick={() => setStatusFilter(null)} color="green">
                   Сбросить
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
           </Group>
 
-          {/* Кнопка сканирования */}
           <Button
             color="green.10"
             radius="xl"
@@ -200,7 +199,6 @@ export default function EventParticipantsPage() {
           </Button>
         </Group>
 
-        {/* Список участников */}
         <Stack>
           {filtered.map((p) => (
             <Paper key={p.id} withBorder p="md" radius="md">
@@ -221,7 +219,7 @@ export default function EventParticipantsPage() {
         </Stack>
       </Container>
 
-      {/* Модальное окно со сканером */}
+      {/* QR */}
       <Modal
         opened={scannerOpen}
         onClose={() => setScannerOpen(false)}

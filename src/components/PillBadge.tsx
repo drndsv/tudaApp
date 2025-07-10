@@ -2,9 +2,9 @@ import { Box, Text } from "@mantine/core";
 
 type PillBadgeProps = {
   label: string;
-  color?: string; // Цвет текста
-  bgColor?: string; // Цвет фона
-  borderColor?: string; // Цвет рамки
+  color?: string;
+  bgColor?: string;
+  borderColor?: string;
 };
 
 export default function PillBadge({

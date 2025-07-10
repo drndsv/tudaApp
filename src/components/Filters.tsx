@@ -86,7 +86,6 @@ export default function Filters({
       </Group>
 
       <Group gap="sm" wrap="wrap">
-        {/* Город */}
         <Menu shadow="md" width={200} radius="md" withArrow>
           <Menu.Target>
             <Button
@@ -94,7 +93,7 @@ export default function Filters({
               radius="xl"
               styles={{ root: { fontWeight: 500 } }}
             >
-              Все города
+              {citySearch ? citySearch : "Все города"}
             </Button>
           </Menu.Target>
           <Menu.Dropdown>
@@ -105,6 +104,11 @@ export default function Filters({
               mb="xs"
               size="xs"
             />
+
+            <Menu.Item onClick={() => setCitySearch("")} c="green">
+              Сбросить
+            </Menu.Item>
+
             {filteredCities.map((city) => (
               <Menu.Item key={city} onClick={() => setCitySearch(city)}>
                 {city}
@@ -113,7 +117,6 @@ export default function Filters({
           </Menu.Dropdown>
         </Menu>
 
-        {/* Дата */}
         <DateInput
           locale="ru"
           placeholder="Выбрать дату"
@@ -137,7 +140,6 @@ export default function Filters({
           }
         />
 
-        {/* Роль */}
         <Box ref={roleRef} pos="relative">
           <Button
             radius="xl"

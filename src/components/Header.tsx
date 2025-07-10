@@ -10,20 +10,20 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { FaUserCircle } from "react-icons/fa";
-import { useAuth } from "../context/AuthContext"; // работа с контекстом
+import { useAuth } from "../context/AuthContext";
 
 export default function Header() {
   const navigate = useNavigate();
   const theme = useMantineTheme();
-  const { token, logout, user } = useAuth(); // user из контекста
+  const { token, logout, user } = useAuth();
 
   const roles = user?.roles || [];
   const isOrganizer = roles.includes("ROLE_ORGANIZER");
 
   const handleLogout = () => {
     logout();
-    // window.location.reload(); // Обновление для синхронизации
-    navigate("/"); // переход на главную
+    // window.location.reload();
+    navigate("/");
   };
 
   return (
