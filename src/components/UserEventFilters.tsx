@@ -61,7 +61,6 @@ export default function UserEventFilters({
       </Group>
 
       <Group wrap="wrap" gap="sm">
-        {/* Города */}
         <Menu shadow="md" width={200} radius="md" withArrow>
           <Menu.Target>
             <Button variant="default" radius="xl">
@@ -106,7 +105,6 @@ export default function UserEventFilters({
           }
         />
 
-        {/* Статус посещения */}
         <Menu shadow="md" width={200} radius="md" withArrow>
           <Menu.Target>
             <Button variant="default" radius="xl" disabled>

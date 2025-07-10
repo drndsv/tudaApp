@@ -9,7 +9,6 @@ import { jwtDecode } from "jwt-decode";
 import { OpenAPI } from "../api/generated/core/OpenAPI";
 import { AuthControllerService } from "../api/generated";
 
-// Тип декодированных данных из токена
 interface DecodedUser {
   sub: string;
   roles?: string[];

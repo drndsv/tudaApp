@@ -40,7 +40,7 @@ export default function LoginPage() {
     } catch (error: any) {
       console.error("Ошибка входа:", error);
 
-      const status = error?.response?.status; // исправлено
+      const status = error?.response?.status;
 
       let message = "Произошла ошибка при попытке входа";
 
@@ -66,28 +66,12 @@ export default function LoginPage() {
             placeholder="Введите логин"
             radius="xl"
             {...form.getInputProps("login")}
-            styles={{
-              label: {
-                textAlign: "left",
-                display: "block",
-                width: "100%",
-                paddingLeft: 16,
-              },
-            }}
           />
           <TextInput
             placeholder="Введите пароль"
             type="password"
             radius="xl"
             {...form.getInputProps("password")}
-            styles={{
-              label: {
-                textAlign: "left",
-                display: "block",
-                width: "100%",
-                paddingLeft: 16,
-              },
-            }}
           />
           <Button type="submit" fullWidth radius="xl" color="green.10">
             Войти
