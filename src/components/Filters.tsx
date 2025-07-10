@@ -93,7 +93,7 @@ export default function Filters({
               radius="xl"
               styles={{ root: { fontWeight: 500 } }}
             >
-              Все города
+              {citySearch ? citySearch : "Все города"}
             </Button>
           </Menu.Target>
           <Menu.Dropdown>
@@ -104,6 +104,11 @@ export default function Filters({
               mb="xs"
               size="xs"
             />
+
+            <Menu.Item onClick={() => setCitySearch("")} c="green">
+              Сбросить
+            </Menu.Item>
+
             {filteredCities.map((city) => (
               <Menu.Item key={city} onClick={() => setCitySearch(city)}>
                 {city}

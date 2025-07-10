@@ -145,7 +145,11 @@ export default function EventParticipantsPage() {
           <Group gap="sm">
             <Menu shadow="md" width={200} radius="md" withArrow>
               <Menu.Target>
-                <Button variant="default" radius="xl">
+                <Button
+                  variant="default"
+                  radius="xl"
+                  styles={{ root: { fontWeight: 500 } }}
+                >
                   {roleFilter || "Все роли"}
                 </Button>
               </Menu.Target>
@@ -156,7 +160,7 @@ export default function EventParticipantsPage() {
                 <Menu.Item onClick={() => setRoleFilter("Волонтёр")}>
                   Волонтёр
                 </Menu.Item>
-                <Menu.Item onClick={() => setRoleFilter(null)}>
+                <Menu.Item onClick={() => setRoleFilter(null)} color="green">
                   Сбросить
                 </Menu.Item>
               </Menu.Dropdown>
@@ -164,7 +168,11 @@ export default function EventParticipantsPage() {
 
             <Menu shadow="md" width={200} radius="md" withArrow>
               <Menu.Target>
-                <Button variant="default" radius="xl">
+                <Button
+                  variant="default"
+                  radius="xl"
+                  styles={{ root: { fontWeight: 500 } }}
+                >
                   {statusFilter || "Все статусы"}
                 </Button>
               </Menu.Target>
@@ -175,7 +183,7 @@ export default function EventParticipantsPage() {
                 <Menu.Item onClick={() => setStatusFilter("Не пришёл")}>
                   Не пришёл
                 </Menu.Item>
-                <Menu.Item onClick={() => setStatusFilter(null)}>
+                <Menu.Item onClick={() => setStatusFilter(null)} color="green">
                   Сбросить
                 </Menu.Item>
               </Menu.Dropdown>

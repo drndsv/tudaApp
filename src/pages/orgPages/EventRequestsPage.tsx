@@ -115,6 +115,7 @@ export default function EventRequestsPage() {
             placeholder="Найти по ФИО"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.currentTarget.value)}
+            radius="xl"
           />
 
           <Select
@@ -125,12 +126,13 @@ export default function EventRequestsPage() {
             value={sortOrder}
             onChange={(val) => setSortOrder(val as "newest" | "oldest")}
             w={200}
+            radius="xl"
           />
 
           {loading ? (
             <Loader />
           ) : filteredRequests.length === 0 ? (
-            <Text>Заявок нет.</Text>
+            <Text>Заявок нет</Text>
           ) : (
             filteredRequests.map((req) => {
               const user = req.appUser;
@@ -139,9 +141,14 @@ export default function EventRequestsPage() {
               }`;
 
               return (
-                <Paper key={req.id} withBorder p="md" radius="md">
+                <Paper key={req.id} withBorder p="md" radius="lg">
                   <Group justify="space-between">
-                    <TextInput value={fullName} readOnly style={{ flex: 1 }} />
+                    <TextInput
+                      value={fullName}
+                      readOnly
+                      style={{ flex: 1 }}
+                      radius="xl"
+                    />
                     <Group>
                       <Button
                         color="green"
