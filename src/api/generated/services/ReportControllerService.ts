@@ -11,6 +11,21 @@ export class ReportControllerService {
    * @returns binary OK
    * @throws ApiError
    */
+  public static getPdfReport(eventId: number): CancelablePromise<Blob> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/report/pdf/download",
+      query: {
+        eventId: eventId,
+      },
+      responseType: "blob",
+    });
+  }
+  /**
+   * @param eventId
+   * @returns binary OK
+   * @throws ApiError
+   */
   public static getCvsReport(eventId: number): CancelablePromise<Blob> {
     return __request(OpenAPI, {
       method: "GET",

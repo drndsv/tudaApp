@@ -75,6 +75,52 @@ export default function OrganizerEventViewPage() {
     }
   };
 
+  const handleDownloadPDF = async () => {
+    if (!event?.id) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/report/pdf/download?eventId=${event.id}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Ошибка при получении отчета");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `report_event_${event.id}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Ошибка загрузки pdf отчета:", err);
+    }
+  };
+
+  // const handleDownloadPDF = async () => {
+  //   if (!event?.id) return;
+
+  //   try {
+  //     const blob = await ReportControllerService.getPdfReport(event.id);
+  //     const url = window.URL.createObjectURL(blob);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = `report_event_${event.id}.pdf`;
+  //     a.click();
+  //     window.URL.revokeObjectURL(url);
+  //   } catch (err) {
+  //     console.error("Ошибка загрузки PDF отчета:", err);
+  //   }
+  // };
+
   if (loading) {
     return (
       <Box>
@@ -172,7 +218,7 @@ export default function OrganizerEventViewPage() {
                     </Menu.Target>
                     <Menu.Dropdown>
                       <Menu.Item onClick={handleDownloadCSV}>CSV</Menu.Item>
-                      <Menu.Item disabled>PDF (в разработке)</Menu.Item>
+                      <Menu.Item onClick={handleDownloadPDF}>PDF</Menu.Item>
                     </Menu.Dropdown>
                   </Menu>
                 </Grid.Col>
