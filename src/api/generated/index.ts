@@ -8,6 +8,7 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { AccountingAppUserResponseDTO } from './models/AccountingAppUserResponseDTO';
+export type { ApiResponse } from './models/ApiResponse';
 export type { ApiResponseAccountingAppUserResponseDTO } from './models/ApiResponseAccountingAppUserResponseDTO';
 export type { ApiResponseAppUserResponseDTO } from './models/ApiResponseAppUserResponseDTO';
 export type { ApiResponseEventResponseDTO } from './models/ApiResponseEventResponseDTO';
@@ -48,5 +49,6 @@ export { EventControllerService } from './services/EventControllerService';
 export { GuestControllerService } from './services/GuestControllerService';
 export { ImageControllerService } from './services/ImageControllerService';
 export { OrganizationControllerService } from './services/OrganizationControllerService';
+export { ReportControllerService } from './services/ReportControllerService';
 export { RequestControllerService } from './services/RequestControllerService';
 export { UserControllerService } from './services/UserControllerService';
