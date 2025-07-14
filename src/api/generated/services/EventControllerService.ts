@@ -95,6 +95,41 @@ export class EventControllerService {
         });
     }
     /**
+     * @param role
+     * @returns ApiResponseListEventResponseDTO OK
+     * @throws ApiError
+     */
+    public static getEventsByNeededRoleForUser(
+        role: 'PARTICIPANT' | 'VOLUNTEER',
+    ): CancelablePromise<ApiResponseListEventResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/event/getEventsByNeededRoleForUser',
+            query: {
+                'role': role,
+            },
+        });
+    }
+    /**
+     * @param role
+     * @param appUserId
+     * @returns ApiResponseListEventResponseDTO OK
+     * @throws ApiError
+     */
+    public static getEventsByNeededRoleForOrganizer(
+        role: 'PARTICIPANT' | 'VOLUNTEER',
+        appUserId: number,
+    ): CancelablePromise<ApiResponseListEventResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/event/getEventsByNeededRoleForOrganizer',
+            query: {
+                'role': role,
+                'appUserId': appUserId,
+            },
+        });
+    }
+    /**
      * @param id
      * @returns ApiResponseListEventResponseDTO OK
      * @throws ApiError
@@ -142,13 +177,32 @@ export class EventControllerService {
      * @returns ApiResponseListEventResponseDTO OK
      * @throws ApiError
      */
-    public static getEventsByStatusAndAppUserId(
+    public static getEventsByStatusAndAppUserIdForUser(
         status: 'PASSED' | 'WILL' | 'CANCELLED',
         appUserId: number,
     ): CancelablePromise<ApiResponseListEventResponseDTO> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/event/filterByStatusAndAppUserId',
+            url: '/event/filterByStatusAndAppUserIdForUser',
+            query: {
+                'status': status,
+                'appUserId': appUserId,
+            },
+        });
+    }
+    /**
+     * @param status
+     * @param appUserId
+     * @returns ApiResponseListEventResponseDTO OK
+     * @throws ApiError
+     */
+    public static getEventsByStatusAndAppUserIdForOrganizer(
+        status: 'PASSED' | 'WILL' | 'CANCELLED',
+        appUserId: number,
+    ): CancelablePromise<ApiResponseListEventResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/event/filterByStatusAndAppUserIdForOrganizer',
             query: {
                 'status': status,
                 'appUserId': appUserId,
