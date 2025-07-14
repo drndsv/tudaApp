@@ -8,7 +8,6 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { AccountingAppUserResponseDTO } from './models/AccountingAppUserResponseDTO';
-export type { ApiResponse } from './models/ApiResponse';
 export type { ApiResponseAccountingAppUserResponseDTO } from './models/ApiResponseAccountingAppUserResponseDTO';
 export type { ApiResponseAppUserResponseDTO } from './models/ApiResponseAppUserResponseDTO';
 export type { ApiResponseEventResponseDTO } from './models/ApiResponseEventResponseDTO';
@@ -17,6 +16,7 @@ export type { ApiResponseGuestResponseDTO } from './models/ApiResponseGuestRespo
 export type { ApiResponseListEventParticipantResponseDTO } from './models/ApiResponseListEventParticipantResponseDTO';
 export type { ApiResponseListEventResponseDTO } from './models/ApiResponseListEventResponseDTO';
 export type { ApiResponseListRequestResponseDTO } from './models/ApiResponseListRequestResponseDTO';
+export type { ApiResponseLong } from './models/ApiResponseLong';
 export type { ApiResponseObject } from './models/ApiResponseObject';
 export type { ApiResponseOrganizationResponseDTO } from './models/ApiResponseOrganizationResponseDTO';
 export type { ApiResponsePhotoResponseDTO } from './models/ApiResponsePhotoResponseDTO';

@@ -2,9 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ApiResponseAppUserResponseDTO } from '../models/ApiResponseAppUserResponseDTO';
 import type { ApiResponseEventResponseDTO } from '../models/ApiResponseEventResponseDTO';
 import type { ApiResponseListEventParticipantResponseDTO } from '../models/ApiResponseListEventParticipantResponseDTO';
 import type { ApiResponseListEventResponseDTO } from '../models/ApiResponseListEventResponseDTO';
+import type { ApiResponseLong } from '../models/ApiResponseLong';
 import type { ApiResponseObject } from '../models/ApiResponseObject';
 import type { EventRequestDTO } from '../models/EventRequestDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -79,6 +81,25 @@ export class EventControllerService {
         });
     }
     /**
+     * @param role
+     * @param eventId
+     * @returns ApiResponseLong OK
+     * @throws ApiError
+     */
+    public static getUserCountWithCertainRoleOnEvent(
+        role: 'PARTICIPANT' | 'VOLUNTEER',
+        eventId: number,
+    ): CancelablePromise<ApiResponseLong> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/event/getUserCountWithCertainRoleOnEvent',
+            query: {
+                'role': role,
+                'eventId': eventId,
+            },
+        });
+    }
+    /**
      * @param organizerId
      * @returns ApiResponseListEventResponseDTO OK
      * @throws ApiError
@@ -126,6 +147,22 @@ export class EventControllerService {
             query: {
                 'role': role,
                 'appUserId': appUserId,
+            },
+        });
+    }
+    /**
+     * @param eventId
+     * @returns ApiResponseAppUserResponseDTO OK
+     * @throws ApiError
+     */
+    public static getContactPersonOfEvent(
+        eventId: number,
+    ): CancelablePromise<ApiResponseAppUserResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/event/getContactPersonOfEvent',
+            query: {
+                'eventId': eventId,
             },
         });
     }

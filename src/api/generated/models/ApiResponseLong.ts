@@ -2,4 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type ApiResponse = Record<string, any>;
+export type ApiResponseLong = {
+    error?: boolean;
+    errorMassage?: string;
+    result?: number;
+};
+

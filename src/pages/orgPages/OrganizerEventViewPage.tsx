@@ -22,8 +22,6 @@ import { IconDownload } from "@tabler/icons-react";
 import { ReportControllerService } from "../../api/generated/services/ReportControllerService";
 
 export default function OrganizerEventViewPage() {
-  const fullUser = useFullUser();
-
   const { id } = useParams<{ id: string }>();
 
   const { event, loading } = useEventById(id);
@@ -190,7 +188,7 @@ export default function OrganizerEventViewPage() {
 
           {/* Правая часть*/}
           <Grid.Col span={{ base: 12, md: 6 }} h="100%">
-            <EventDetailsInfo event={event} fullUser={fullUser} />
+            <EventDetailsInfo event={event} />
           </Grid.Col>
         </Grid>
       </Container>

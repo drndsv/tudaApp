@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
-import { useFullUser } from "../hooks/useFullUser";
+
 import { useEventImage } from "../hooks/useEventImage";
 import {
   UserControllerService,
@@ -30,7 +30,6 @@ import { useEventById } from "../hooks/useEventById";
 
 export default function EventDetailsPage() {
   const { user } = useAuth();
-  const fullUser = useFullUser();
 
   const { id } = useParams();
 
@@ -304,7 +303,6 @@ export default function EventDetailsPage() {
                     fullWidth
                     color="green.10"
                     radius="xl"
-                    // disabled={isDisabled}
                     onClick={() =>
                       navigate(`/organizer/events/${event.id}/participants`)
                     }
@@ -324,7 +322,8 @@ export default function EventDetailsPage() {
 
           {/* Правая колонка */}
           <Grid.Col span={{ base: 12, md: 6 }} h="100%">
-            <EventDetailsInfo event={event} fullUser={fullUser} />
+            {/* <EventDetailsInfo event={event} fullUser={fullUser} /> */}
+            <EventDetailsInfo event={event} />
           </Grid.Col>
         </Grid>
       </Container>
