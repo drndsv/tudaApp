@@ -19,7 +19,7 @@ import EventImageBlock from "../../components/EventImageBlock";
 import EventDetailsInfo from "../../components/EventDetailsInfo";
 import { useEventById } from "../../hooks/useEventById";
 import { IconDownload } from "@tabler/icons-react";
-// import { ReportControllerService } from "../../api/generated";
+import { ReportControllerService } from "../../api/generated/services/ReportControllerService";
 
 export default function OrganizerEventViewPage() {
   const fullUser = useFullUser();
@@ -49,21 +49,10 @@ export default function OrganizerEventViewPage() {
     if (!event?.id) return;
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/report/cvs/download?eventId=${event.id}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
-          },
-        }
-      );
+      const pdfString = await ReportControllerService.getCvsReport(event.id);
+      // Преобразуем строку в Blob (UTF-8)
+      const blob = new Blob([pdfString], { type: "text/csv" });
 
-      if (!response.ok) {
-        throw new Error("Ошибка при получении отчета");
-      }
-
-      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -71,7 +60,26 @@ export default function OrganizerEventViewPage() {
       a.click();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      console.error("Ошибка загрузки CSV отчета:", err);
+      console.error("Ошибка загрузки csv отчета:", err);
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!event?.id) return;
+
+    try {
+      const pdfString = await ReportControllerService.getPdfReport(event.id);
+      // Преобразуем строку в Blob (UTF-8)
+      const blob = new Blob([pdfString], { type: "application/pdf" });
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `report_event_${event.id}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Ошибка загрузки PDF отчета:", err);
     }
   };
 
@@ -172,7 +180,7 @@ export default function OrganizerEventViewPage() {
                     </Menu.Target>
                     <Menu.Dropdown>
                       <Menu.Item onClick={handleDownloadCSV}>CSV</Menu.Item>
-                      <Menu.Item disabled>PDF (в разработке)</Menu.Item>
+                      <Menu.Item onClick={handleDownloadPDF}>PDF</Menu.Item>
                     </Menu.Dropdown>
                   </Menu>
                 </Grid.Col>
