@@ -49,21 +49,10 @@ export default function OrganizerEventViewPage() {
     if (!event?.id) return;
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/report/cvs/download?eventId=${event.id}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
-          },
-        }
-      );
+      const pdfString = await ReportControllerService.getCvsReport(event.id);
+      // Преобразуем строку в Blob (UTF-8)
+      const blob = new Blob([pdfString], { type: "text/csv" });
 
-      if (!response.ok) {
-        throw new Error("Ошибка при получении отчета");
-      }
-
-      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -71,39 +60,9 @@ export default function OrganizerEventViewPage() {
       a.click();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      console.error("Ошибка загрузки CSV отчета:", err);
+      console.error("Ошибка загрузки csv отчета:", err);
     }
   };
-
-  // const handleDownloadPDF = async () => {
-  //   if (!event?.id) return;
-
-  //   try {
-  //     const response = await fetch(
-  //       `http://localhost:8080/report/pdf/download?eventId=${event.id}`,
-  //       {
-  //         method: "GET",
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
-  //         },
-  //       }
-  //     );
-
-  //     if (!response.ok) {
-  //       throw new Error("Ошибка при получении отчета");
-  //     }
-
-  //     const blob = await response.blob();
-  //     const url = window.URL.createObjectURL(blob);
-  //     const a = document.createElement("a");
-  //     a.href = url;
-  //     a.download = `report_event_${event.id}.pdf`;
-  //     a.click();
-  //     window.URL.revokeObjectURL(url);
-  //   } catch (err) {
-  //     console.error("Ошибка загрузки pdf отчета:", err);
-  //   }
-  // };
 
   const handleDownloadPDF = async () => {
     if (!event?.id) return;
