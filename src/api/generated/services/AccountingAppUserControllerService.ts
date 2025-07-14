@@ -32,7 +32,7 @@ export class AccountingAppUserControllerService {
      * @returns ApiResponseAccountingAppUserResponseDTO OK
      * @throws ApiError
      */
-    public static markPresence(
+    public static markPresence1(
         eventId: number,
         userLogin: string,
     ): CancelablePromise<ApiResponseAccountingAppUserResponseDTO> {

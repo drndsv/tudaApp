@@ -25,6 +25,8 @@ type FiltersProps = {
   setEventSearch: (value: string) => void;
   resetFilters: () => void;
   cities: string[];
+  selectedRoles: string[];
+  setSelectedRoles: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 export default function Filters({
@@ -36,10 +38,10 @@ export default function Filters({
   setEventSearch,
   resetFilters,
   cities,
+  selectedRoles,
+  setSelectedRoles,
 }: FiltersProps) {
   const theme = useMantineTheme();
-
-  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [roleOpen, setRoleOpen] = useState(false);
   const roleRef = useRef<HTMLDivElement | null>(null);
 
@@ -86,6 +88,7 @@ export default function Filters({
       </Group>
 
       <Group gap="sm" wrap="wrap">
+        {/* Выбор города */}
         <Menu shadow="md" width={200} radius="md" withArrow>
           <Menu.Target>
             <Button
@@ -104,11 +107,9 @@ export default function Filters({
               mb="xs"
               size="xs"
             />
-
             <Menu.Item onClick={() => setCitySearch("")} c="green">
               Сбросить
             </Menu.Item>
-
             {filteredCities.map((city) => (
               <Menu.Item key={city} onClick={() => setCitySearch(city)}>
                 {city}
@@ -117,6 +118,7 @@ export default function Filters({
           </Menu.Dropdown>
         </Menu>
 
+        {/* Дата */}
         <DateInput
           locale="ru"
           placeholder="Выбрать дату"
@@ -140,15 +142,19 @@ export default function Filters({
           }
         />
 
+        {/* Роли */}
         <Box ref={roleRef} pos="relative">
           <Button
             radius="xl"
             variant="default"
             onClick={() => setRoleOpen((v) => !v)}
             styles={{ root: { fontWeight: 500 } }}
-            disabled
           >
-            Требуемая роль (в разработке)
+            {selectedRoles.length > 0
+              ? selectedRoles
+                  .map((r) => (r === "VOLUNTEER" ? "Волонтёр" : "Участник"))
+                  .join(", ")
+              : "Все роли"}
           </Button>
 
           <Transition
@@ -172,12 +178,15 @@ export default function Filters({
                 }}
               >
                 <Stack p="xs" gap="xs">
-                  {["Волонтёр", "Участник"].map((role) => (
+                  {[
+                    { label: "Волонтёр", value: "VOLUNTEER" },
+                    { label: "Участник", value: "PARTICIPANT" },
+                  ].map(({ label, value }) => (
                     <Checkbox
-                      key={role}
-                      label={role}
-                      checked={selectedRoles.includes(role)}
-                      onChange={() => handleRoleChange(role)}
+                      key={value}
+                      label={label}
+                      checked={selectedRoles.includes(value)}
+                      onChange={() => handleRoleChange(value)}
                     />
                   ))}
                 </Stack>

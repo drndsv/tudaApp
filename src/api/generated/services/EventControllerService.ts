@@ -5,6 +5,7 @@
 import type { ApiResponseEventResponseDTO } from '../models/ApiResponseEventResponseDTO';
 import type { ApiResponseListEventParticipantResponseDTO } from '../models/ApiResponseListEventParticipantResponseDTO';
 import type { ApiResponseListEventResponseDTO } from '../models/ApiResponseListEventResponseDTO';
+import type { ApiResponseObject } from '../models/ApiResponseObject';
 import type { EventRequestDTO } from '../models/EventRequestDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -28,6 +29,22 @@ export class EventControllerService {
             },
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+    /**
+     * @param key
+     * @returns ApiResponseObject OK
+     * @throws ApiError
+     */
+    public static markPresence(
+        key: string,
+    ): CancelablePromise<ApiResponseObject> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/event/markPresence',
+            query: {
+                'key': key,
+            },
         });
     }
     /**
@@ -74,6 +91,41 @@ export class EventControllerService {
             url: '/event/getEventsByOrganizerId',
             query: {
                 'organizerId': organizerId,
+            },
+        });
+    }
+    /**
+     * @param role
+     * @returns ApiResponseListEventResponseDTO OK
+     * @throws ApiError
+     */
+    public static getEventsByNeededRoleForUser(
+        role: 'PARTICIPANT' | 'VOLUNTEER',
+    ): CancelablePromise<ApiResponseListEventResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/event/getEventsByNeededRoleForUser',
+            query: {
+                'role': role,
+            },
+        });
+    }
+    /**
+     * @param role
+     * @param appUserId
+     * @returns ApiResponseListEventResponseDTO OK
+     * @throws ApiError
+     */
+    public static getEventsByNeededRoleForOrganizer(
+        role: 'PARTICIPANT' | 'VOLUNTEER',
+        appUserId: number,
+    ): CancelablePromise<ApiResponseListEventResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/event/getEventsByNeededRoleForOrganizer',
+            query: {
+                'role': role,
+                'appUserId': appUserId,
             },
         });
     }
@@ -125,13 +177,32 @@ export class EventControllerService {
      * @returns ApiResponseListEventResponseDTO OK
      * @throws ApiError
      */
-    public static getEventsByStatusAndAppUserId(
+    public static getEventsByStatusAndAppUserIdForUser(
         status: 'PASSED' | 'WILL' | 'CANCELLED',
         appUserId: number,
     ): CancelablePromise<ApiResponseListEventResponseDTO> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/event/filterByStatusAndAppUserId',
+            url: '/event/filterByStatusAndAppUserIdForUser',
+            query: {
+                'status': status,
+                'appUserId': appUserId,
+            },
+        });
+    }
+    /**
+     * @param status
+     * @param appUserId
+     * @returns ApiResponseListEventResponseDTO OK
+     * @throws ApiError
+     */
+    public static getEventsByStatusAndAppUserIdForOrganizer(
+        status: 'PASSED' | 'WILL' | 'CANCELLED',
+        appUserId: number,
+    ): CancelablePromise<ApiResponseListEventResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/event/filterByStatusAndAppUserIdForOrganizer',
             query: {
                 'status': status,
                 'appUserId': appUserId,

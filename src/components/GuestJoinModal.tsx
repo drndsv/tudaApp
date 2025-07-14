@@ -25,17 +25,20 @@ export default function GuestJoinModal({ opened, onClose, onSubmit }: Props) {
       onClose={onClose}
       title="Регистрация участника"
       centered
+      radius="lg"
     >
       <Stack>
         <TextInput
           label="ФИО"
           value={fullName}
           onChange={(e) => setFullName(e.currentTarget.value)}
+          radius="xl"
         />
         <TextInput
           label="Email"
           value={mail}
           onChange={(e) => setMail(e.currentTarget.value)}
+          radius="xl"
         />
 
         <Group justify="right" mt="md">

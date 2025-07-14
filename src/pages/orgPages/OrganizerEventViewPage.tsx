@@ -6,6 +6,7 @@ import {
   Container,
   Grid,
   Loader,
+  Menu,
   Stack,
   Text,
   Title,
@@ -17,6 +18,8 @@ import { useFullUser } from "../../hooks/useFullUser";
 import EventImageBlock from "../../components/EventImageBlock";
 import EventDetailsInfo from "../../components/EventDetailsInfo";
 import { useEventById } from "../../hooks/useEventById";
+import { IconDownload } from "@tabler/icons-react";
+// import { ReportControllerService } from "../../api/generated";
 
 export default function OrganizerEventViewPage() {
   const fullUser = useFullUser();
@@ -39,6 +42,36 @@ export default function OrganizerEventViewPage() {
         return "Отменено";
       default:
         return "Неизвестно";
+    }
+  };
+
+  const handleDownloadCSV = async () => {
+    if (!event?.id) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/report/cvs/download?eventId=${event.id}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Ошибка при получении отчета");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `report_event_${event.id}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Ошибка загрузки CSV отчета:", err);
     }
   };
 
@@ -126,17 +159,22 @@ export default function OrganizerEventViewPage() {
                   </Button>
                 </Grid.Col>
                 <Grid.Col span={6}>
-                  <Button
-                    fullWidth
-                    color="green.10"
-                    radius="xl"
-                    onClick={() => {
-                      alert("Функция формирования отчёта в разработке.");
-                    }}
-                    disabled
-                  >
-                    Сформировать отчёт (в разработке)
-                  </Button>
+                  <Menu shadow="md" width={200} radius="md" withArrow>
+                    <Menu.Target>
+                      <Button
+                        fullWidth
+                        color="green.10"
+                        radius="xl"
+                        leftSection={<IconDownload size={18} />}
+                      >
+                        Сформировать отчёт
+                      </Button>
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                      <Menu.Item onClick={handleDownloadCSV}>CSV</Menu.Item>
+                      <Menu.Item disabled>PDF (в разработке)</Menu.Item>
+                    </Menu.Dropdown>
+                  </Menu>
                 </Grid.Col>
               </Grid>
             </Stack>
