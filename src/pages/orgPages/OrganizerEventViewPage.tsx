@@ -75,41 +75,25 @@ export default function OrganizerEventViewPage() {
     }
   };
 
-  const handleDownloadPDF = async () => {
-    if (!event?.id) return;
-
-    try {
-      const response = await fetch(
-        `http://localhost:8080/report/pdf/download?eventId=${event.id}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Ошибка при получении отчета");
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `report_event_${event.id}.pdf`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Ошибка загрузки pdf отчета:", err);
-    }
-  };
-
   // const handleDownloadPDF = async () => {
   //   if (!event?.id) return;
 
   //   try {
-  //     const blob = await ReportControllerService.getPdfReport(event.id);
+  //     const response = await fetch(
+  //       `http://localhost:8080/report/pdf/download?eventId=${event.id}`,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+  //         },
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error("Ошибка при получении отчета");
+  //     }
+
+  //     const blob = await response.blob();
   //     const url = window.URL.createObjectURL(blob);
   //     const a = document.createElement("a");
   //     a.href = url;
@@ -117,9 +101,28 @@ export default function OrganizerEventViewPage() {
   //     a.click();
   //     window.URL.revokeObjectURL(url);
   //   } catch (err) {
-  //     console.error("Ошибка загрузки PDF отчета:", err);
+  //     console.error("Ошибка загрузки pdf отчета:", err);
   //   }
   // };
+
+  const handleDownloadPDF = async () => {
+    if (!event?.id) return;
+
+    try {
+      const pdfString = await ReportControllerService.getPdfReport(event.id);
+      // Преобразуем строку в Blob (UTF-8)
+      const blob = new Blob([pdfString], { type: "application/pdf" });
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `report_event_${event.id}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Ошибка загрузки PDF отчета:", err);
+    }
+  };
 
   if (loading) {
     return (
