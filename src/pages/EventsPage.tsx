@@ -12,20 +12,35 @@ export default function EventsPage() {
   const [date, setDate] = useState<string | null>(null);
   const [citySearch, setCitySearch] = useState("");
   const [eventSearch, setEventSearch] = useState("");
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
 
+  // Загрузка мероприятий: по роли или все
   useEffect(() => {
-    EventControllerService.getAllEvents()
-      .then((response) => {
+    const loadEvents = async () => {
+      try {
+        let response;
+        if (selectedRoles.length === 1) {
+          response = await EventControllerService.getEventsByNeededRoleForUser(
+            selectedRoles[0] as "PARTICIPANT" | "VOLUNTEER"
+          );
+        } else {
+          response = await EventControllerService.getAllEvents();
+        }
+
         if (!response.error && response.result) {
           setEvents(response.result);
         } else {
           console.error("Ошибка в ответе:", response.errorMassage);
+          setEvents([]);
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Ошибка при получении мероприятий:", err);
-      });
-  }, []);
+        setEvents([]);
+      }
+    };
+
+    loadEvents();
+  }, [selectedRoles]);
 
   useEffect(() => {
     let filtered = [...events];
@@ -57,6 +72,7 @@ export default function EventsPage() {
     setDate(null);
     setCitySearch("");
     setEventSearch("");
+    setSelectedRoles([]);
   };
 
   const uniqueCities = Array.from(
@@ -83,6 +99,8 @@ export default function EventsPage() {
           setEventSearch={setEventSearch}
           resetFilters={resetFilters}
           cities={uniqueCities}
+          selectedRoles={selectedRoles}
+          setSelectedRoles={setSelectedRoles}
         />
         <Grid mt="lg">
           {filteredEvents.map((event) => (

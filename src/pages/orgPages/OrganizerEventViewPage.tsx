@@ -19,7 +19,8 @@ import EventImageBlock from "../../components/EventImageBlock";
 import EventDetailsInfo from "../../components/EventDetailsInfo";
 import { useEventById } from "../../hooks/useEventById";
 import { IconDownload } from "@tabler/icons-react";
-import { ReportControllerService } from "../../api/generated";
+import { ReportControllerService } from "../../api/generated/services/ReportControllerService";
+// import { ReportControllerService } from "../../api/generated";
 
 export default function OrganizerEventViewPage() {
   const fullUser = useFullUser();
