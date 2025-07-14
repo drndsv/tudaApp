@@ -14,12 +14,11 @@ import {
 
 import Header from "../../components/Header";
 import { useEventImage } from "../../hooks/useEventImage";
-import { useFullUser } from "../../hooks/useFullUser";
 import EventImageBlock from "../../components/EventImageBlock";
 import EventDetailsInfo from "../../components/EventDetailsInfo";
 import { useEventById } from "../../hooks/useEventById";
 import { IconDownload } from "@tabler/icons-react";
-import { ReportControllerService } from "../../api/generated/services/ReportControllerService";
+// import { ReportControllerService } from "../../api/generated/services/ReportControllerService";
 
 export default function OrganizerEventViewPage() {
   const { id } = useParams<{ id: string }>();
@@ -43,43 +42,43 @@ export default function OrganizerEventViewPage() {
     }
   };
 
-  const handleDownloadCSV = async () => {
-    if (!event?.id) return;
+  // const handleDownloadCSV = async () => {
+  //   if (!event?.id) return;
 
-    try {
-      const pdfString = await ReportControllerService.getCvsReport(event.id);
-      // Преобразуем строку в Blob (UTF-8)
-      const blob = new Blob([pdfString], { type: "text/csv" });
+  //   try {
+  //     const pdfString = await ReportControllerService.getCvsReport(event.id);
+  //     // Преобразуем строку в Blob (UTF-8)
+  //     const blob = new Blob([pdfString], { type: "text/csv" });
 
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `report_event_${event.id}.csv`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Ошибка загрузки csv отчета:", err);
-    }
-  };
+  //     const url = window.URL.createObjectURL(blob);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = `report_event_${event.id}.csv`;
+  //     a.click();
+  //     window.URL.revokeObjectURL(url);
+  //   } catch (err) {
+  //     console.error("Ошибка загрузки csv отчета:", err);
+  //   }
+  // };
 
-  const handleDownloadPDF = async () => {
-    if (!event?.id) return;
+  // const handleDownloadPDF = async () => {
+  //   if (!event?.id) return;
 
-    try {
-      const pdfString = await ReportControllerService.getPdfReport(event.id);
-      // Преобразуем строку в Blob (UTF-8)
-      const blob = new Blob([pdfString], { type: "application/pdf" });
+  //   try {
+  //     const pdfString = await ReportControllerService.getPdfReport(event.id);
+  //     // Преобразуем строку в Blob (UTF-8)
+  //     const blob = new Blob([pdfString], { type: "application/pdf" });
 
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `report_event_${event.id}.pdf`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Ошибка загрузки PDF отчета:", err);
-    }
-  };
+  //     const url = window.URL.createObjectURL(blob);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = `report_event_${event.id}.pdf`;
+  //     a.click();
+  //     window.URL.revokeObjectURL(url);
+  //   } catch (err) {
+  //     console.error("Ошибка загрузки PDF отчета:", err);
+  //   }
+  // };
 
   if (loading) {
     return (
@@ -177,8 +176,8 @@ export default function OrganizerEventViewPage() {
                       </Button>
                     </Menu.Target>
                     <Menu.Dropdown>
-                      <Menu.Item onClick={handleDownloadCSV}>CSV</Menu.Item>
-                      <Menu.Item onClick={handleDownloadPDF}>PDF</Menu.Item>
+                      {/* <Menu.Item onClick={handleDownloadCSV}>CSV</Menu.Item>
+                      <Menu.Item onClick={handleDownloadPDF}>PDF</Menu.Item> */}
                     </Menu.Dropdown>
                   </Menu>
                 </Grid.Col>
