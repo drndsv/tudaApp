@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Header from "../../components/Header";
-import UserEventFilters from "../../components/UserEventFilters";
+import OrganizerEventFilters from "../../components/OrganizerEventFilters";
+
 import EventCard from "../../components/EventCard";
 import { Box, Container, Grid, Title } from "@mantine/core";
 import { EventControllerService, EventResponseDTO } from "../../api/generated";
@@ -14,25 +15,43 @@ export default function OrganizerEventsPage() {
   const [date, setDate] = useState<string | null>(null);
   const [citySearch, setCitySearch] = useState("");
   const [eventSearch, setEventSearch] = useState("");
-  const [visitStatus, setVisitStatus] = useState<
-    "all" | "visited" | "notVisited"
+  const [eventStatus, setEventStatus] = useState<
+    "all" | "WILL" | "PASSED" | "CANCELLED"
   >("all");
+  const [role, setRole] = useState<"all" | "PARTICIPANT" | "VOLUNTEER">("all");
 
   useEffect(() => {
     if (!user?.id) return;
 
-    EventControllerService.getOrganizationEventsByOrganizerId(user.id)
-      .then((response) => {
+    const fetchEvents = async () => {
+      try {
+        let response;
+
+        if (role !== "all") {
+          response =
+            await EventControllerService.getEventsByNeededRoleForOrganizer(
+              role,
+              user.id!
+            );
+        } else {
+          response =
+            await EventControllerService.getOrganizationEventsByOrganizerId(
+              user.id!
+            );
+        }
+
         if (!response.error && response.result) {
           setEvents(response.result);
         } else {
           console.error("Ошибка в ответе:", response.errorMassage);
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Ошибка при получении мероприятий:", err);
-      });
-  }, [user?.id]);
+      }
+    };
+
+    fetchEvents();
+  }, [user?.id, role]);
 
   useEffect(() => {
     let filtered = [...events];
@@ -57,14 +76,19 @@ export default function OrganizerEventsPage() {
       );
     }
 
+    if (eventStatus !== "all") {
+      filtered = filtered.filter((event) => event.eventStatus === eventStatus);
+    }
+
     setFilteredEvents(filtered);
-  }, [date, citySearch, eventSearch, events, visitStatus]);
+  }, [date, citySearch, eventSearch, events, eventStatus]);
 
   const resetFilters = () => {
     setDate(null);
     setCitySearch("");
     setEventSearch("");
-    setVisitStatus("all");
+    setEventStatus("all");
+    setRole("all");
   };
 
   const uniqueCities = Array.from(
@@ -80,15 +104,17 @@ export default function OrganizerEventsPage() {
         <Title order={2} mb="lg">
           Мероприятия вашей организации
         </Title>
-        <UserEventFilters
+        <OrganizerEventFilters
           date={date}
           setDate={setDate}
           citySearch={citySearch}
           setCitySearch={setCitySearch}
           eventSearch={eventSearch}
           setEventSearch={setEventSearch}
-          visitStatus={visitStatus}
-          setVisitStatus={setVisitStatus}
+          eventStatus={eventStatus}
+          setEventStatus={setEventStatus}
+          role={role}
+          setRole={setRole}
           resetFilters={resetFilters}
           cities={uniqueCities}
         />

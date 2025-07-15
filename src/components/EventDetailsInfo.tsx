@@ -1,17 +1,62 @@
+import { useEffect, useState } from "react";
 import { Card, Grid, Stack, Text } from "@mantine/core";
-import { EventResponseDTO } from "../api/generated";
+import {
+  AppUserResponseDTO,
+  EventControllerService,
+  EventResponseDTO,
+} from "../api/generated";
 
 interface EventDetailsInfoProps {
   event: EventResponseDTO;
-  fullUser?: any | null;
 }
 
-export default function EventDetailsInfo({
-  event,
-  fullUser,
-}: EventDetailsInfoProps) {
+export default function EventDetailsInfo({ event }: EventDetailsInfoProps) {
+  const [participantCount, setParticipantCount] = useState<number | null>(null);
+  const [volunteerCount, setVolunteerCount] = useState<number | null>(null);
+  const [contactPerson, setContactPerson] = useState<AppUserResponseDTO | null>(
+    null
+  );
+
+  const participantLimit = event.participantsNumber ?? "";
+  const volunteerLimit = event.volunteersNumber ?? "";
+
+  useEffect(() => {
+    if (!event.id) return;
+
+    EventControllerService.getUserCountWithCertainRoleOnEvent(
+      "PARTICIPANT",
+      event.id
+    ).then((res) => {
+      if (!res.error && typeof res.result === "number") {
+        setParticipantCount(res.result);
+      } else {
+        console.warn("Ошибка загрузки участников:", res.errorMassage);
+      }
+    });
+
+    EventControllerService.getUserCountWithCertainRoleOnEvent(
+      "VOLUNTEER",
+      event.id
+    ).then((res) => {
+      if (!res.error && typeof res.result === "number") {
+        setVolunteerCount(res.result);
+      } else {
+        console.warn("Ошибка загрузки волонтёров:", res.errorMassage);
+      }
+    });
+
+    EventControllerService.getContactPersonOfEvent(event.id).then((res) => {
+      if (!res.error && res.result) {
+        setContactPerson(res.result);
+      } else {
+        console.warn("Ошибка загрузки контактного лица:", res.errorMassage);
+      }
+    });
+  }, [event.id]);
+
   return (
     <Stack gap="md" h="100%">
+      {/* Описание */}
       <Card
         shadow="sm"
         radius="xl"
@@ -26,13 +71,18 @@ export default function EventDetailsInfo({
         <Text fz="sm">{event.description || "Нет описания."}</Text>
       </Card>
 
+      {/* Участники и волонтёры */}
       <Grid>
         <Grid.Col span={6}>
           <Card shadow="sm" radius="xl" padding="md" withBorder>
             <Text fw={600} mb="xs">
               Участников
             </Text>
-            <Text fz="sm">{event.participantsNumber ?? 0}/200</Text>
+            <Text fz="sm">
+              {participantCount !== null
+                ? `${participantCount}/${participantLimit}`
+                : "Загрузка..."}
+            </Text>
           </Card>
         </Grid.Col>
         <Grid.Col span={6}>
@@ -40,11 +90,16 @@ export default function EventDetailsInfo({
             <Text fw={600} mb="xs">
               Волонтёров
             </Text>
-            <Text fz="sm">{event.volunteersNumber ?? 0}/100</Text>
+            <Text fz="sm">
+              {volunteerCount !== null
+                ? `${volunteerCount}/${volunteerLimit}`
+                : "Загрузка..."}
+            </Text>
           </Card>
         </Grid.Col>
       </Grid>
 
+      {/* Основная информация */}
       <Grid>
         <Grid.Col span={6}>
           <Card shadow="sm" radius="xl" padding="md" withBorder h="100%">
@@ -73,6 +128,7 @@ export default function EventDetailsInfo({
           </Card>
         </Grid.Col>
 
+        {/* Контактное лицо */}
         <Grid.Col span={6}>
           <Card shadow="sm" radius="xl" padding="md" withBorder h="100%">
             <Text fw={600} mb="xs">
@@ -82,9 +138,11 @@ export default function EventDetailsInfo({
               <Text>📞 {event.organization?.phoneNumber || "Не указан"}</Text>
               <Text>
                 👤{" "}
-                {`${fullUser?.lastName ?? ""} ${fullUser?.name ?? ""} ${
-                  fullUser?.patronymic ?? ""
-                }` || "Не указан"}
+                {contactPerson
+                  ? `${contactPerson.lastName ?? ""} ${
+                      contactPerson.name ?? ""
+                    } ${contactPerson.patronymic ?? ""}`.trim()
+                  : "Не указано"}
               </Text>
             </Stack>
           </Card>

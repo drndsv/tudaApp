@@ -14,7 +14,6 @@ import {
 
 import Header from "../../components/Header";
 import { useEventImage } from "../../hooks/useEventImage";
-import { useFullUser } from "../../hooks/useFullUser";
 import EventImageBlock from "../../components/EventImageBlock";
 import EventDetailsInfo from "../../components/EventDetailsInfo";
 import { useEventById } from "../../hooks/useEventById";
@@ -22,8 +21,6 @@ import { IconDownload } from "@tabler/icons-react";
 import { ReportControllerService } from "../../api/generated/services/ReportControllerService";
 
 export default function OrganizerEventViewPage() {
-  const fullUser = useFullUser();
-
   const { id } = useParams<{ id: string }>();
 
   const { event, loading } = useEventById(id);
@@ -64,14 +61,44 @@ export default function OrganizerEventViewPage() {
     }
   };
 
+  // const handleDownloadPDF = async () => {
+  //   if (!event?.id) return;
+
+  //   try {
+  //     const pdfString = await ReportControllerService.getPdfReport(event.id);
+  //     // Преобразуем строку в Blob (UTF-8)
+  //     const blob = new Blob([pdfString], { type: "application/pdf" });
+
+  //     const url = window.URL.createObjectURL(blob);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = `report_event_${event.id}.pdf`;
+  //     a.click();
+  //     window.URL.revokeObjectURL(url);
+  //   } catch (err) {
+  //     console.error("Ошибка загрузки PDF отчета:", err);
+  //   }
+  // };
+
   const handleDownloadPDF = async () => {
     if (!event?.id) return;
 
     try {
-      const pdfString = await ReportControllerService.getPdfReport(event.id);
-      // Преобразуем строку в Blob (UTF-8)
-      const blob = new Blob([pdfString], { type: "application/pdf" });
+      const response = await fetch(
+        `http://localhost:8080/report/pdf/download?eventId=${event.id}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+          },
+        }
+      );
 
+      if (!response.ok) {
+        throw new Error("Ошибка при получении отчета");
+      }
+
+      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -79,7 +106,7 @@ export default function OrganizerEventViewPage() {
       a.click();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      console.error("Ошибка загрузки PDF отчета:", err);
+      console.error("Ошибка загрузки pdf отчета:", err);
     }
   };
 
@@ -190,7 +217,7 @@ export default function OrganizerEventViewPage() {
 
           {/* Правая часть*/}
           <Grid.Col span={{ base: 12, md: 6 }} h="100%">
-            <EventDetailsInfo event={event} fullUser={fullUser} />
+            <EventDetailsInfo event={event} />
           </Grid.Col>
         </Grid>
       </Container>

@@ -63,18 +63,29 @@ export default function RegisterPage() {
   });
 
   const handleSubmit = async (values: typeof form.values) => {
+    let name: string | undefined;
+    let lastName: string | undefined;
+    let patronymic: string | undefined;
+
+    if (accountType === "USER") {
+      name = values.firstName;
+      lastName = values.lastName;
+      patronymic = values.patronymic;
+    } else {
+      const parts = values.coordinatorName.trim().split(" ");
+      lastName = parts[0];
+      name = parts[1];
+      patronymic = parts.slice(2).join(" ") || undefined;
+    }
+
     const payload: JwtSignUpRequestDTO = {
       login: values.login,
       password: values.password,
-      name: accountType === "USER" ? values.firstName : undefined,
-      lastName: accountType === "USER" ? values.lastName : undefined,
-      patronymic: accountType === "USER" ? values.patronymic : undefined,
+      name,
+      lastName,
+      patronymic,
       phoneNumber:
-        accountType === "USER"
-          ? values.phoneNumber
-          : accountType === "ORGANIZER"
-          ? values.coordinatorPhone
-          : undefined,
+        accountType === "USER" ? values.phoneNumber : values.coordinatorPhone,
       organizationName:
         accountType === "ORGANIZER" ? values.orgName : undefined,
       organizationPhoneNumber:
@@ -83,12 +94,11 @@ export default function RegisterPage() {
 
     try {
       const prevToken = OpenAPI.TOKEN;
-      OpenAPI.TOKEN = ""; // убрать токен, если он был
+      OpenAPI.TOKEN = "";
 
       await AuthControllerService.signUp(payload);
 
-      OpenAPI.TOKEN = prevToken; // вернуть, если нужно
-
+      OpenAPI.TOKEN = prevToken;
       navigate("/login");
     } catch (error) {
       console.error("Ошибка регистрации", error);

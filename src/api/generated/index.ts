@@ -17,6 +17,7 @@ export type { ApiResponseGuestResponseDTO } from './models/ApiResponseGuestRespo
 export type { ApiResponseListEventParticipantResponseDTO } from './models/ApiResponseListEventParticipantResponseDTO';
 export type { ApiResponseListEventResponseDTO } from './models/ApiResponseListEventResponseDTO';
 export type { ApiResponseListRequestResponseDTO } from './models/ApiResponseListRequestResponseDTO';
+export type { ApiResponseLong } from './models/ApiResponseLong';
 export type { ApiResponseObject } from './models/ApiResponseObject';
 export type { ApiResponseOrganizationResponseDTO } from './models/ApiResponseOrganizationResponseDTO';
 export type { ApiResponsePhotoResponseDTO } from './models/ApiResponsePhotoResponseDTO';
@@ -48,5 +49,6 @@ export { EventControllerService } from './services/EventControllerService';
 export { GuestControllerService } from './services/GuestControllerService';
 export { ImageControllerService } from './services/ImageControllerService';
 export { OrganizationControllerService } from './services/OrganizationControllerService';
+export { ReportControllerService } from './services/ReportControllerService';
 export { RequestControllerService } from './services/RequestControllerService';
 export { UserControllerService } from './services/UserControllerService';
