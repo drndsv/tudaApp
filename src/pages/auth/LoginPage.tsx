@@ -16,8 +16,8 @@ export default function LoginPage() {
   const form = useForm({
     initialValues: { login: "", password: "" },
     validate: {
-      login: (value) => (value ? null : "Введите логин"),
-      password: (value) => (value ? null : "Введите пароль"),
+      login: (value: string) => (value ? null : "Введите логин"),
+      password: (value: string) => (value ? null : "Введите пароль"),
     },
   });
 
