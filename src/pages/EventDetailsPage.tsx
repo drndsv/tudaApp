@@ -127,9 +127,9 @@ export default function EventDetailsPage() {
     if (!user?.sub || !event?.id) return;
 
     try {
-      if (isVolunteerPending) {
+      if (isVolunteerPending || isVolunteerConfirmed) {
         await RequestControllerService.deleteRequest(event.id, user.sub);
-      } else if (isParticipant || isVolunteerConfirmed) {
+      } else if (isParticipant) {
         await AccountingAppUserControllerService.delete(event.id, user.sub);
       }
       setIsParticipant(false);
@@ -160,7 +160,7 @@ export default function EventDetailsPage() {
         event: event.id,
         fullName,
         mail,
-        status: true,
+        status: false,
       });
       if (!res.error) {
         showNotification({
