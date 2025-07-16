@@ -25,6 +25,7 @@ export const theme = createTheme({
       "#f5f0e5",
       "#f4eee2",
       "#f3ecdf",
+      "#f2f3ed",
     ],
     green: [
       "#e9f1ea",
