@@ -17,23 +17,76 @@ export default function UserEventsPage() {
   const [visitStatus, setVisitStatus] = useState<
     "all" | "visited" | "notVisited"
   >("all");
+  const [role, setRole] = useState<"all" | "PARTICIPANT" | "VOLUNTEER">("all");
 
   useEffect(() => {
     if (!user?.id) return;
 
-    EventControllerService.getEventsByUserId(user.id)
-      .then((response) => {
-        console.log("Ответ от сервера:", response);
-        if (!response.error && response.result) {
-          setEvents(response.result);
-        } else {
-          console.error("Ошибка в ответе:", response.errorMassage);
+    const fetchEvents = async () => {
+      try {
+        // Оба фильтра = "all"
+        if (visitStatus === "all" && role === "all") {
+          const res = await EventControllerService.getEventsByUserId(user.id!);
+          if (!res.error && res.result) setEvents(res.result);
+          return;
         }
-      })
-      .catch((err) => {
-        console.error("Ошибка при получении мероприятий:", err);
-      });
-  }, [user?.id]);
+
+        // Только статус посещения
+        if (visitStatus !== "all" && role === "all") {
+          const statusParam =
+            visitStatus === "visited" ? "PRESENTED" : "ABSENT";
+          const res =
+            await EventControllerService.getEventsByAppUserIdAndAttendanceStatus(
+              user.id!,
+              statusParam
+            );
+          if (!res.error && res.result) setEvents(res.result);
+          return;
+        }
+
+        // Только роль
+        if (visitStatus === "all" && role !== "all") {
+          const res = await EventControllerService.getEventsByAppUserIdAndRole(
+            user.id!,
+            role as "PARTICIPANT" | "VOLUNTEER"
+          );
+          if (!res.error && res.result) setEvents(res.result);
+          return;
+        }
+
+        // Оба фильтра применены → берём пересечение
+        const statusParam = visitStatus === "visited" ? "PRESENTED" : "ABSENT";
+
+        const [statusRes, roleRes] = await Promise.all([
+          EventControllerService.getEventsByAppUserIdAndAttendanceStatus(
+            user.id!,
+            statusParam
+          ),
+          EventControllerService.getEventsByAppUserIdAndRole(
+            user.id!,
+            role as "PARTICIPANT" | "VOLUNTEER"
+          ),
+        ]);
+
+        if (
+          !statusRes.error &&
+          !roleRes.error &&
+          statusRes.result &&
+          roleRes.result
+        ) {
+          const statusIds = new Set(statusRes.result.map((e) => e.id));
+          const commonEvents = roleRes.result.filter((e) =>
+            statusIds.has(e.id)
+          );
+          setEvents(commonEvents);
+        }
+      } catch (err) {
+        console.error("Ошибка при загрузке мероприятий:", err);
+      }
+    };
+
+    fetchEvents();
+  }, [user?.id, visitStatus, role]);
 
   useEffect(() => {
     let filtered = [...events];
@@ -58,31 +111,13 @@ export default function UserEventsPage() {
       );
     }
 
-    // if (visitStatus !== "all") {
-    //   filtered = filtered.filter((event) =>
-    //     visitStatus === "visited"
-    //       ? event.status === true
-    //       : event.status === false
-    //   );
-    // }
-
     setFilteredEvents(filtered);
-  }, [
-    date,
-    citySearch,
-    eventSearch,
-    events,
-    // timeFilter,
-    // roleFilter,
-    visitStatus,
-  ]);
+  }, [date, citySearch, eventSearch, events]);
 
   const resetFilters = () => {
     setDate(null);
     setCitySearch("");
     setEventSearch("");
-    // setTimeFilter("all");
-    // setRoleFilter([]);
     setVisitStatus("all");
   };
 
@@ -108,6 +143,8 @@ export default function UserEventsPage() {
           setEventSearch={setEventSearch}
           visitStatus={visitStatus}
           setVisitStatus={setVisitStatus}
+          role={role}
+          setRole={setRole}
           resetFilters={resetFilters}
           cities={uniqueCities}
         />
