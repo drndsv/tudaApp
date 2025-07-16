@@ -1,8 +1,15 @@
-import { TextInput, Button, Group, Menu, Box, ActionIcon } from "@mantine/core";
+import {
+  TextInput,
+  Button,
+  Group,
+  Box,
+  ActionIcon,
+  Select,
+  Menu,
+} from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import { DateInput } from "@mantine/dates";
 import { FaSearch } from "react-icons/fa";
-// import { useEffect, useRef, useState } from "react";
 
 type UserEventFiltersProps = {
   date: string | null;
@@ -13,6 +20,8 @@ type UserEventFiltersProps = {
   setEventSearch: (value: string) => void;
   visitStatus: "all" | "visited" | "notVisited";
   setVisitStatus: (value: "all" | "visited" | "notVisited") => void;
+  role: "all" | "PARTICIPANT" | "VOLUNTEER";
+  setRole: (value: "all" | "PARTICIPANT" | "VOLUNTEER") => void;
   resetFilters: () => void;
   cities: string[];
 };
@@ -24,24 +33,16 @@ export default function UserEventFilters({
   setCitySearch,
   eventSearch,
   setEventSearch,
+  visitStatus,
   setVisitStatus,
+  role,
+  setRole,
   resetFilters,
   cities,
 }: UserEventFiltersProps) {
-  //   const roleRef = useRef<HTMLDivElement | null>(null);
-
-  //   const [roleOpen, setRoleOpen] = useState(false);
-
-  //   useEffect(() => {
-  //     const handleClickOutside = (event: MouseEvent) => {
-  //       if (roleRef.current && !roleRef.current.contains(event.target as Node)) {
-  //         setRoleOpen(false);
-  //       }
-  //     };
-  //     document.addEventListener("mousedown", handleClickOutside);
-  //     return () => document.removeEventListener("mousedown", handleClickOutside);
-  //   }, []);
-
+  const filteredCities = cities.filter((city) =>
+    city.toLowerCase().includes(citySearch.toLowerCase())
+  );
   return (
     <Box my="xl">
       <Group mb="md" wrap="wrap">
@@ -61,6 +62,7 @@ export default function UserEventFilters({
       </Group>
 
       <Group wrap="wrap" gap="sm">
+        {/* Город */}
         <Menu shadow="md" width={200} radius="md" withArrow>
           <Menu.Target>
             <Button
@@ -79,12 +81,10 @@ export default function UserEventFilters({
               mb="xs"
               size="xs"
             />
-
             <Menu.Item onClick={() => setCitySearch("")} c="green">
-              Сбросить фильтр
+              Сбросить
             </Menu.Item>
-
-            {cities.map((city) => (
+            {filteredCities.map((city) => (
               <Menu.Item key={city} onClick={() => setCitySearch(city)}>
                 {city}
               </Menu.Item>
@@ -92,7 +92,7 @@ export default function UserEventFilters({
           </Menu.Dropdown>
         </Menu>
 
-        {/* фильтр по дате */}
+        {/* Дата */}
         <DateInput
           placeholder="Выбрать дату"
           value={date}
@@ -114,25 +114,39 @@ export default function UserEventFilters({
           }
         />
 
-        <Menu shadow="md" width={200} radius="md" withArrow>
-          <Menu.Target>
-            <Button variant="default" radius="xl" disabled>
-              Любой статус (в разработке)
-            </Button>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Item onClick={() => setVisitStatus("visited")}>
-              Посетил
-            </Menu.Item>
-            <Menu.Item onClick={() => setVisitStatus("notVisited")}>
-              Не посетил
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
+        {/* Статус посещения */}
+        <Select
+          placeholder="Любой статус"
+          value={visitStatus}
+          onChange={(value) =>
+            setVisitStatus((value as "all" | "visited" | "notVisited") || "all")
+          }
+          data={[
+            { value: "all", label: "Любой статус" },
+            { value: "visited", label: "Посетил" },
+            { value: "notVisited", label: "Не посетил" },
+          ]}
+          radius="xl"
+          size="sm"
+          w={200}
+        />
 
-        <Button variant="default" radius="xl" disabled>
-          Роль (в разработке)
-        </Button>
+        {/* Роль */}
+        <Select
+          placeholder="Любая роль"
+          value={role}
+          onChange={(value) =>
+            setRole((value as "all" | "PARTICIPANT" | "VOLUNTEER") || "all")
+          }
+          data={[
+            { value: "all", label: "Любая роль" },
+            { value: "PARTICIPANT", label: "Участник" },
+            { value: "VOLUNTEER", label: "Волонтёр" },
+          ]}
+          radius="xl"
+          size="sm"
+          w={200}
+        />
       </Group>
     </Box>
   );

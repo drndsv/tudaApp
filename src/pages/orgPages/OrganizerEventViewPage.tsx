@@ -61,25 +61,6 @@ export default function OrganizerEventViewPage() {
     }
   };
 
-  // const handleDownloadPDF = async () => {
-  //   if (!event?.id) return;
-
-  //   try {
-  //     const pdfString = await ReportControllerService.getPdfReport(event.id);
-  //     // Преобразуем строку в Blob (UTF-8)
-  //     const blob = new Blob([pdfString], { type: "application/pdf" });
-
-  //     const url = window.URL.createObjectURL(blob);
-  //     const a = document.createElement("a");
-  //     a.href = url;
-  //     a.download = `report_event_${event.id}.pdf`;
-  //     a.click();
-  //     window.URL.revokeObjectURL(url);
-  //   } catch (err) {
-  //     console.error("Ошибка загрузки PDF отчета:", err);
-  //   }
-  // };
-
   const handleDownloadPDF = async () => {
     if (!event?.id) return;
 

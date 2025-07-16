@@ -21,8 +21,10 @@ export type OpenAPIConfig = {
 
 export const OpenAPI: OpenAPIConfig = {
   // BASE: "http://localhost:8080",
-  BASE: "http://45.67.56.19:8080", //сервер
+  // BASE: "http://45.67.56.19:8080", //сервер
   // BASE: import.meta.env.VITE_API_BASE_URL,
+  BASE: import.meta.env.VITE_API_BASE_URL,
+
   VERSION: "0",
   WITH_CREDENTIALS: false,
   CREDENTIALS: "include",

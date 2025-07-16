@@ -151,6 +151,44 @@ export class EventControllerService {
         });
     }
     /**
+     * @param appUserId
+     * @param role
+     * @returns ApiResponseListEventResponseDTO OK
+     * @throws ApiError
+     */
+    public static getEventsByAppUserIdAndRole(
+        appUserId: number,
+        role: 'PARTICIPANT' | 'VOLUNTEER',
+    ): CancelablePromise<ApiResponseListEventResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/event/getEventsByAppUserIdAndRole',
+            query: {
+                'appUserId': appUserId,
+                'role': role,
+            },
+        });
+    }
+    /**
+     * @param appUserId
+     * @param status
+     * @returns ApiResponseListEventResponseDTO OK
+     * @throws ApiError
+     */
+    public static getEventsByAppUserIdAndAttendanceStatus(
+        appUserId: number,
+        status: 'PRESENTED' | 'ABSENT',
+    ): CancelablePromise<ApiResponseListEventResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/event/getEventsByAppUserIdAndAttendanceStatus',
+            query: {
+                'appUserId': appUserId,
+                'status': status,
+            },
+        });
+    }
+    /**
      * @param eventId
      * @returns ApiResponseAppUserResponseDTO OK
      * @throws ApiError
