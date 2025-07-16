@@ -5,6 +5,7 @@ import {
   Box,
   ActionIcon,
   Select,
+  Menu,
 } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import { DateInput } from "@mantine/dates";
@@ -39,6 +40,9 @@ export default function UserEventFilters({
   resetFilters,
   cities,
 }: UserEventFiltersProps) {
+  const filteredCities = cities.filter((city) =>
+    city.toLowerCase().includes(citySearch.toLowerCase())
+  );
   return (
     <Box my="xl">
       <Group mb="md" wrap="wrap">
@@ -59,18 +63,34 @@ export default function UserEventFilters({
 
       <Group wrap="wrap" gap="sm">
         {/* Город */}
-        <Select
-          placeholder="Все города"
-          value={citySearch || null}
-          onChange={(value) => setCitySearch(value || "")}
-          data={[
-            { value: "", label: "Все города" },
-            ...cities.map((city) => ({ value: city, label: city })),
-          ]}
-          radius="xl"
-          size="sm"
-          w={200}
-        />
+        <Menu shadow="md" width={200} radius="md" withArrow>
+          <Menu.Target>
+            <Button
+              variant="default"
+              radius="xl"
+              styles={{ root: { fontWeight: 500 } }}
+            >
+              {citySearch ? citySearch : "Все города"}
+            </Button>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <TextInput
+              placeholder="Поиск города"
+              value={citySearch}
+              onChange={(e) => setCitySearch(e.currentTarget.value)}
+              mb="xs"
+              size="xs"
+            />
+            <Menu.Item onClick={() => setCitySearch("")} c="green">
+              Сбросить
+            </Menu.Item>
+            {filteredCities.map((city) => (
+              <Menu.Item key={city} onClick={() => setCitySearch(city)}>
+                {city}
+              </Menu.Item>
+            ))}
+          </Menu.Dropdown>
+        </Menu>
 
         {/* Дата */}
         <DateInput
