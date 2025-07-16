@@ -14,14 +14,12 @@
 body {
   margin: 0;
   font-family: Inter, sans-serif;
-  /* background-color: var(--color-cream); */
-  /* background-color: #90423f; */
   background-color: #f2f3ed;
   color: var(--color-dark);
 }
 
 .card {
-  background: var(--color-cream);
+  background: #f2f3ed;
   border-radius: 1rem;
   box-shadow: 8px 8px 16px #bcc4aa, -8px -8px 16px #ffffff;
   padding: 1rem;
