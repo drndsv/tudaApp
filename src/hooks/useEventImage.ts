@@ -3,6 +3,7 @@ import { PhotoResponseDTO } from "../api/generated/models/PhotoResponseDTO";
 
 export function useEventImage(photo?: PhotoResponseDTO): string | null {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -11,7 +12,7 @@ export function useEventImage(photo?: PhotoResponseDTO): string | null {
       try {
         const response = await fetch(
           // `http://45.67.56.19:8080/image/get/${photo.uploadId}`
-          `api/image/get/${photo.uploadId}`
+          `${API_BASE_URL}/image/get/${photo.uploadId}`
           // `http://localhost:8080/image/get/${photo.uploadId}`
         );
 

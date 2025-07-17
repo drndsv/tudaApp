@@ -10,9 +10,6 @@ import {
   Button,
   Center,
   Loader,
-  Image,
-  rem,
-  useMantineTheme,
 } from "@mantine/core";
 import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
@@ -23,7 +20,7 @@ import {
   AccountingAppUserControllerService,
   RequestControllerService,
 } from "../api/generated";
-// import EventImageBlock from "../components/EventImageBlock";
+import EventImageBlock from "../components/EventImageBlock";
 import EventDetailsInfo from "../components/EventDetailsInfo";
 import { showNotification } from "@mantine/notifications";
 
@@ -44,7 +41,6 @@ export default function EventDetailsPage() {
 
   const isOrganizer = user?.roles?.includes("ROLE_ORGANIZER");
   const imageSrc = useEventImage(event?.photo);
-  const theme = useMantineTheme();
 
   const [guestModalOpened, setGuestModalOpened] = useState(false);
 
@@ -233,37 +229,10 @@ export default function EventDetailsPage() {
         <Grid gutter="xl" align="stretch">
           <Grid.Col span={{ base: 12, md: 6 }} h="100%">
             <Stack h="100%" justify="space-between">
-              {/* <EventImageBlock
+              <EventImageBlock
                 src={imageSrc}
                 alt={event.title || "Мероприятие"}
-              /> */}
-              <Box
-                h={180}
-                mb="sm"
-                style={{ borderRadius: rem(16), overflow: "hidden" }}
-              >
-                {imageSrc ? (
-                  <Image
-                    src={imageSrc}
-                    alt={event.title ?? "Мероприятие"}
-                    h="100%"
-                    w="100%"
-                    fit="cover"
-                  />
-                ) : (
-                  <Center
-                    h={180}
-                    style={{
-                      backgroundColor: theme.colors.gray[1],
-                      borderRadius: rem(16),
-                    }}
-                  >
-                    <Text c="gray.6" fz="sm">
-                      Без фото
-                    </Text>
-                  </Center>
-                )}
-              </Box>
+              />
 
               <Stack gap="sm">
                 {isParticipant && (
