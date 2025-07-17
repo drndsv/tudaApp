@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   frontend:
-    image: drndsv/tuda_front_new
+    image: drndsv/tuda_front_new_1
     ports:
       - "5173:80" # внешний порт 5173, внутренний 80 (nginx)
     restart: always
