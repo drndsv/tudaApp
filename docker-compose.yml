@@ -2,7 +2,8 @@ version: "3.8"
 
 services:
   frontend:
-    image: drndsv/tuda_front
+    image: drndsv/tuda_front:latest # или просто: build: .
+    build: .
     ports:
-      - "5173:80" # внешний порт 5173, внутренний 80 (nginx)
+      - "5173:80" # внешний:внутренний (nginx в контейнере слушает 80)
     restart: always
