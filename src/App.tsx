@@ -15,6 +15,7 @@ import EventParticipantsPage from "./pages/orgPages/EventParticipantsPage";
 import EditEventPage from "./pages/orgPages/EditEventPage";
 import EventRequestsPage from "./pages/orgPages/EventRequestsPage";
 
+// 1
 function App() {
   return (
     <Routes>
