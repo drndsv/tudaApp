@@ -11,8 +11,7 @@ export function useEventImage(photo?: PhotoResponseDTO): string | null {
       try {
         const response = await fetch(
           // `http://45.67.56.19:8080/image/get/${photo.uploadId}`
-          `https://45.67.56.19:8080/image/get/${photo.uploadId}`
-          // `api/image/get/${photo.uploadId}`
+          `api/image/get/${photo.uploadId}`
           // `http://localhost:8080/image/get/${photo.uploadId}`
         );
 
