@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.PASSWORD}}
 
       - name: Build Docker image
-        run: docker build -t drndsv/tuda_front:latest .
+        run: docker build -t drndsv/tuda_front_new_1:latest .
 
       - name: Push Docker image
-        run: docker push drndsv/tuda_front:latest
+        run: docker push drndsv/tuda_front_new_1:latest
