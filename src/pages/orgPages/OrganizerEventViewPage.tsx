@@ -67,9 +67,7 @@ export default function OrganizerEventViewPage() {
 
     try {
       const response = await fetch(
-        // `http://45.67.56.19:8080/report/pdf/download?eventId=${event.id}`,
         `${API_BASE_URL}/report/pdf/download?eventId=${event.id}`,
-        // `api/report/pdf/download?eventId=${event.id}`,
         {
           method: "GET",
           headers: {

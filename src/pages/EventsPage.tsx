@@ -40,7 +40,6 @@ export default function EventsPage() {
     };
 
     loadEvents();
-    console.log("API:", import.meta.env.VITE_API_BASE_URL);
   }, [selectedRoles]);
 
   useEffect(() => {
