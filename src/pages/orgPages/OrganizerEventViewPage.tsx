@@ -28,6 +28,7 @@ export default function OrganizerEventViewPage() {
   const navigate = useNavigate();
 
   const imageSrc = useEventImage(event?.photo);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const getReadableStatus = (status?: string): string => {
     switch (status) {
@@ -67,7 +68,8 @@ export default function OrganizerEventViewPage() {
     try {
       const response = await fetch(
         // `http://45.67.56.19:8080/report/pdf/download?eventId=${event.id}`,
-        `api/report/pdf/download?eventId=${event.id}`,
+        `${API_BASE_URL}/report/pdf/download?eventId=${event.id}`,
+        // `api/report/pdf/download?eventId=${event.id}`,
         {
           method: "GET",
           headers: {
