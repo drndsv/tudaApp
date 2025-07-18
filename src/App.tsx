@@ -32,12 +32,12 @@ function App() {
       </Route>
 
       {/* страницы пользователя */}
-      <Route element={<ProtectedRoute allowedRoles={["USER"]} />}>
+      <Route element={<ProtectedRoute allowedRoles={["ROLE_USER"]} />}>
         <Route path="/userEvents" element={<UserEventsPage />} />
       </Route>
 
       {/* страницы орга */}
-      <Route element={<ProtectedRoute allowedRoles={["ORGANIZER"]} />}>
+      <Route element={<ProtectedRoute allowedRoles={["ROLE_ORGANIZER"]} />}>
         <Route path="/createEvent" element={<CreateEventPage />} />
         <Route path="/organizerEvents" element={<OrganizerEventsPage />} />
         <Route
