@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
-import { Box } from "@mantine/core";
+import { Box, Button } from "@mantine/core";
 
 interface QRScannerProps {
   onScanSuccess: (decodedText: string) => void;
@@ -13,60 +13,22 @@ export default function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
   );
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
   const isScanningRef = useRef(false);
+  const [cameras, setCameras] = useState<any[]>([]);
+  const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("QRScanner mounted");
-
     const container = document.getElementById(scannerIdRef.current);
     if (container) container.innerHTML = "";
 
     const html5QrCode = new Html5Qrcode(scannerIdRef.current);
     html5QrCodeRef.current = html5QrCode;
 
+    // Получаем доступные камеры
     Html5Qrcode.getCameras()
       .then((devices) => {
-        if (devices && devices.length > 0 && !isScanningRef.current) {
-          const cameraId = devices[0].id;
-          html5QrCode
-            .start(
-              cameraId,
-              { fps: 10, qrbox: 250 },
-              (decodedText) => {
-                if (!isScanningRef.current) return;
-                isScanningRef.current = false;
-
-                onScanSuccess(decodedText);
-
-                html5QrCode
-                  .stop()
-                  .then(() => {
-                    try {
-                      html5QrCode.clear();
-                    } catch (e) {
-                      console.warn(
-                        "Ошибка при очистке сканера:",
-                        (e as Error).message
-                      );
-                    }
-                  })
-                  .then(() => onClose())
-                  .catch((err) => {
-                    console.error("Ошибка при остановке сканера:", err);
-                  });
-              },
-              (errorMessage) => {
-                console.warn("QR scan error:", errorMessage);
-              }
-            )
-            .then(() => {
-              isScanningRef.current = true;
-              console.log("QR scanner started");
-            })
-            .catch((err) => {
-              console.error("Ошибка при запуске сканера:", err);
-            });
-        } else if (!devices || devices.length === 0) {
-          console.error("Камеры не найдены");
+        if (devices && devices.length > 0) {
+          setCameras(devices);
+          setSelectedCamera(devices[0].id); // По умолчанию выбираем первую камеру
         }
       })
       .catch((err) => {
@@ -74,7 +36,6 @@ export default function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
       });
 
     return () => {
-      console.log("QRScanner unmounted");
       if (html5QrCodeRef.current && isScanningRef.current) {
         html5QrCodeRef.current
           .stop()
@@ -82,21 +43,82 @@ export default function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
             console.warn("Сканер уже остановлен или не запущен:", e.message);
           })
           .finally(() => {
-            try {
-              html5QrCodeRef.current?.clear();
-            } catch (e) {
-              console.warn("Ошибка при очистке сканера:", (e as Error).message);
-            }
+            html5QrCodeRef.current?.clear();
             isScanningRef.current = false;
-            console.log("QR scanner stopped and cleared");
           });
       }
     };
-  }, [onScanSuccess, onClose]);
+  }, []);
+
+  useEffect(() => {
+    if (!selectedCamera) return;
+
+    const html5QrCode = html5QrCodeRef.current;
+
+    // Останавливаем старую камеру, если она была запущена
+    if (isScanningRef.current) {
+      html5QrCode?.stop().then(() => {
+        html5QrCode?.start(
+          selectedCamera,
+          { fps: 10, qrbox: 250 },
+          (decodedText) => {
+            if (!isScanningRef.current) return;
+            isScanningRef.current = false;
+            onScanSuccess(decodedText);
+
+            html5QrCode?.stop().then(() => {
+              html5QrCode?.clear();
+              onClose();
+            });
+          },
+          (errorMessage) => {
+            console.warn("QR scan error:", errorMessage);
+          }
+        );
+      });
+    } else {
+      html5QrCode?.start(
+        selectedCamera,
+        { fps: 10, qrbox: 250 },
+        (decodedText) => {
+          if (!isScanningRef.current) return;
+          isScanningRef.current = false;
+          onScanSuccess(decodedText);
+
+          html5QrCode?.stop().then(() => {
+            html5QrCode?.clear();
+            onClose();
+          });
+        },
+        (errorMessage) => {
+          console.warn("QR scan error:", errorMessage);
+        }
+      );
+    }
+    isScanningRef.current = true;
+  }, [selectedCamera, onScanSuccess, onClose]);
+
+  const handleCameraSwitch = (cameraId: string) => {
+    setSelectedCamera(cameraId);
+  };
 
   return (
     <Box>
-      <div id={scannerIdRef.current} style={{ width: "100%" }} />
+      <div
+        id={scannerIdRef.current}
+        style={{
+          width: "100%",
+        }}
+      />
+
+      <div style={{ marginTop: "10px" }}>
+        <Button onClick={() => handleCameraSwitch(cameras[0]?.id)}>
+          Переключить на основную камеру
+        </Button>
+        <Button onClick={() => handleCameraSwitch(cameras[1]?.id)}>
+          Переключить на фронтальную камеру
+        </Button>
+      </div>
     </Box>
   );
 }
