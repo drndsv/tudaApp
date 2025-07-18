@@ -14,7 +14,6 @@ export default function EventsPage() {
   const [eventSearch, setEventSearch] = useState("");
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
 
-  // Загрузка мероприятий: по роли или все
   useEffect(() => {
     const loadEvents = async () => {
       try {
@@ -64,6 +63,12 @@ export default function EventsPage() {
         event.title?.toLowerCase().includes(eventSearch.toLowerCase())
       );
     }
+
+    // filtered.sort((a, b) => {
+    //   const dateA = a.date ? new Date(a.date).getTime() : 0;
+    //   const dateB = b.date ? new Date(b.date).getTime() : 0;
+    //   return dateA - dateB;
+    // });
 
     setFilteredEvents(filtered);
   }, [date, citySearch, eventSearch, events]);
