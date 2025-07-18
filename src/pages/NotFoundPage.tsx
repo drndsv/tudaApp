@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const catImages = [
-  "catsImages/mem1.jpg",
+  "https://4.downloader.disk.yandex.ru/preview/253afd7d526bc94b2eb5ca4dc733fb62a3be8c3d36f1991d8074422ca1ab7f0b/inf/PJpOgQoG9qOj4pu2Xx_RET9PQTVPBWOys0kRUehGYoJsHPYY0HDz35OKNhbkQahvtca5Zv1XeR5RKTSAzM29lA%3D%3D?uid=98548973&filename=mem1.jpg&disposition=inline&hash=&limit=0&content_type=image%2Fjpeg&owner_uid=98548973&tknv=v3&size=2541x1272",
   "catsImages/mem2.jpg",
   "catsImages/mem3.jpg",
   "catsImages/mem4.jpg",
