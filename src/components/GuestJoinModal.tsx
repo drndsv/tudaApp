@@ -1,5 +1,7 @@
 import { Button, Group, Modal, Stack, TextInput } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import { useState } from "react";
+import { isValidEmail } from "../utils/validators";
 
 type Props = {
   opened: boolean;
@@ -13,9 +15,23 @@ export default function GuestJoinModal({ opened, onClose, onSubmit }: Props) {
 
   const handleSubmit = () => {
     if (!fullName || !mail) {
-      alert("Заполните все поля");
+      showNotification({
+        title: "Ошибка регистрации",
+        message: "Заполните все поля",
+        color: "red",
+      });
       return;
     }
+
+    if (!isValidEmail(mail)) {
+      showNotification({
+        title: "Некорректный email",
+        message: "Проверьте правильность введённого email",
+        color: "red",
+      });
+      return;
+    }
+
     onSubmit(fullName, mail);
   };
 
