@@ -28,7 +28,10 @@ export default function EventsPage() {
         }
 
         if (!response.error && response.result) {
-          setEvents(response.result);
+          const plannedEvents = response.result.filter(
+            (event) => event.eventStatus === "WILL"
+          );
+          setEvents(plannedEvents);
         } else {
           console.error("Ошибка в ответе:", response.errorMassage);
           setEvents([]);
@@ -102,13 +105,19 @@ export default function EventsPage() {
           selectedRoles={selectedRoles}
           setSelectedRoles={setSelectedRoles}
         />
-        <Grid mt="lg">
-          {filteredEvents.map((event) => (
-            <Grid.Col key={event.id} span={{ base: 12, sm: 6, md: 4 }}>
-              <EventCard event={event} />
-            </Grid.Col>
-          ))}
-        </Grid>
+        {filteredEvents.length > 0 ? (
+          <Grid mt="lg">
+            {filteredEvents.map((event) => (
+              <Grid.Col key={event.id} span={{ base: 12, sm: 6, md: 4 }}>
+                <EventCard event={event} />
+              </Grid.Col>
+            ))}
+          </Grid>
+        ) : (
+          <Box mt="lg" ta="center" c="dimmed">
+            Мероприятия по выбранным фильтрам не найдены
+          </Box>
+        )}
       </Container>
     </Box>
   );

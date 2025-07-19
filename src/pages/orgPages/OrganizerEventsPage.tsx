@@ -120,13 +120,19 @@ export default function OrganizerEventsPage() {
           cities={uniqueCities}
         />
 
-        <Grid mt="lg">
-          {filteredEvents.map((event) => (
-            <Grid.Col key={event.id} span={{ base: 12, sm: 6, md: 4 }}>
-              <EventCard event={event} navigateTo="organizer" />
-            </Grid.Col>
-          ))}
-        </Grid>
+        {filteredEvents.length > 0 ? (
+          <Grid mt="lg">
+            {filteredEvents.map((event) => (
+              <Grid.Col key={event.id} span={{ base: 12, sm: 6, md: 4 }}>
+                <EventCard event={event} navigateTo="organizer" />
+              </Grid.Col>
+            ))}
+          </Grid>
+        ) : (
+          <Box mt="lg" ta="center" c="dimmed">
+            Мероприятия по выбранным фильтрам не найдены
+          </Box>
+        )}
       </Container>
     </Box>
   );

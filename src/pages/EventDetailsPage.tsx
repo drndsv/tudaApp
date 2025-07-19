@@ -199,7 +199,7 @@ export default function EventDetailsPage() {
       <Box>
         <Header />
         <Container size="lg" py="xl">
-          <Text>Мероприятие не найдено.</Text>
+          <Text>Мероприятие не найдено</Text>
         </Container>
       </Box>
     );
@@ -276,7 +276,7 @@ export default function EventDetailsPage() {
                         Подать заявку на волонтёрство
                       </Button>
 
-                      {!user && (
+                      {!user && !isPast && (
                         <Text fz="xs" c="gray.6" ta="center">
                           Доступно только для авторизованных пользователей
                         </Text>
@@ -322,7 +322,6 @@ export default function EventDetailsPage() {
 
           {/* Правая колонка */}
           <Grid.Col span={{ base: 12, md: 6 }} h="100%">
-            {/* <EventDetailsInfo event={event} fullUser={fullUser} /> */}
             <EventDetailsInfo event={event} />
           </Grid.Col>
         </Grid>
