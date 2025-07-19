@@ -48,7 +48,6 @@ export default function OrganizerEventViewPage() {
 
     try {
       const pdfString = await ReportControllerService.getCvsReport(event.id);
-      // Преобразуем строку в Blob (UTF-8)
       const blob = new Blob([pdfString], { type: "text/csv" });
 
       const url = window.URL.createObjectURL(blob);

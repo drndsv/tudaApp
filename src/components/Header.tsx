@@ -22,7 +22,6 @@ export default function Header() {
 
   const handleLogout = () => {
     logout();
-    // window.location.reload();
     navigate("/");
   };
 

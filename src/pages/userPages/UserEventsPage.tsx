@@ -25,14 +25,12 @@ export default function UserEventsPage() {
 
     const fetchEvents = async () => {
       try {
-        // Оба фильтра = "all"
         if (visitStatus === "all" && role === "all") {
           const res = await EventControllerService.getEventsByUserId(user.id!);
           if (!res.error && res.result) setEvents(res.result);
           return;
         }
 
-        // Только статус посещения
         if (visitStatus !== "all" && role === "all") {
           const statusParam =
             visitStatus === "visited" ? "PRESENTED" : "ABSENT";
@@ -45,7 +43,6 @@ export default function UserEventsPage() {
           return;
         }
 
-        // Только роль
         if (visitStatus === "all" && role !== "all") {
           const res = await EventControllerService.getEventsByAppUserIdAndRole(
             user.id!,
@@ -55,7 +52,6 @@ export default function UserEventsPage() {
           return;
         }
 
-        // Оба фильтра применены → берём пересечение
         const statusParam = visitStatus === "visited" ? "PRESENTED" : "ABSENT";
 
         const [statusRes, roleRes] = await Promise.all([

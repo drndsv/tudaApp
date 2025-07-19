@@ -53,6 +53,6 @@ export const theme = createTheme({
       "#151513",
     ],
   },
-  primaryColor: "green", // основной цвет проекта
+  primaryColor: "green",
   fontFamily: "Inter, sans-serif",
 });
