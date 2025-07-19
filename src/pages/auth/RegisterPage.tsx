@@ -10,6 +10,7 @@ import {
 import AuthLayout from "../../components/AuthLayout";
 import { leftAlignedLabel } from "../../styles/formStyles";
 import { isValidEmail, isValidPhone } from "../../utils/validators";
+import { showNotification } from "@mantine/notifications";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -100,8 +101,22 @@ export default function RegisterPage() {
 
       OpenAPI.TOKEN = prevToken;
       navigate("/login");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Ошибка регистрации", error);
+
+      let message = "Произошла ошибка. Попробуйте ещё раз.";
+
+      if (error?.body?.message) {
+        message = error.body.message;
+      } else if (error?.status === 400) {
+        message = "Некорректные данные или пользователь уже существует";
+      }
+
+      showNotification({
+        title: "Ошибка регистрации",
+        message,
+        color: "red",
+      });
     }
   };
 
