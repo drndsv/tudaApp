@@ -6,6 +6,7 @@ import EventCard from "../../components/EventCard";
 import { Box, Container, Grid, Title } from "@mantine/core";
 import { EventControllerService, EventResponseDTO } from "../../api/generated";
 import { useAuth } from "../../context/AuthContext";
+import { sortByDate } from "../../utils/sortByDate";
 
 export default function OrganizerEventsPage() {
   const { user } = useAuth();
@@ -80,7 +81,7 @@ export default function OrganizerEventsPage() {
       filtered = filtered.filter((event) => event.eventStatus === eventStatus);
     }
 
-    setFilteredEvents(filtered);
+    setFilteredEvents(sortByDate(filtered));
   }, [date, citySearch, eventSearch, events, eventStatus]);
 
   const resetFilters = () => {
