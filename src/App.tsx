@@ -27,6 +27,10 @@ function App() {
       {/* страницы и пользователя и орга */}
       <Route element={<ProtectedRoute />}>
         <Route path="/profile" element={<ProfilePage />} />
+        <Route
+          path="/organizer/events/:id/participants"
+          element={<EventParticipantsPage />}
+        />
       </Route>
 
       {/* страницы пользователя */}
@@ -42,10 +46,7 @@ function App() {
           path="/organizer/events/:id"
           element={<OrganizerEventViewPage />}
         />
-        <Route
-          path="/organizer/events/:id/participants"
-          element={<EventParticipantsPage />}
-        />
+
         <Route path="/organizer/events/:id/edit" element={<EditEventPage />} />
         <Route
           path="/organizer/events/:id/requests"
